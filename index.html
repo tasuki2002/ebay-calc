@@ -2,412 +2,260 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eBay 利益計算ツール</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background: #0f0f0f;
-    color: #e8e8e8;
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #0f0f0f; --card: #1a1a1a; --border: #2a2a2a;
+    --gold: #f0c040; --green: #5ddb5d; --red: #e05555;
+    --muted: #666; --input-bg: #111;
+  }
+  html, body {
+    background: var(--bg); color: #e8e8e8;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
     min-height: 100vh;
-    padding: 24px 16px;
   }
-
   .header {
-    text-align: center;
-    margin-bottom: 32px;
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(15,15,15,0.95);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    padding: 12px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
   }
-
-  .header h1 {
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    color: #888;
-    text-transform: uppercase;
-    margin-bottom: 8px;
+  .header-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+  .header-title span { color: var(--gold); }
+  .header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+  .reset-btn {
+    background: #222; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--muted); font-size: 13px; padding: 7px 14px; cursor: pointer;
   }
+  .reset-btn:active { background: #333; }
 
-  .header .brand {
-    font-size: 28px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: -0.02em;
+  .profit-banner {
+    background: var(--card); border-bottom: 3px solid var(--border);
+    padding: 18px 16px; text-align: center; transition: border-color 0.3s;
   }
+  .profit-banner.positive { border-color: var(--gold); }
+  .profit-banner.negative { border-color: var(--red); }
 
-  .header .brand span {
-    color: #f0c040;
+  .profit-main {
+    font-size: 52px; font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1; color: var(--muted); transition: color 0.3s;
   }
+  .profit-main.positive { color: var(--gold); }
+  .profit-main.negative { color: var(--red); }
 
-  .card {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    padding: 24px;
-    margin-bottom: 16px;
-    max-width: 480px;
-    margin-left: auto;
-    margin-right: auto;
+  .profit-row2 {
+    display: flex; justify-content: center; align-items: center;
+    gap: 10px; margin-top: 8px; flex-wrap: wrap;
   }
-
-  .card-title {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: #666;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .field {
-    margin-bottom: 16px;
-  }
-
-  .field label {
-    display: block;
-    font-size: 12px;
-    color: #888;
-    margin-bottom: 6px;
-    letter-spacing: 0.05em;
-  }
-
-  .field-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  input[type="number"] {
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 600;
-    padding: 12px 14px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-    -moz-appearance: textfield;
-  }
-
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-  }
-
-  input[type="number"]:focus {
-    border-color: #f0c040;
-  }
-
-  .unit {
-    font-size: 13px;
-    color: #666;
-    white-space: nowrap;
-    min-width: 28px;
-  }
-
-  .fee-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .fee-row .field {
-    flex: 1;
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid #2a2a2a;
-    margin: 20px 0;
-  }
-
-  /* 結果エリア */
-  .result-card {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 480px;
-    margin: 0 auto 16px;
-  }
-
-  .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #222;
-    font-size: 13px;
-  }
-
-  .result-row:last-child {
-    border-bottom: none;
-  }
-
-  .result-label {
-    color: #888;
-  }
-
-  .result-value {
-    font-weight: 600;
-    color: #e8e8e8;
-    text-align: right;
-  }
-
-  .result-value.negative {
-    color: #e05555;
-  }
-
-  .profit-card {
-    background: #1a1a1a;
-    border: 2px solid #f0c040;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 480px;
-    margin: 0 auto 16px;
-    text-align: center;
-  }
-
-  .profit-label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: #888;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .profit-value {
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .profit-value.positive { color: #f0c040; }
-  .profit-value.negative { color: #e05555; }
-  .profit-value.zero { color: #888; }
-
-  .profit-sub {
-    font-size: 13px;
-    color: #666;
-    margin-top: 8px;
-  }
-
+  .profit-usd { font-size: 14px; color: var(--muted); }
   .verdict {
-    display: inline-block;
-    margin-top: 12px;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    display: inline-block; padding: 4px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
   }
+  .verdict.buy  { background: #1e3a1e; color: var(--green); }
+  .verdict.pass { background: #3a1e1e; color: var(--red); }
+  .verdict.check{ background: #2a2a1a; color: var(--gold); }
 
-  .verdict.buy { background: #1e3a1e; color: #5ddb5d; }
-  .verdict.pass { background: #3a1e1e; color: #e05555; }
-  .verdict.check { background: #2a2a1a; color: #f0c040; }
+  .scroll-area { padding: 12px 12px 48px; }
 
-  .breakeven-bar {
-    max-width: 480px;
-    margin: 0 auto 24px;
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    padding: 20px 24px;
+  .section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; margin-bottom: 12px; overflow: hidden;
   }
-
-  .bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: #666;
-    margin-bottom: 10px;
+  .section-header {
+    font-size: 10px; letter-spacing: 0.15em; color: var(--muted);
+    text-transform: uppercase; padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--border);
   }
-
-  .bar-track {
-    background: #111;
-    border-radius: 4px;
-    height: 8px;
-    overflow: hidden;
+  .input-row {
+    display: flex; align-items: center; padding: 0 16px;
+    border-bottom: 1px solid #1e1e1e; min-height: 62px;
   }
+  .input-row:last-child { border-bottom: none; }
+  .input-label { font-size: 13px; color: #aaa; flex: 1; padding-right: 8px; }
+  .input-label small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .input-right { display: flex; align-items: center; gap: 6px; }
+  input[type="number"] {
+    background: var(--input-bg); border: 1px solid #333; border-radius: 10px;
+    color: #fff; font-size: 20px; font-weight: 700;
+    padding: 10px 12px; width: 120px; text-align: right; outline: none;
+    -moz-appearance: textfield; -webkit-appearance: none; appearance: none;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  input[type="number"]:focus { border-color: var(--gold); background: #161616; }
+  .unit { font-size: 12px; color: var(--muted); min-width: 26px; }
 
+  .shipping-pair { display: flex; border-bottom: 1px solid #1e1e1e; }
+  .shipping-col {
+    flex: 1; padding: 12px 10px;
+    border-right: 1px solid #1e1e1e;
+  }
+  .shipping-col:last-child { border-right: none; }
+  .shipping-col label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 6px; }
+  .shipping-col .input-right { justify-content: flex-end; }
+  .shipping-col input[type="number"] { width: 88px; font-size: 17px; }
+
+  .breakdown-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 16px; border-bottom: 1px solid #1e1e1e; font-size: 13px;
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-label { color: #999; }
+  .breakdown-val { font-weight: 600; }
+  .breakdown-val.neg { color: var(--red); }
+
+  .bar-section { padding: 14px 16px; }
+  .bar-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+  .bar-track { background: #111; border-radius: 6px; height: 10px; overflow: hidden; }
   .bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.4s ease;
-    background: linear-gradient(90deg, #f0c040, #f0a020);
+    height: 100%; border-radius: 6px; transition: width 0.35s ease, background 0.35s;
+    background: linear-gradient(90deg, var(--gold), #f0a020); width: 0%;
   }
-
-  .bar-fill.over { background: linear-gradient(90deg, #5ddb5d, #3db83d); }
-  .bar-fill.danger { background: linear-gradient(90deg, #e05555, #c03333); }
-
-  .note {
-    max-width: 480px;
-    margin: 0 auto;
-    font-size: 11px;
-    color: #555;
-    text-align: center;
-    line-height: 1.6;
-  }
+  .bar-fill.over   { background: linear-gradient(90deg, var(--green), #3db83d); }
+  .bar-fill.danger { background: linear-gradient(90deg, var(--red), #c03333); }
+  .footnote { font-size: 10px; color: #444; text-align: center; padding: 4px 16px; line-height: 1.6; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="h1">Oracle せどり戦略室</div>
-  <div class="brand">eBay <span>利益計算</span></div>
+  <div>
+    <div class="header-title">eBay <span>利益計算</span></div>
+    <div class="header-sub">Oracle せどり戦略室</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">リセット</button>
 </div>
 
-<!-- 入力カード -->
-<div class="card">
-  <div class="card-title">仕入れ・売価</div>
-
-  <div class="field">
-    <label>仕入れ値（円）</label>
-    <div class="field-row">
-      <input type="number" id="cost" placeholder="15000" oninput="calc()">
-      <span class="unit">円</span>
-    </div>
-  </div>
-
-  <div class="field">
-    <label>eBay売価（ドル）</label>
-    <div class="field-row">
-      <input type="number" id="priceUsd" placeholder="200" oninput="calc()">
-      <span class="unit">USD</span>
-    </div>
-  </div>
-
-  <div class="field">
-    <label>為替レート（1ドル＝〇円）</label>
-    <div class="field-row">
-      <input type="number" id="rate" value="155" oninput="calc()">
-      <span class="unit">円/USD</span>
-    </div>
+<div class="profit-banner" id="profit-banner">
+  <div class="profit-main" id="profitJpy">－</div>
+  <div class="profit-row2">
+    <span class="profit-usd" id="profitUsd">仕入れ値と売価を入力</span>
+    <span id="verdict"></span>
   </div>
 </div>
 
-<div class="card">
-  <div class="card-title">手数料・送料</div>
+<div class="scroll-area">
 
-  <div class="field">
-    <label>eBay手数料（%）　※カメラ系ストアあり≒11〜13%、なし≒15〜17%、諸費用込≒17〜20%</label>
-    <div class="field-row">
-      <input type="number" id="feeRate" value="17" oninput="calc()">
-      <span class="unit">%</span>
-    </div>
-  </div>
-
-  <div class="fee-row">
-    <div class="field">
-      <label>送料（ドル）</label>
-      <div class="field-row">
-        <input type="number" id="shippingUsd" placeholder="30" oninput="calc()">
-        <span class="unit">USD</span>
-      </div>
-    </div>
-    <div class="field">
-      <label>送料（円）</label>
-      <div class="field-row">
-        <input type="number" id="shippingJpy" placeholder="4500" oninput="calc()">
+  <div class="section">
+    <div class="section-header">仕入れ・売価</div>
+    <div class="input-row">
+      <div class="input-label">仕入れ値</div>
+      <div class="input-right">
+        <input type="number" id="cost" inputmode="numeric" placeholder="15000" oninput="calc()">
         <span class="unit">円</span>
       </div>
     </div>
+    <div class="input-row">
+      <div class="input-label">
+        eBay売価
+        <small id="priceJpyPreview" style="color:#f0c040;font-size:11px;margin-top:2px;display:block;">－ 円</small>
+      </div>
+      <div class="input-right">
+        <input type="number" id="priceUsd" inputmode="decimal" placeholder="200" oninput="calc()">
+        <span class="unit">USD</span>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-label">
+        為替レート
+        <small>変更可</small>
+      </div>
+      <div class="input-right">
+        <input type="number" id="rate" inputmode="decimal" value="155" oninput="calc()">
+        <span class="unit">円/USD</span>
+      </div>
+    </div>
   </div>
-  <div style="font-size:11px;color:#555;margin-top:-8px;">※ドル・円どちらか片方を入力。もう片方は自動換算。</div>
-</div>
 
-<!-- 利益カード -->
-<div class="profit-card">
-  <div class="profit-label">推定利益</div>
-  <div class="profit-value zero" id="profitJpy">－</div>
-  <div class="profit-sub" id="profitUsd">売価・仕入れを入力してください</div>
-  <div id="verdict"></div>
-</div>
+  <div class="section">
+    <div class="section-header">手数料・送料</div>
+    <div class="input-row">
+      <div class="input-label">
+        eBay手数料
+        <small>ストアあり≒13% / なし≒17〜20%</small>
+      </div>
+      <div class="input-right">
+        <input type="number" id="feeRate" inputmode="decimal" value="17" oninput="calc()">
+        <span class="unit">%</span>
+      </div>
+    </div>
+    <div class="shipping-pair">
+      <div class="shipping-col">
+        <label>送料（USD）</label>
+        <div class="input-right">
+          <input type="number" id="shippingUsd" inputmode="decimal" placeholder="30">
+          <span class="unit">$</span>
+        </div>
+      </div>
+      <div class="shipping-col">
+        <label>送料（円）</label>
+        <div class="input-right">
+          <input type="number" id="shippingJpy" inputmode="numeric" placeholder="4500">
+          <span class="unit">円</span>
+        </div>
+      </div>
+    </div>
+    <div class="footnote" style="padding:8px 16px;">どちらか一方を入力 → 自動換算</div>
+  </div>
 
-<!-- 内訳カード -->
-<div class="result-card">
-  <div class="card-title">内訳</div>
-  <div class="result-row">
-    <span class="result-label">売価（円換算）</span>
-    <span class="result-value" id="r-priceJpy">－</span>
+  <div class="section">
+    <div class="section-header">内訳</div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">売価（円換算）</span>
+      <span class="breakdown-val" id="r-priceJpy">－</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">eBay手数料</span>
+      <span class="breakdown-val neg" id="r-fee">－</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">送料</span>
+      <span class="breakdown-val neg" id="r-shipping">－</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">仕入れ値</span>
+      <span class="breakdown-val neg" id="r-cost">－</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">損益分岐点</span>
+      <span class="breakdown-val" id="r-breakeven">－</span>
+    </div>
   </div>
-  <div class="result-row">
-    <span class="result-label">eBay手数料</span>
-    <span class="result-value negative" id="r-fee">－</span>
-  </div>
-  <div class="result-row">
-    <span class="result-label">送料（円）</span>
-    <span class="result-value negative" id="r-shipping">－</span>
-  </div>
-  <div class="result-row">
-    <span class="result-label">仕入れ値</span>
-    <span class="result-value negative" id="r-cost">－</span>
-  </div>
-</div>
 
-<!-- バーゲージ -->
-<div class="breakeven-bar">
-  <div class="bar-label">
-    <span>損益分岐点まで</span>
-    <span id="bar-pct">－</span>
+  <div class="section">
+    <div class="bar-section">
+      <div class="bar-meta">
+        <span>損益分岐に対する売価の割合</span>
+        <span id="bar-pct">－</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill" id="bar-fill"></div>
+      </div>
+    </div>
   </div>
-  <div class="bar-track">
-    <div class="bar-fill" id="bar-fill" style="width:0%"></div>
-  </div>
-</div>
 
-<div class="note">
-  手数料はストア有無・カテゴリ・売上規模で変動します。<br>
-  実際の数字は出品前にeBay公式で確認を。
+  <div class="footnote">手数料はストア有無・カテゴリ・売上規模で変動します</div>
 </div>
 
 <script>
-  let shippingSource = null; // 'usd' or 'jpy'
+  let shippingSource = null;
+  function fmt(n) { return Math.round(n).toLocaleString('ja-JP'); }
 
   document.getElementById('shippingUsd').addEventListener('input', function() {
-    if (this.value !== '') {
-      shippingSource = 'usd';
-      syncShipping('usd');
-    } else {
-      shippingSource = null;
-    }
-    calc();
+    shippingSource = this.value !== '' ? 'usd' : null;
+    syncShipping(); calc();
   });
-
   document.getElementById('shippingJpy').addEventListener('input', function() {
-    if (this.value !== '') {
-      shippingSource = 'jpy';
-      syncShipping('jpy');
-    } else {
-      shippingSource = null;
-    }
-    calc();
+    shippingSource = this.value !== '' ? 'jpy' : null;
+    syncShipping(); calc();
   });
 
-  function syncShipping(source) {
+  function syncShipping() {
     const rate = parseFloat(document.getElementById('rate').value) || 155;
-    if (source === 'usd') {
-      const usd = parseFloat(document.getElementById('shippingUsd').value) || 0;
-      const jpyField = document.getElementById('shippingJpy');
-      jpyField.value = usd ? Math.round(usd * rate) : '';
-    } else {
-      const jpy = parseFloat(document.getElementById('shippingJpy').value) || 0;
-      const usdField = document.getElementById('shippingUsd');
-      usdField.value = jpy ? (jpy / rate).toFixed(0) : '';
-    }
-  }
-
-  function fmt(n) {
-    return n.toLocaleString('ja-JP');
-  }
-
-  function calc() {
-    const rate = parseFloat(document.getElementById('rate').value) || 155;
-
-    // 送料のドル・円同期（為替変更時）
     if (shippingSource === 'usd') {
       const usd = parseFloat(document.getElementById('shippingUsd').value) || 0;
       document.getElementById('shippingJpy').value = usd ? Math.round(usd * rate) : '';
@@ -415,73 +263,75 @@
       const jpy = parseFloat(document.getElementById('shippingJpy').value) || 0;
       document.getElementById('shippingUsd').value = jpy ? (jpy / rate).toFixed(0) : '';
     }
+  }
 
-    const cost = parseFloat(document.getElementById('cost').value) || 0;
+  function resetAll() {
+    ['cost','priceUsd','shippingUsd','shippingJpy'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('rate').value = '155';
+    document.getElementById('feeRate').value = '17';
+    shippingSource = null;
+    calc();
+  }
+
+  function calc() {
+    const rate     = parseFloat(document.getElementById('rate').value) || 155;
+    const cost     = parseFloat(document.getElementById('cost').value) || 0;
     const priceUsd = parseFloat(document.getElementById('priceUsd').value) || 0;
-    const feeRate = parseFloat(document.getElementById('feeRate').value) || 17;
+    const feeRate  = parseFloat(document.getElementById('feeRate').value) || 17;
+    syncShipping();
     const shippingJpy = parseFloat(document.getElementById('shippingJpy').value) || 0;
 
+    const banner   = document.getElementById('profit-banner');
+    const profitEl = document.getElementById('profitJpy');
+
+    // 売価の円換算プレビュー
+    const priceJpyPreview = document.getElementById('priceJpyPreview');
+    if (priceUsd) {
+      priceJpyPreview.textContent = '≈ ' + fmt(Math.round(priceUsd * rate)) + ' 円';
+    } else {
+      priceJpyPreview.textContent = '－ 円';
+    }
+
     if (!priceUsd || !cost) {
-      document.getElementById('profitJpy').textContent = '－';
-      document.getElementById('profitUsd').textContent = '売価・仕入れを入力してください';
+      profitEl.textContent = '－'; profitEl.className = 'profit-main';
+      banner.className = 'profit-banner';
+      document.getElementById('profitUsd').textContent = '仕入れ値と売価を入力';
       document.getElementById('verdict').innerHTML = '';
       document.getElementById('bar-pct').textContent = '－';
       document.getElementById('bar-fill').style.width = '0%';
-      ['r-priceJpy','r-fee','r-shipping','r-cost'].forEach(id => {
-        document.getElementById(id).textContent = '－';
-      });
+      ['r-priceJpy','r-fee','r-shipping','r-cost','r-breakeven'].forEach(id => document.getElementById(id).textContent = '－');
       return;
     }
 
-    const priceJpy = Math.round(priceUsd * rate);
-    const fee = Math.round(priceJpy * (feeRate / 100));
-    const profit = priceJpy - fee - shippingJpy - cost;
+    const priceJpy  = Math.round(priceUsd * rate);
+    const fee       = Math.round(priceJpy * feeRate / 100);
+    const profit    = priceJpy - fee - shippingJpy - cost;
     const profitUsd = (profit / rate).toFixed(0);
     const breakeven = cost + fee + shippingJpy;
-    const pct = Math.min(Math.round((priceJpy / breakeven) * 100), 200);
+    const pct       = breakeven > 0 ? Math.round((priceJpy / breakeven) * 100) : 0;
 
-    // 内訳
-    document.getElementById('r-priceJpy').textContent = `¥${fmt(priceJpy)}（$${fmt(priceUsd)}）`;
-    document.getElementById('r-fee').textContent = `-¥${fmt(fee)}`;
-    document.getElementById('r-shipping').textContent = `-¥${fmt(shippingJpy)}`;
-    document.getElementById('r-cost').textContent = `-¥${fmt(cost)}`;
+    profitEl.textContent = profit >= 0 ? `¥${fmt(profit)}` : `-¥${fmt(Math.abs(profit))}`;
+    profitEl.className   = `profit-main ${profit > 0 ? 'positive' : profit < 0 ? 'negative' : ''}`;
+    banner.className     = `profit-banner ${profit > 0 ? 'positive' : profit < 0 ? 'negative' : ''}`;
+    document.getElementById('profitUsd').textContent = `≈ $${profitUsd}`;
 
-    // 利益表示
-    const profitEl = document.getElementById('profitJpy');
-    profitEl.textContent = `¥${fmt(profit)}`;
-    document.getElementById('profitUsd').textContent = `≈ $${profitUsd}（損益分岐: ¥${fmt(breakeven)}）`;
+    const profitRate = cost > 0 ? profit / cost : 0;
+    let vHtml = '';
+    if (profit > 0 && profitRate >= 0.2)      vHtml = '<span class="verdict buy">✓ 仕入れGO</span>';
+    else if (profit > 0 && profitRate >= 0.05) vHtml = '<span class="verdict check">△ 要検討</span>';
+    else                                        vHtml = '<span class="verdict pass">✕ パス</span>';
+    document.getElementById('verdict').innerHTML = vHtml;
 
-    if (profit > 0) {
-      profitEl.className = 'profit-value positive';
-    } else if (profit < 0) {
-      profitEl.className = 'profit-value negative';
-    } else {
-      profitEl.className = 'profit-value zero';
-    }
+    document.getElementById('r-priceJpy').textContent  = `¥${fmt(priceJpy)}（$${fmt(priceUsd)}）`;
+    document.getElementById('r-fee').textContent       = `-¥${fmt(fee)}`;
+    document.getElementById('r-shipping').textContent  = shippingJpy ? `-¥${fmt(shippingJpy)}` : '－';
+    document.getElementById('r-cost').textContent      = `-¥${fmt(cost)}`;
+    document.getElementById('r-breakeven').textContent = `¥${fmt(breakeven)}`;
 
-    // 判定
-    const profitRate = profit / cost;
-    let verdictHtml = '';
-    if (profit > 0 && profitRate >= 0.2) {
-      verdictHtml = '<span class="verdict buy">✓ 仕入れGO</span>';
-    } else if (profit > 0 && profitRate >= 0.05) {
-      verdictHtml = '<span class="verdict check">△ 要検討</span>';
-    } else {
-      verdictHtml = '<span class="verdict pass">✕ パス</span>';
-    }
-    document.getElementById('verdict').innerHTML = verdictHtml;
-
-    // バー
-    const barPct = Math.min(Math.round((priceJpy / breakeven) * 100), 150);
-    const barFill = document.getElementById('bar-fill');
-    const displayWidth = Math.min(barPct, 100);
-    barFill.style.width = displayWidth + '%';
-    document.getElementById('bar-pct').textContent = `売価が損益分岐の ${pct}%`;
-    if (profit > 0) {
-      barFill.className = 'bar-fill over';
-    } else {
-      barFill.className = 'bar-fill danger';
-    }
+    const fill = document.getElementById('bar-fill');
+    fill.style.width = `${Math.min(pct, 100)}%`;
+    fill.className = `bar-fill ${profit > 0 ? 'over' : 'danger'}`;
+    document.getElementById('bar-pct').textContent = `${pct}%`;
   }
 </script>
 </body>
