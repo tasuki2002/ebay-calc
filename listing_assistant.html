@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>eBay 出品アシスタント</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #0a0a0a;
+  --card: #141414;
+  --card2: #1a1a1a;
+  --border: #242424;
+  --gold: #f0c040;
+  --gold2: #c8a020;
+  --green: #4ade80;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --text: #e8e8e8;
+  --muted: #555;
+  --sub: #888;
+  --input-bg: #0f0f0f;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* ヘッダー */
+.header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,10,0.96);
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-title { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #fff; }
+.header-title span { color: var(--gold); }
+.header-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ジャンル選択 */
+.genre-bar {
+  display: flex; gap: 8px; padding: 12px 16px;
+  overflow-x: auto; border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+.genre-bar::-webkit-scrollbar { display: none; }
+
+.genre-btn {
+  flex-shrink: 0;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--sub);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.genre-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: #1a1500;
+}
+.genre-btn:active { transform: scale(0.97); }
+
+/* メインエリア */
+.main { padding: 12px 12px 80px; max-width: 600px; margin: 0 auto; }
+
+/* セクション */
+.section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.section-title {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--muted); padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* 入力行 */
+.field {
+  display: flex; align-items: center;
+  padding: 0 16px; min-height: 54px;
+  border-bottom: 1px solid #1a1a1a;
+  gap: 10px;
+}
+.field:last-child { border-bottom: none; }
+
+.field-label {
+  font-size: 12px; color: var(--sub);
+  flex-shrink: 0; width: 90px;
+}
+
+.field input, .field select, .field textarea {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 10px;
+  outline: none;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--gold);
+}
+.field textarea { resize: none; min-height: 60px; font-weight: 400; font-size: 13px; }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' fill='none' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+/* 生成ボタン */
+.gen-btn {
+  width: 100%; background: var(--gold); border: none;
+  border-radius: 12px; color: #000; font-size: 16px;
+  font-weight: 800; padding: 16px; cursor: pointer;
+  margin-bottom: 10px; letter-spacing: 0.02em;
+  transition: background 0.15s, transform 0.1s;
+}
+.gen-btn:active { background: var(--gold2); transform: scale(0.98); }
+
+/* 出力ブロック */
+.output-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  display: none;
+}
+.output-header {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.output-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.copy-btn {
+  background: #222; border: 1px solid var(--border);
+  border-radius: 7px; color: var(--sub);
+  font-size: 11px; font-weight: 700; padding: 5px 12px; cursor: pointer;
+}
+.copy-btn.done { background: #1a2a1a; color: var(--green); border-color: #1e3a1e; }
+.copy-btn:active { background: #333; }
+
+.output-text {
+  padding: 12px 14px;
+  font-size: 12px; line-height: 1.7;
+  color: #ccc; white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* チェックリスト */
+.checklist { padding: 8px 0; }
+.check-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px; border-bottom: 1px solid #1a1a1a;
+  cursor: pointer;
+}
+.check-item:last-child { border-bottom: none; }
+.check-box {
+  width: 20px; height: 20px; border-radius: 5px;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: all 0.15s;
+}
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-item.checked .check-label { color: var(--muted); text-decoration: line-through; }
+.check-label { font-size: 13px; color: var(--sub); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">eBay <span>出品アシスタント</span></div>
+    <div class="header-sub">Oracle せどり戦略室</div>
+  </div>
+</div>
+
+<!-- ジャンル選択 -->
+<div class="genre-bar">
+  <button class="genre-btn active" onclick="setGenre('lens')">📷 カメラレンズ</button>
+  <button class="genre-btn" onclick="setGenre('boss')">🎸 BOSS</button>
+  <button class="genre-btn" onclick="setGenre('3ds')">🎮 3DS・2DS</button>
+  <button class="genre-btn" onclick="setGenre('game')">💿 ゲームソフト</button>
+  <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
+</div>
+
+<div class="main">
+
+  <!-- 入力フォーム（ジャンル別） -->
+  <div id="form-area"></div>
+
+  <!-- 生成ボタン -->
+  <button class="gen-btn" onclick="generate()">出品情報を生成 →</button>
+
+  <!-- 出力エリア -->
+  <div class="output-block" id="out-title">
+    <div class="output-header">
+      <span class="output-label">📌 タイトル（80文字以内）</span>
+      <button class="copy-btn" id="cp-title" onclick="copyOut('title-text','cp-title')">コピー</button>
+    </div>
+    <div class="output-text" id="title-text"></div>
+  </div>
+
+  <div class="output-block" id="out-condition">
+    <div class="output-header">
+      <span class="output-label">🏷️ Condition（状態欄）</span>
+      <button class="copy-btn" id="cp-cond" onclick="copyOut('cond-text','cp-cond')">コピー</button>
+    </div>
+    <div class="output-text" id="cond-text"></div>
+  </div>
+
+  <div class="output-block" id="out-desc">
+    <div class="output-header">
+      <span class="output-label">📝 Description（説明文）</span>
+      <button class="copy-btn" id="cp-desc" onclick="copyOut('desc-text','cp-desc')">コピー</button>
+    </div>
+    <div class="output-text" id="desc-text"></div>
+  </div>
+
+  <!-- 出品前チェックリスト -->
+  <div class="output-block" id="out-check">
+    <div class="output-header">
+      <span class="output-label">✅ 出品前チェックリスト</span>
+      <button class="copy-btn" onclick="resetChecks()">リセット</button>
+    </div>
+    <div class="checklist" id="checklist"></div>
+  </div>
+
+</div>
+
+<script>
+let currentGenre = 'lens';
+
+// ジャンル別フォーム定義（value=英語、label=英語＋日本語）
+const forms = {
+  lens: [
+    { id:'brand', label:'ブランド', type:'select', options:[
+      {v:'Canon',l:'Canon'},{v:'Nikon',l:'Nikon'},{v:'Sony',l:'Sony'},
+      {v:'Sigma',l:'Sigma'},{v:'Tamron',l:'Tamron'},{v:'Tokina',l:'Tokina'},
+      {v:'Fujifilm',l:'Fujifilm'},{v:'Olympus',l:'Olympus'},{v:'Panasonic',l:'Panasonic'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: EF 85mm f/1.8 USM' },
+    { id:'mount', label:'マウント', type:'select', options:[
+      {v:'Canon EF',l:'Canon EF（一眼レフ）'},{v:'Canon RF',l:'Canon RF（ミラーレス）'},
+      {v:'Nikon F',l:'Nikon F（一眼レフ）'},{v:'Nikon Z',l:'Nikon Z（ミラーレス）'},
+      {v:'Sony E',l:'Sony E（ミラーレス）'},{v:'Sony A',l:'Sony A（一眼レフ）'},
+      {v:'Fujifilm X',l:'Fujifilm X'},{v:'Micro 4/3',l:'マイクロフォーサーズ'},
+      {v:'Sigma SA',l:'Sigma SA'},{v:'Other',l:'その他'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'optical', label:'光学系', type:'select', options:[
+      {v:'Clear - No issues',l:'クリア（問題なし）'},
+      {v:'Slight dust - No effect on image',l:'微細なチリあり（写りに影響なし）'},
+      {v:'Slight haze on element',l:'軽微なクモリあり'},
+      {v:'Fungus spots visible',l:'カビあり（軽微）'},
+      {v:'Heavy fungus/haze',l:'カビ・クモリ重度（For Parts推奨）'}
+    ]},
+    { id:'acccheck', label:'付属品（選択）', type:'select', options:[
+      {v:'Front and rear caps',l:'フロント＋リアキャップ付き'},
+      {v:'Front cap only',l:'フロントキャップのみ'},
+      {v:'Rear cap only',l:'リアキャップのみ'},
+      {v:'No caps included',l:'キャップなし'},
+      {v:'Front cap, rear cap and hood',l:'フロント＋リアキャップ＋フード付き'},
+      {v:'Front cap, rear cap, hood and case',l:'フロント＋リアキャップ＋フード＋ケース付き'},
+      {v:'Third-party caps included',l:'社外品キャップ付き'},
+      {v:'Complete with original box',l:'元箱付き（CIB）'}
+    ]},
+    { id:'accessories', label:'付属品（自由記入）', type:'text', placeholder:'その他付属品・自由記入' },
+    { id:'filter', label:'フィルター径', type:'text', placeholder:'例: 67mm' },
+    { id:'serial', label:'S/N', type:'text', placeholder:'シリアル番号（あれば）' },
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'日本製（Made in Japan）'},
+      {v:'Minor scuffs on barrel - no effect on function',l:'外観に軽微な傷あり'},
+      {v:'Front cap only - no rear cap',l:'フロントキャップのみ・リアキャップなし'},
+      {v:'Rear cap only - no front cap',l:'リアキャップのみ・フロントキャップなし'},
+      {v:'No caps included',l:'キャップなし'},
+      {v:'Third-party caps included',l:'社外品キャップ付き'},
+      {v:'AF works but slower than normal',l:'AF動作するが通常より遅め'},
+      {v:'MF only - AF not working',l:'MFのみ・AF不動'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
+  boss: [
+    { id:'model', label:'機種名', type:'text', placeholder:'例: DS-1, DD-3, GT-1000CORE' },
+    { id:'mij', label:'製造', type:'select', options:[
+      {v:'Made in Japan (MIJ)',l:'Made in Japan（日本製・最優先）'},
+      {v:'Made in Taiwan',l:'Made in Taiwan（台湾製）'},
+      {v:'Made in Malaysia',l:'Made in Malaysia（マレーシア製）'},
+      {v:'Unknown',l:'不明'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Working / Excellent',l:'稼働品・極上（Excellent）'},
+      {v:'Working / Good',l:'稼働品・良好（Good）'},
+      {v:'Powers on - some issues',l:'通電OK・一部不具合あり'},
+      {v:'For Parts / Not Working',l:'For Parts・ジャンク（動作不良）'}
+    ]},
+    { id:'issuecheck', label:'不具合（選択）', type:'select', options:[
+      {v:'No issues - fully functional',l:'問題なし・全機能正常'},
+      {v:'Powers on but no sound output',l:'通電OK・音が出ない'},
+      {v:'LED indicator not working',l:'LED切れ（動作には影響なし）'},
+      {v:'Footswitch not responding',l:'フットスイッチ不良'},
+      {v:'Knob loose or missing',l:'ノブが緩い・欠損あり'},
+      {v:'Noisy output - crackling sound',l:'ノイズあり・ガリ'},
+      {v:'Jack socket loose',l:'ジャックが緩い'},
+      {v:'Display not working',l:'ディスプレイ不良'}
+    ]},
+    { id:'issue', label:'不具合（自由記入）', type:'text', placeholder:'その他不具合・自由記入' },
+    { id:'acccheck', label:'付属品（選択）', type:'select', options:[
+      {v:'Pedal only',l:'本体のみ'},
+      {v:'PSA adapter included',l:'PSA ACアダプター付き'},
+      {v:'Manual included',l:'説明書付き'},
+      {v:'PSA adapter and manual included',l:'PSAアダプター＋説明書付き'},
+      {v:'Original box included',l:'元箱付き'},
+      {v:'Complete in original box with all accessories',l:'元箱・全付属品付き（CIB）'}
+    ]},
+    { id:'accessories', label:'付属品（自由記入）', type:'text', placeholder:'その他付属品・自由記入' },
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Blue label',l:'青ラベル（Blue label）'},
+      {v:'Green label',l:'緑ラベル（Green label）'},
+      {v:'Black label',l:'黒ラベル（Black label）'},
+      {v:'Made in Japan - confirmed',l:'日本製確認済み（Made in Japan）'},
+      {v:'No AC adapter included',l:'ACアダプターなし'},
+      {v:'AC adapter included',l:'ACアダプター付き'},
+      {v:'Velcro on bottom - residue may remain',l:'底面にマジックテープ跡あり'},
+      {v:'Battery compartment clean',l:'電池室きれい'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Serial: HU90420・その他自由記入' },
+  ],
+  '3ds': [
+    { id:'model', label:'機種', type:'select', options:[
+      {v:'New 3DS XL',l:'New 3DS XL'},{v:'New 3DS',l:'New 3DS'},
+      {v:'3DS XL',l:'3DS XL'},{v:'3DS',l:'3DS'},
+      {v:'New 2DS XL',l:'New 2DS XL'},{v:'2DS',l:'2DS'}
+    ]},
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Black（ブラック）, Pikachu Edition（ピカチュウ）' },
+    { id:'region', label:'リージョン', type:'select', options:[
+      {v:'Japan (JPN)',l:'Japan（日本版）'},{v:'USA (USA)',l:'USA（北米版）'},{v:'Europe (EUR)',l:'Europe（欧州版）'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},{v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'画面状態', type:'select', options:[
+      {v:'No scratches',l:'傷なし'},{v:'Minor scratches',l:'微細な傷あり'},
+      {v:'Noticeable scratches',l:'目立つ傷あり'},{v:'Screen crack',l:'画面割れあり'},
+      {v:'Screen burn-in on top screen',l:'上画面に液晶焼けあり'},
+      {v:'Screen burn-in on bottom screen',l:'下画面に液晶焼けあり'},
+      {v:'Screen burn-in on both screens',l:'上下両画面に液晶焼けあり'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Loose (body only)',l:'Loose（本体のみ）'},{v:'With charger',l:'充電器付き'},
+      {v:'CIB (box and manual)',l:'CIB（箱・説明書付き）'},{v:'Complete in Box with game',l:'CIB＋ゲームソフト付き'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Hinge has crack - opens and closes fine',l:'ヒンジにひびあり・開閉は正常'},
+      {v:'Top screen slightly darker than normal',l:'上画面がやや暗め'},
+      {v:'Screen burn-in - minor ghost image',l:'画面焼けあり（軽微）'},
+      {v:'Stylus included',l:'タッチペン付き'},
+      {v:'No stylus included',l:'タッチペンなし'},
+      {v:'SD card included',l:'SDカード付き'},
+      {v:'Circle pad has minor wear',l:'スライドパッドに使用感あり'},
+      {v:'Buttons all responsive',l:'全ボタン正常動作確認済み'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
+  game: [
+    { id:'title', label:'タイトル', type:'text', placeholder:'例: Pokemon Red, Final Fantasy VII' },
+    { id:'platform', label:'プラットフォーム', type:'select', options:[
+      {v:'Nintendo DS',l:'Nintendo DS'},{v:'3DS',l:'3DS'},
+      {v:'Game Boy',l:'ゲームボーイ'},{v:'Game Boy Color',l:'ゲームボーイカラー'},
+      {v:'Game Boy Advance',l:'ゲームボーイアドバンス'},{v:'SNES',l:'スーパーファミコン'},
+      {v:'N64',l:'ニンテンドー64'},{v:'GameCube',l:'ゲームキューブ'},
+      {v:'Wii',l:'Wii'},{v:'PlayStation',l:'PlayStation'},
+      {v:'PS2',l:'PS2'},{v:'PS3',l:'PS3'},{v:'Other',l:'その他'}
+    ]},
+    { id:'region', label:'リージョン', type:'select', options:[
+      {v:'Japan (NTSC-J)',l:'日本版（NTSC-J）'},{v:'USA (NTSC-U)',l:'北米版（NTSC-U）'},{v:'Europe (PAL)',l:'欧州版（PAL）'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Cartridge only (no box or manual)',l:'ソフトのみ（箱・説明書なし）'},
+      {v:'Cartridge and manual (no box)',l:'ソフト＋説明書（箱なし）'},
+      {v:'CIB (cartridge, box and manual)',l:'CIB（箱・説明書付き）'},
+      {v:'Sealed (never opened)',l:'未開封（Sealed）'}
+    ]},
+    { id:'boxcond', label:'箱の状態', type:'select', options:[
+      {v:'N/A (no box)',l:'箱なし（該当なし）'},
+      {v:'Very Good - minor signs of age only',l:'Very Good（目立った傷・潰れなし）'},
+      {v:'Good - minor crushing on corners',l:'Good（角が少し潰れあり）'},
+      {v:'Good - creases and wear on box',l:'Good（折れ・シワあり）'},
+      {v:'Acceptable - significant box damage',l:'Acceptable（大きな潰れ・破れあり）'}
+    ]},
+    { id:'manualcond', label:'説明書の状態', type:'select', options:[
+      {v:'N/A (no manual)',l:'説明書なし（該当なし）'},
+      {v:'Very Good - clean and intact',l:'Very Good（きれい・問題なし）'},
+      {v:'Good - minor wear and creases',l:'Good（軽微な折れ・使用感あり）'},
+      {v:'Good - torn pages or cover',l:'Good（破れあり）'},
+      {v:'Acceptable - heavy wear or stains',l:'Acceptable（汚れ・傷みが目立つ）'}
+    ]},
+    { id:'cartcond', label:'ソフトの状態', type:'select', options:[
+      {v:'Excellent - clean label and contacts',l:'Excellent（ラベルきれい・端子良好）'},
+      {v:'Very Good - minor label wear',l:'Very Good（ラベルに軽微な使用感）'},
+      {v:'Good - label damage or writing',l:'Good（ラベル傷み・書き込みあり）'},
+      {v:'Acceptable - heavy label damage',l:'Acceptable（ラベル大きく傷んでいる）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Save battery may be dead - save data may not retain',l:'セーブ電池切れの可能性あり'},
+      {v:'Sticker residue on cart/box',l:'シール跡あり'},
+      {v:'Writing on label',l:'ラベルに書き込みあり'},
+      {v:'Label damage on cartridge',l:'ラベル傷みあり'},
+      {v:'Cartridge contacts cleaned and tested',l:'端子クリーニング済み・動作確認済み'},
+      {v:'Region locked - Japan version only',l:'リージョンロック・日本版専用'},
+      {v:'Disc has minor scratches - plays without issues',l:'ディスクに軽微な傷・動作正常'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
+  digicam: [
+    { id:'brand', label:'ブランド', type:'select', options:[
+      {v:'Canon',l:'Canon'},{v:'Nikon',l:'Nikon'},{v:'Sony',l:'Sony'},
+      {v:'Olympus',l:'Olympus'},{v:'Panasonic',l:'Panasonic'},{v:'Fujifilm',l:'Fujifilm'},
+      {v:'Ricoh',l:'Ricoh'},{v:'Casio',l:'Casio'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: PowerShot G7X, Cyber-shot RX100' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'液晶状態', type:'select', options:[
+      {v:'No scratches',l:'傷なし'},{v:'Minor scratches',l:'微細な傷あり'},
+      {v:'Noticeable scratches',l:'目立つ傷あり'},{v:'Screen damage',l:'液晶損傷あり'},
+      {v:'Screen burn-in visible',l:'液晶焼けあり'}
+    ]},
+    { id:'acccheck', label:'付属品（選択）', type:'select', options:[
+      {v:'Body only',l:'本体のみ'},
+      {v:'Battery included',l:'バッテリー付き'},
+      {v:'Battery and charger included',l:'バッテリー＋充電器付き'},
+      {v:'Battery, charger and USB cable included',l:'バッテリー・充電器・USBケーブル付き'},
+      {v:'Complete with box and all accessories',l:'箱・全付属品付き（CIB）'},
+      {v:'Memory card included',l:'メモリーカード付き'},
+      {v:'Case included',l:'ケース付き'}
+    ]},
+    { id:'acc', label:'付属品（自由記入）', type:'text', placeholder:'その他付属品・自由記入' },
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'日本製（Made in Japan）'},
+      {v:'Battery holds charge well',l:'バッテリー充電良好'},
+      {v:'Battery life reduced - recommend replacement',l:'バッテリー消耗・交換推奨'},
+      {v:'No battery included',l:'バッテリーなし'},
+      {v:'No charger included',l:'充電器なし'},
+      {v:'Lens extends and retracts smoothly',l:'レンズの出し入れスムーズ'},
+      {v:'Minor dust inside lens - no effect on photos',l:'レンズ内に微細なチリ・写真に影響なし'},
+      {v:'Flash works normally',l:'フラッシュ正常動作'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Shutter count 500（シャッター回数）・その他自由記入' },
+  ],
+};
+
+// チェックリスト定義
+const checklists = {
+  lens: ['写真撮影（前後キャップ・鏡面・絞り羽根・外観4面・傷箇所）','Terapeak実売確認（同条件3〜5件）','eBay利益計算ツールで利益確認','タイトルをeBayに入力','Condition欄に貼り付け','Descriptionに貼り付け','ビジネスポリシー選択（送料・返品・支払い）','Item Specifics確認・補完','Preview確認→List it'],
+  boss: ['通電・動作確認','MIJ確認（裏面刻印）','シリアル番号確認','写真撮影（全面・ラベル・シリアル・不具合箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  '3ds': ['動作確認（電源・画面・ボタン）','リージョン確認','ヒンジ・液晶・外観チェック','写真撮影（全面・画面・ヒンジ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+};
+
+function setGenre(genre) {
+  currentGenre = genre;
+  document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderForm();
+  hideOutputs();
+}
+
+function renderForm() {
+  const fields = forms[currentGenre];
+  let html = '<div class="section"><div class="section-title">商品情報を入力</div>';
+  fields.forEach(f => {
+    html += `<div class="field"><div class="field-label">${f.label}</div>`;
+    if (f.type === 'select') {
+      html += `<select id="f_${f.id}">`;
+      f.options.forEach(o => {
+        const val = typeof o === 'object' ? o.v : o;
+        const lbl = typeof o === 'object' ? o.l : o;
+        html += `<option value="${val}">${lbl}</option>`;
+      });
+      html += '</select>';
+    } else if (f.type === 'textarea') {
+      html += `<textarea id="f_${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
+    } else {
+      html += `<input type="text" id="f_${f.id}" placeholder="${f.placeholder||''}">`;
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('form-area').innerHTML = html;
+}
+
+function getVal(id) {
+  const el = document.getElementById('f_' + id);
+  return el ? el.value.trim() : '';
+}
+
+function hideOutputs() {
+  ['out-title','out-condition','out-desc','out-check'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function showOutputs() {
+  ['out-title','out-condition','out-desc','out-check'].forEach(id => {
+    document.getElementById(id).style.display = 'block';
+  });
+}
+
+function generate() {
+  const g = currentGenre;
+  let title = '', condition = '', desc = '';
+
+  if (g === 'lens') {
+    const brand = getVal('brand'), model = getVal('model'), mount = getVal('mount');
+    const cond = getVal('condition'), optical = getVal('optical');
+    const acccheck = getVal('acccheck'), acc = getVal('accessories');
+    const allAcc = [acccheck, acc].filter(Boolean).join(', ');
+    const filter = getVal('filter');
+    const serial = getVal('serial'), notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+
+    const condMap = { 'Mint':'Mint Condition','Excellent+':'Excellent+ Condition','Excellent':'Excellent Condition','Very Good':'Very Good Condition','Good':'Good Condition','For Parts':'For Parts or Not Working' };
+    const optMap = {
+      'Clear - No issues': 'Glass is clean and clear. No fungus, no haze, no scratches.',
+      'Slight dust - No effect on image': 'Slight dust particles inside. No effect on image quality.',
+      'Slight haze on element': 'Slight haze on element. Does not significantly affect image quality. Please see photos.',
+      'Fungus spots visible': 'Minor fungus spots visible inside. Please see close-up photos.',
+      'Heavy fungus/haze': 'Heavy fungus/haze inside. Sold for parts or repair only.'
+    };
+
+    title = `${brand} ${model} ${mount} Lens ${condMap[cond]} Tested From Japan`.substring(0, 80);
+    condition = `${condMap[cond]}. ${optMap[optical]} AF/MF works smoothly. Aperture blades clean and operate correctly.${notes ? ' ' + notes + '.' : ''} Fully tested and working.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in camera lenses and optical equipment.
+All items are carefully inspected, cleaned, and securely packed before shipping.
+
+ITEM DETAILS
+Brand: ${brand}
+Model: ${model}
+Mount: ${mount}
+Filter Size: ${filter || 'N/A'}
+Serial Number: ${serial || 'N/A'}
+Includes: ${allAcc || 'N/A'}
+
+CONDITION DETAILS
+Overall: ${condMap[cond]}
+Optical: ${optMap[optical]}
+Focus: AF/MF works smoothly with no issues.
+Aperture: Blades are clean and operate smoothly.
+Body: ${allNotes || 'Minor signs of use only. No dents or cracks.'}
+Tested: Fully tested and confirmed working properly.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Bubble wrap + sturdy box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+If you have any questions, please feel free to message us anytime. We respond quickly!
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'boss') {
+    const model = getVal('model'), mij = getVal('mij');
+    const cond = getVal('condition');
+    const issuecheck = getVal('issuecheck'), issue = getVal('issue');
+    const allIssue = [issuecheck, issue].filter(Boolean).join('. ') || 'No issues. All functions work normally.';
+    const acccheck = getVal('acccheck'), acc = getVal('accessories');
+    const allAcc = [acccheck, acc].filter(Boolean).join(', ');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const isMIJ = mij.includes('Japan');
+    const isWorking = cond.includes('Working');
+
+    title = `BOSS ${model}${isMIJ ? ' Made in Japan MIJ' : ''} Guitar Effects Pedal ${isWorking ? 'Tested Working' : 'For Parts'} From Japan`.substring(0, 80);
+    condition = isWorking
+      ? `${cond}. ${allIssue} ${allNotes || ''} Fully tested.`
+      : `For Parts or Not Working. ${allIssue} Sold as-is.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in vintage and used music gear.
+
+ITEM DETAILS
+Model: BOSS ${model}
+Manufacture: ${mij}
+Condition: ${cond}
+Status: ${issue || 'Fully functional. All effects work normally.'}
+Includes: ${acc || 'Pedal only'}
+Notes: ${notes || 'N/A'}
+
+${isWorking ? 'Fully tested and confirmed working properly.' : '⚠️ SOLD FOR PARTS OR REPAIR ONLY. Please read carefully before purchasing.'}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === '3ds') {
+    const model = getVal('model'), color = getVal('color');
+    const region = getVal('region'), cond = getVal('condition');
+    const screen = getVal('screen'), cib = getVal('cib'), notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+
+    title = `Nintendo ${model} ${color} ${region} ${cond} ${cib.includes('CIB') ? 'CIB' : cib.includes('Loose') ? 'Loose' : ''} From Japan`.substring(0, 80);
+    condition = `${cond}. Screen: ${screen}. ${cib}. ${notes || 'All buttons and functions work normally.'} Region: ${region}.`;
+    desc = `Thank you for visiting Hachi Shop!
+
+ITEM DETAILS
+System: Nintendo ${model}
+Color: ${color}
+Region: ${region}
+Condition: ${cond}
+Screen: ${screen}
+Includes: ${cib}
+Notes: ${notes || 'N/A'}
+
+⚠️ IMPORTANT: This is a ${region} unit. Please check region compatibility before purchasing.
+
+All buttons, screens, and functions have been tested and work normally.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'game') {
+    const gameTitle = getVal('title'), platform = getVal('platform');
+    const region = getVal('region'), cond = getVal('condition');
+    const cib = getVal('cib'), boxcond = getVal('boxcond');
+    const manualcond = getVal('manualcond'), cartcond = getVal('cartcond');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const hasBox = !cib.includes('no box') && !cib.includes('only');
+    const hasManual = !cib.includes('no box') || cib.includes('manual');
+    const isCIB = cib.includes('CIB');
+    const isSealed = cib.includes('Sealed');
+
+    const titleType = isSealed ? 'Sealed' : isCIB ? 'CIB' : cib.includes('manual') ? 'Cart+Manual' : 'Cart Only';
+    title = (gameTitle + ' ' + platform + ' ' + region + ' ' + cond + ' ' + titleType + ' From Japan').substring(0, 80);
+    const boxLine = (hasBox && boxcond !== 'N/A (no box)') ? 'Box: ' + boxcond + '.' : '';
+    const boxDetailLine = (hasBox && boxcond !== 'N/A (no box)') ? ('\nBox Condition: ' + boxcond) : '';
+    const manualDetailLine = (hasManual && manualcond && manualcond !== 'N/A (no manual)') ? ('\nManual Condition: ' + manualcond) : '';
+    const cartDetailLine = cartcond ? ('\nCart/Disc Condition: ' + cartcond) : '';
+    condition = cond + '. ' + cib + '. ' + boxLine + ' ' + (notes || 'No major issues.') + ' Region: ' + region + '.';
+    var gameLines = [
+      'Thank you for visiting Hachi Shop!',
+      '',
+      'ITEM DETAILS',
+      'Title: ' + gameTitle,
+      'Platform: ' + platform,
+      'Region: ' + region,
+      'Condition: ' + cond,
+      'Includes: ' + cib + boxDetailLine + manualDetailLine + cartDetailLine,
+      'Notes: ' + (allNotes || 'N/A'),
+      '',
+      'IMPORTANT: This is a ' + region + ' title. Please verify compatibility with your system.',
+      '',
+      'SHIPPING',
+      'Method: FedEx International Priority',
+      'Handling: Ships within 1 business day after payment',
+      'Tracking: Full tracking provided',
+      'Packing: Carefully packed with bubble wrap',
+      '',
+      'RETURN POLICY',
+      '30-day returns accepted. Please contact us before opening a return request.',
+      '',
+      'Thank you for shopping with Hachi Shop! * Japan Quality *'
+    ];
+    desc = gameLines.join('\n');
+
+  } else if (g === 'digicam') {
+    const brand = getVal('brand'), model = getVal('model');
+    const cond = getVal('condition'), screen = getVal('screen');
+    const acc = getVal('accessories'), notes = getVal('notes');
+
+    title = `${brand} ${model} Digital Camera ${cond} Tested From Japan`.substring(0, 80);
+    condition = `${cond}. LCD: ${screen}. ${notes || 'All functions work normally.'} Fully tested.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in cameras and optical equipment.
+
+ITEM DETAILS
+Brand: ${brand}
+Model: ${model}
+Condition: ${cond}
+LCD Screen: ${screen}
+Includes: ${allAcc || 'N/A'}
+Notes: ${notes || 'N/A'}
+
+Fully tested. Power on, shutter, LCD, and all functions confirmed working.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+  }
+
+  document.getElementById('title-text').textContent = title;
+  document.getElementById('cond-text').textContent = condition;
+  document.getElementById('desc-text').textContent = desc;
+
+  // チェックリスト
+  const checks = checklists[g];
+  let checkHtml = '';
+  checks.forEach((item, i) => {
+    checkHtml += `<div class="check-item" id="ci-${i}" onclick="toggleCheck(${i})">
+      <div class="check-box" id="cb-${i}"></div>
+      <div class="check-label">${item}</div>
+    </div>`;
+  });
+  document.getElementById('checklist').innerHTML = checkHtml;
+
+  showOutputs();
+  document.getElementById('out-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function toggleCheck(i) {
+  const item = document.getElementById('ci-' + i);
+  const box = document.getElementById('cb-' + i);
+  item.classList.toggle('checked');
+  box.textContent = item.classList.contains('checked') ? '✓' : '';
+}
+
+function resetChecks() {
+  document.querySelectorAll('.check-item').forEach((el, i) => {
+    el.classList.remove('checked');
+    document.getElementById('cb-' + i).textContent = '';
+  });
+}
+
+function copyOut(textId, btnId) {
+  const text = document.getElementById(textId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById(btnId);
+    btn.textContent = 'コピー済！';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('done'); }, 2000);
+  });
+}
+
+// 初期表示
+renderForm();
+</script>
+</body>
+</html>
