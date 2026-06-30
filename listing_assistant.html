@@ -198,6 +198,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('3ds')">🎮 3DS・2DS</button>
   <button class="genre-btn" onclick="setGenre('game')">💿 ゲームソフト</button>
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
+  <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
 </div>
 
 <div class="main">
@@ -482,6 +483,74 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Shutter count 500（シャッター回数）・その他自由記入' },
   ],
+  watch: [
+    { id:'brand', label:'ブランド', type:'select', options:[
+      {v:'Seiko',l:'Seiko'},{v:'Citizen',l:'Citizen'},{v:'Orient',l:'Orient'},
+      {v:'King Seiko',l:'King Seiko'},{v:'Grand Seiko',l:'Grand Seiko'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'型番/Cal.', type:'text', placeholder:'例: 6105-8110, 6139, 56KS, Seiko 5 7019' },
+    { id:'movement', label:'ムーブメント', type:'select', options:[
+      {v:'Automatic',l:'自動巻き（Automatic）'},{v:'Manual winding',l:'手巻き（Manual winding）'},
+      {v:'Quartz',l:'クォーツ（Quartz）'}
+    ]},
+    { id:'mij', label:'製造', type:'select', options:[
+      {v:'Made in Japan',l:'Made in Japan（必須確認）'},
+      {v:'Unknown / not confirmed',l:'不明・未確認'}
+    ]},
+    { id:'jewels', label:'石数', type:'text', placeholder:'例: 21 Jewels, 23 Jewels（文字盤か裏蓋で確認）' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'For Parts',l:'For Parts（ジャンク・要修理）'}
+    ]},
+    { id:'movecheck', label:'稼働確認', type:'select', options:[
+      {v:'Hand-wound and confirmed running',l:'手で振って稼働確認済み（針が動く）'},
+      {v:'Not running - needs winding or service',l:'動かず・要巻き上げ/要修理'},
+      {v:'Not tested for accuracy',l:'精度は未確認（稼働のみ確認）'}
+    ]},
+    { id:'dialcheck', label:'文字盤（選択）', type:'select', options:[
+      {v:'Clean dial, no fading',l:'文字盤きれい・焼けなし'},
+      {v:'Day-date display',l:'デイデイト（曜日＋日付）'},
+      {v:'Japanese day display',l:'日本語曜日表示'},
+      {v:'Color dial (blue/green/red)',l:'カラー文字盤（青・緑・赤）'},
+      {v:'Minor fading on dial',l:'文字盤に軽微な焼けあり'},
+      {v:'Heavy fading or discoloration',l:'文字盤の焼け・変色が大きい'}
+    ]},
+    { id:'dial', label:'文字盤（自由記入）', type:'text', placeholder:'その他文字盤情報・自由記入' },
+    { id:'crystal', label:'風防の状態', type:'select', options:[
+      {v:'Clear, no scratches',l:'クリア・傷なし'},
+      {v:'Minor scratches',l:'微細な傷あり'},
+      {v:'Noticeable scratches or cloudiness',l:'目立つ傷・曇りあり'},
+      {v:'Cracked',l:'ひび割れあり'}
+    ]},
+    { id:'case', label:'ケース状態', type:'select', options:[
+      {v:'No dents, sharp edges intact',l:'凹みなし・角の磨耗なし'},
+      {v:'Minor scratches on case back',l:'裏蓋に軽微な傷あり'},
+      {v:'Visible scratches or dents',l:'目立つ傷・凹みあり'}
+    ]},
+    { id:'crown', label:'リューズ', type:'select', options:[
+      {v:'Crown present and functions normally',l:'リューズあり・正常動作'},
+      {v:'Crown present but stiff',l:'リューズあり・動きが固い'},
+      {v:'Crown missing',l:'リューズなし'}
+    ]},
+    { id:'bandcheck', label:'バンド/ブレス（選択）', type:'select', options:[
+      {v:'Original bracelet included',l:'純正ブレスレット付き'},
+      {v:'Original bracelet with extra links',l:'純正ブレス＋コマ余りあり'},
+      {v:'Band may be short for larger wrists',l:'コマ不足・大きめの手首には短い可能性'},
+      {v:'No bracelet included, case only',l:'バンドなし・本体のみ'},
+      {v:'Third-party strap included',l:'社外品ベルト付き'}
+    ]},
+    { id:'band', label:'バンド/ブレス（自由記入）', type:'text', placeholder:'その他バンド情報・自由記入' },
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Railroad Approved',l:'Railroad Approved（鉄道公認）'},
+      {v:'Vintage piece - sold as collectible',l:'ヴィンテージ品・コレクター向け'},
+      {v:'Recently serviced',l:'最近オーバーホール済み'},
+      {v:'Not water resistant - avoid contact with water',l:'防水性なし・水濡れ注意'},
+      {v:'Serial number engraved on case back',l:'裏蓋にシリアル番号刻印あり'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Serial number・その他自由記入' },
+  ],
 };
 
 // チェックリスト定義
@@ -491,6 +560,7 @@ const checklists = {
   '3ds': ['動作確認（電源・画面・ボタン）','リージョン確認','ヒンジ・液晶・外観チェック','写真撮影（全面・画面・ヒンジ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
 function setGenre(genre) {
@@ -741,6 +811,54 @@ Method: FedEx International Priority
 Handling: Ships within 1 business day after payment
 Tracking: Full tracking provided
 Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'watch') {
+    const brand = getVal('brand'), model = getVal('model'), movement = getVal('movement');
+    const mij = getVal('mij'), jewels = getVal('jewels'), cond = getVal('condition');
+    const movecheck = getVal('movecheck');
+    const dialcheck = getVal('dialcheck'), dial = getVal('dial');
+    const allDial = [dialcheck, dial].filter(Boolean).join('. ');
+    const crystal = getVal('crystal'), caseCond = getVal('case'), crown = getVal('crown');
+    const bandcheck = getVal('bandcheck'), band = getVal('band');
+    const allBand = [bandcheck, band].filter(Boolean).join('. ');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const isMIJ = mij.includes('Japan');
+
+    title = `${brand} ${model} ${movement}${isMIJ ? ' Made in Japan' : ''} Vintage Watch ${cond} From Japan`.substring(0, 80);
+    condition = `${cond}. ${movecheck}. ${allDial}. Crystal: ${crystal}. Case: ${caseCond}. Crown: ${crown}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in vintage Japanese watches.
+
+ITEM DETAILS
+Brand: ${brand}
+Model / Caliber: ${model}
+Movement: ${movement}
+Manufacture: ${mij}
+Jewels: ${jewels || 'N/A'}
+
+CONDITION DETAILS
+Overall: ${cond}
+Movement Check: ${movecheck}
+Dial: ${allDial || 'N/A'}
+Crystal: ${crystal}
+Case: ${caseCond}
+Crown: ${crown}
+Band/Bracelet: ${allBand || 'N/A'}
+Notes: ${notes || 'N/A'}
+
+⚠️ This is a vintage watch. Accuracy has not been tested unless otherwise noted. Please see photos for actual condition.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and protective case
 
 RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
