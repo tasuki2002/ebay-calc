@@ -497,7 +497,14 @@ const forms = {
       {v:'Made in Japan',l:'Made in Japan（必須確認）'},
       {v:'Unknown / not confirmed',l:'不明・未確認'}
     ]},
-    { id:'jewels', label:'石数', type:'text', placeholder:'例: 21 Jewels, 23 Jewels（文字盤か裏蓋で確認）' },
+    { id:'jewels', label:'石数（選択）', type:'select', options:[
+      {v:'',l:'--- 不明・未確認 ---'},
+      {v:'17 Jewels',l:'17石'},{v:'19 Jewels',l:'19石'},
+      {v:'21 Jewels',l:'21石'},{v:'23 Jewels',l:'23石'},
+      {v:'25 Jewels',l:'25石'},{v:'27 Jewels',l:'27石'},
+      {v:'28 Jewels',l:'28石'}
+    ]},
+    { id:'jewelsnote', label:'石数（補足・自由記入）', type:'text', placeholder:'例: 文字盤に "21 Jewels" 表記あり' },
     { id:'condition', label:'状態', type:'select', options:[
       {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent',l:'Excellent（目立った傷なし）'},
       {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
@@ -819,7 +826,8 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
 
   } else if (g === 'watch') {
     const brand = getVal('brand'), model = getVal('model'), movement = getVal('movement');
-    const mij = getVal('mij'), jewels = getVal('jewels'), cond = getVal('condition');
+    const mij = getVal('mij'), jewels = getVal('jewels'), jewelsnote = getVal('jewelsnote'), cond = getVal('condition');
+    const allJewels = [jewels, jewelsnote].filter(Boolean).join(' / ');
     const movecheck = getVal('movecheck');
     const dialcheck = getVal('dialcheck'), dial = getVal('dial');
     const allDial = [dialcheck, dial].filter(Boolean).join('. ');
@@ -840,7 +848,7 @@ Brand: ${brand}
 Model / Caliber: ${model}
 Movement: ${movement}
 Manufacture: ${mij}
-Jewels: ${jewels || 'N/A'}
+Jewels: ${allJewels || 'N/A'}
 
 CONDITION DETAILS
 Overall: ${cond}
