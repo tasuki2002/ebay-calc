@@ -796,7 +796,9 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
   } else if (g === 'digicam') {
     const brand = getVal('brand'), model = getVal('model');
     const cond = getVal('condition'), screen = getVal('screen');
-    const acc = getVal('accessories'), notes = getVal('notes');
+    const acccheck = getVal('acccheck'), acc = getVal('accessories');
+    const allAcc = [acccheck, acc].filter(Boolean).join(', ');
+    const notes = getVal('notes');
 
     title = `${brand} ${model} Digital Camera ${cond} Tested From Japan`.substring(0, 80);
     condition = `${cond}. LCD: ${screen}. ${notes || 'All functions work normally.'} Fully tested.`;
