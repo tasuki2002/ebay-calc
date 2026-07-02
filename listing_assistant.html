@@ -219,6 +219,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('game')">💿 ゲームソフト</button>
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
+  <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
 </div>
 
 <div class="main">
@@ -513,6 +514,54 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Shutter count 500（シャッター回数）・その他自由記入' },
   ],
+  vita: [
+    { id:'model', label:'機種', type:'select', options:[
+      {v:'PS Vita PCH-1000',l:'PCH-1000（初代・OLEDモデル）'},
+      {v:'PS Vita PCH-2000',l:'PCH-2000（薄型・液晶モデル）'},
+      {v:'PS Vita TV',l:'PS Vita TV（PlayStation TV）'}
+    ]},
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Black（ブラック）, White（ホワイト）, Aqua Blue' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'画面状態', type:'select', options:[
+      {v:'No scratches - clean display',l:'傷なし・きれい'},
+      {v:'Minor scratches on screen',l:'画面に微細な傷あり'},
+      {v:'Noticeable scratches on screen',l:'画面に目立つ傷あり'},
+      {v:'Dead pixels present',l:'ドット欠けあり'},
+      {v:'Screen crack',l:'画面割れあり'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Body only (no charger)',l:'本体のみ（充電器なし）'},
+      {v:'With charging cable',l:'充電ケーブル付き'},
+      {v:'With charger and memory card',l:'充電器＋メモリーカード付き'},
+      {v:'CIB (box and manual)',l:'CIB（箱・説明書付き）'}
+    ]},
+    { id:'memory', label:'メモリーカード', type:'select', options:[
+      {v:'',l:'なし（付属なし）'},
+      {v:'4GB memory card included',l:'4GB メモリーカード付き'},
+      {v:'8GB memory card included',l:'8GB メモリーカード付き'},
+      {v:'16GB memory card included',l:'16GB メモリーカード付き'},
+      {v:'32GB memory card included',l:'32GB メモリーカード付き'},
+      {v:'64GB memory card included',l:'64GB メモリーカード付き'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Region free - works worldwide',l:'リージョンフリー・世界中で使用可'},
+      {v:'Analog sticks in good condition',l:'アナログスティック良好'},
+      {v:'Analog sticks show minor drift',l:'アナログスティックにわずかなドリフトあり'},
+      {v:'Buttons all responsive and working',l:'全ボタン正常動作確認済み'},
+      {v:'Battery holds charge well',l:'バッテリー充電良好'},
+      {v:'Battery drains faster than normal',l:'バッテリーの減りがやや早い'},
+      {v:'Back panel has minor scratches',l:'背面パネルに軽微な傷あり'},
+      {v:'Game card slot working normally',l:'ゲームカードスロット正常動作'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   watch: [
     { id:'brand', label:'ブランド', type:'select', options:[
       {v:'Seiko',l:'Seiko'},{v:'Citizen',l:'Citizen'},{v:'Orient',l:'Orient'},
@@ -597,6 +646,7 @@ const checklists = {
   '3ds': ['動作確認（電源・画面・ボタン）','リージョン確認','ヒンジ・液晶・外観チェック','写真撮影（全面・画面・ヒンジ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
@@ -778,6 +828,44 @@ Method: FedEx International Priority
 Handling: Ships within 1 business day after payment
 Tracking: Full tracking provided
 Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'vita') {
+    const model = getVal('model'), color = getVal('color');
+    const cond = getVal('condition'), screen = getVal('screen');
+    const cib = getVal('cib'), memory = getVal('memory');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const isCIB = cib.includes('CIB');
+
+    title = `Sony ${model} ${color} ${cond} ${isCIB ? 'CIB' : 'Tested Working'} Region Free From Japan`.substring(0, 80);
+    condition = `${cond}. Screen: ${screen}. ${cib}.${memory ? ' ' + memory + '.' : ''} ${allNotes || 'All buttons and functions work normally.'} Region free - works worldwide.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+System: Sony ${model}
+Color: ${color}
+Condition: ${cond}
+Includes: ${cib}${memory ? '\nMemory Card: ' + memory : ''}
+
+✅ REGION FREE - Works on any system worldwide. No region restrictions.
+
+CONDITION DETAILS
+Screen: ${screen}
+Notes: ${allNotes || 'All buttons and analog sticks tested and working normally.'}
+
+Fully tested before shipping. Power on, all buttons, analog sticks, and card slot confirmed working.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and protective box
 
 RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
@@ -972,6 +1060,18 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Release Year', v: releaseyear || '' },
       { k:'Region Code', v: region || 'NTSC-J' },
       { k:'Language', v: 'Japanese' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'vita') {
+    const model = getVal('model'), color = getVal('color'), memory = getVal('memory');
+    specs = [
+      { k:'Brand', v: 'Sony' },
+      { k:'Model', v: model },
+      { k:'Color', v: color },
+      { k:'Platform', v: 'PlayStation Vita' },
+      { k:'Region', v: 'Region Free' },
+      { k:'Storage', v: memory || '' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
