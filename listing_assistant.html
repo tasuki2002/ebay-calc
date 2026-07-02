@@ -148,6 +148,17 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .output-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.spec-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid var(--border);
+}
+.spec-row:last-child { border-bottom: none; }
+.spec-key { color: var(--sub); font-size: 11px; min-width: 130px; flex-shrink: 0; }
+.spec-val { color: var(--text); font-size: 13px; flex: 1; }
+.spec-copy { background: #1a1a1a; border: 1px solid var(--border); color: var(--sub);
+  font-size: 10px; padding: 3px 8px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.spec-copy.done { color: var(--green); border-color: #1e3a1e; }
+
 .copy-btn {
   background: #222; border: 1px solid var(--border);
   border-radius: 7px; color: var(--sub);
@@ -232,6 +243,15 @@ html, body {
       <button class="copy-btn" id="cp-desc" onclick="copyOut('desc-text','cp-desc')">コピー</button>
     </div>
     <div class="output-text" id="desc-text"></div>
+  </div>
+
+  <!-- Item Specifics -->
+  <div class="output-block" id="out-specifics">
+    <div class="output-header">
+      <span class="output-label">🔖 Item Specifics（項目入力用）</span>
+      <button class="copy-btn" id="cp-specs-all" onclick="copySpecsAll()">全部コピー</button>
+    </div>
+    <div id="specs-list"></div>
   </div>
 
   <!-- 出品前チェックリスト -->
@@ -608,13 +628,13 @@ function getVal(id) {
 }
 
 function hideOutputs() {
-  ['out-title','out-condition','out-desc','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
 }
 
 function showOutputs() {
-  ['out-title','out-condition','out-desc','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'block';
   });
 }
@@ -891,6 +911,91 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
   });
   document.getElementById('checklist').innerHTML = checkHtml;
 
+  // Item Specifics生成
+  let specs = [];
+  if (g === 'lens') {
+    const brand = getVal('brand'), model = getVal('model'), mount = getVal('mount');
+    const filter = getVal('filter'), serial = getVal('serial');
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Compatible Brand', v: brand },
+      { k:'Mount', v: mount },
+      { k:'Filter Size', v: filter || '' },
+      { k:'Serial Number', v: serial || '' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'boss') {
+    const model = getVal('model'), mij = getVal('mij');
+    const cond = getVal('condition');
+    specs = [
+      { k:'Brand', v: 'Boss' },
+      { k:'Model', v: 'BOSS ' + model },
+      { k:'Type', v: 'Effects Pedal' },
+      { k:'Country/Region of Manufacture', v: mij.includes('Japan') ? 'Japan' : 'Unknown' },
+      { k:'Condition', v: cond },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === '3ds') {
+    const brand = getVal('brand'), model = getVal('model');
+    specs = [
+      { k:'Brand', v: brand || 'Nintendo' },
+      { k:'Model', v: model },
+      { k:'Platform', v: 'Nintendo 3DS' },
+      { k:'Region', v: 'NTSC-J (Japan)' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'game') {
+    const brand = getVal('brand'), model = getVal('model'), platform = getVal('platform');
+    specs = [
+      { k:'Platform', v: platform || '' },
+      { k:'Publisher', v: brand || '' },
+      { k:'Game Name', v: model || '' },
+      { k:'Region Code', v: 'NTSC-J' },
+      { k:'Language', v: 'Japanese' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'digicam') {
+    const brand = getVal('brand'), model = getVal('model');
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Type', v: 'Compact Digital Camera' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Compatible Memory Card', v: 'SD / SDHC' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'watch') {
+    const brand = getVal('brand'), model = getVal('model'), movement = getVal('movement');
+    const mij = getVal('mij'), jewels = getVal('jewels'), dialcheck = getVal('dialcheck');
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Movement', v: movement },
+      { k:'Case Material', v: 'Stainless Steel' },
+      { k:'Country/Region of Manufacture', v: mij.includes('Japan') ? 'Japan' : 'Unknown' },
+      { k:'Jewels', v: jewels || '' },
+      { k:'Features', v: dialcheck.includes('Day') ? 'Day/Date' : '' },
+      { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  }
+
+  // 空の項目を除外してレンダリング
+  const filtered = specs.filter(s => s.v);
+  let specsHtml = '';
+  filtered.forEach((s, i) => {
+    specsHtml += `<div class="spec-row">
+      <span class="spec-key">${s.k}</span>
+      <span class="spec-val" id="sv-${i}">${s.v}</span>
+      <button class="spec-copy" id="sc-${i}" onclick="copySpec(${i})">コピー</button>
+    </div>`;
+  });
+  document.getElementById('specs-list').innerHTML = specsHtml;
+
   showOutputs();
   document.getElementById('out-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -906,6 +1011,31 @@ function resetChecks() {
   document.querySelectorAll('.check-item').forEach((el, i) => {
     el.classList.remove('checked');
     document.getElementById('cb-' + i).textContent = '';
+  });
+}
+
+function copySpec(i) {
+  const text = document.getElementById('sv-' + i).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('sc-' + i);
+    btn.textContent = '✓';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('done'); }, 2000);
+  });
+}
+
+function copySpecsAll() {
+  const rows = document.querySelectorAll('.spec-row');
+  const text = [...rows].map(r => {
+    const k = r.querySelector('.spec-key').textContent;
+    const v = r.querySelector('.spec-val').textContent;
+    return `${k}: ${v}`;
+  }).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('cp-specs-all');
+    btn.textContent = 'コピー済！';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = '全部コピー'; btn.classList.remove('done'); }, 2000);
   });
 }
 
