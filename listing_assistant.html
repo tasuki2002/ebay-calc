@@ -148,6 +148,15 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .output-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.year-search-wrap { display: flex; gap: 8px; align-items: center; }
+.year-search-wrap input { flex: 1; }
+.year-search-btn {
+  background: var(--gold2); color: #000; border: none; border-radius: 6px;
+  padding: 10px 12px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.year-search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.year-status { font-size: 11px; color: var(--sub); margin-top: 4px; min-height: 16px; }
+
 .spec-row {
   display: flex; align-items: center; gap: 8px;
   padding: 7px 0; border-bottom: 1px solid var(--border);
@@ -409,7 +418,8 @@ const forms = {
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
   game: [
-    { id:'title', label:'タイトル', type:'text', placeholder:'例: Pokemon Red, Final Fantasy VII' },
+    { id:'title', label:'タイトル（英語 or 日本語）', type:'text', placeholder:'例: Pokemon Red / ポケットモンスター 赤' },
+    { id:'releaseyear', label:'発売年', type:'year-search', placeholder:'例: 1996' },
     { id:'platform', label:'プラットフォーム', type:'select', options:[
       {v:'Nintendo DS',l:'Nintendo DS'},{v:'3DS',l:'3DS'},
       {v:'Game Boy',l:'ゲームボーイ'},{v:'Game Boy Color',l:'ゲームボーイカラー'},
@@ -613,6 +623,12 @@ function renderForm() {
       html += '</select>';
     } else if (f.type === 'textarea') {
       html += `<textarea id="f_${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
+    } else if (f.type === 'year-search') {
+      html += `<div class="year-search-wrap">
+        <input type="text" id="f_${f.id}" placeholder="${f.placeholder||''}">
+        <button class="year-search-btn" id="year-search-btn" onclick="searchReleaseYear()">🔍 検索</button>
+      </div>
+      <div class="year-status" id="year-status"></div>`;
     } else {
       html += `<input type="text" id="f_${f.id}" placeholder="${f.placeholder||''}">`;
     }
@@ -948,12 +964,13 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Modified Item', v: 'No' },
     ];
   } else if (g === 'game') {
-    const brand = getVal('brand'), model = getVal('model'), platform = getVal('platform');
+    const title = getVal('title'), platform = getVal('platform');
+    const region = getVal('region'), releaseyear = getVal('releaseyear');
     specs = [
       { k:'Platform', v: platform || '' },
-      { k:'Publisher', v: brand || '' },
-      { k:'Game Name', v: model || '' },
-      { k:'Region Code', v: 'NTSC-J' },
+      { k:'Game Name', v: title || '' },
+      { k:'Release Year', v: releaseyear || '' },
+      { k:'Region Code', v: region || 'NTSC-J' },
       { k:'Language', v: 'Japanese' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
@@ -1012,6 +1029,66 @@ function resetChecks() {
     el.classList.remove('checked');
     document.getElementById('cb-' + i).textContent = '';
   });
+}
+
+async function searchReleaseYear() {
+  const titleEl = document.getElementById('f_title');
+  const yearEl = document.getElementById('f_releaseyear');
+  const statusEl = document.getElementById('year-status');
+  const btn = document.getElementById('year-search-btn');
+  const query = titleEl ? titleEl.value.trim() : '';
+  if (!query) { statusEl.textContent = '⚠️ タイトルを先に入力してください'; return; }
+
+  btn.disabled = true;
+  statusEl.textContent = '🔍 検索中...';
+
+  const searchLang = async (lang) => {
+    const url = `https://www.wikidata.org/w/api.php?action=wbsearchentities&search=${encodeURIComponent(query)}&language=${lang}&format=json&origin=*&type=item&limit=5`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.search || [];
+  };
+
+  const getYear = async (entityId) => {
+    const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${entityId}&props=claims&format=json&origin=*`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const claims = data.entities?.[entityId]?.claims;
+    // P577 = publication date
+    const dates = claims?.P577;
+    if (!dates || !dates.length) return null;
+    const timeVal = dates[0]?.mainsnak?.datavalue?.value?.time;
+    if (!timeVal) return null;
+    // format: +1996-02-27T00:00:00Z
+    return timeVal.substring(1, 5);
+  };
+
+  try {
+    // 日本語→英語の順で検索
+    let results = await searchLang('ja');
+    if (!results.length) results = await searchLang('en');
+    if (!results.length) {
+      statusEl.textContent = '❌ 見つかりませんでした。手入力してください';
+      btn.disabled = false; return;
+    }
+
+    // 最初の数件から発売年を持つものを探す
+    let foundYear = null;
+    for (const item of results.slice(0, 3)) {
+      const year = await getYear(item.id);
+      if (year) { foundYear = year; break; }
+    }
+
+    if (foundYear) {
+      yearEl.value = foundYear;
+      statusEl.textContent = `✅ ${foundYear}年が見つかりました（${results[0].label}）`;
+    } else {
+      statusEl.textContent = `⚠️ タイトルは見つかりましたが発売年不明（${results[0].label}）。手入力してください`;
+    }
+  } catch (e) {
+    statusEl.textContent = '❌ 通信エラー。手入力してください';
+  }
+  btn.disabled = false;
 }
 
 function copySpec(i) {
