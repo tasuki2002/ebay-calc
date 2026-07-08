@@ -148,7 +148,10 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .output-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.year-search-wrap { display: flex; gap: 8px; align-items: center; }
+.pkg-dims { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.pkg-dims .field { margin: 0; }
+
+ display: flex; gap: 8px; align-items: center; }
 .year-search-wrap input { flex: 1; }
 .year-search-btn {
   background: var(--gold2); color: #000; border: none; border-radius: 6px;
@@ -227,6 +230,21 @@ html, body {
   <!-- 入力フォーム（ジャンル別） -->
   <div id="form-area"></div>
 
+  <!-- 梱包情報 -->
+  <div class="section">
+    <div class="section-title">📦 梱包サイズ・重さ（任意）</div>
+    <div class="field"><div class="field-label">重さ（g）</div>
+      <input type="number" id="pkg-weight" placeholder="例: 350"></div>
+    <div class="pkg-dims">
+      <div class="field"><div class="field-label">縦（cm）</div>
+        <input type="number" id="pkg-l" placeholder="例: 20"></div>
+      <div class="field"><div class="field-label">横（cm）</div>
+        <input type="number" id="pkg-w" placeholder="例: 15"></div>
+      <div class="field"><div class="field-label">高さ（cm）</div>
+        <input type="number" id="pkg-h" placeholder="例: 10"></div>
+    </div>
+  </div>
+
   <!-- 生成ボタン -->
   <button class="gen-btn" onclick="generate()">出品情報を生成 →</button>
 
@@ -253,6 +271,15 @@ html, body {
       <button class="copy-btn" id="cp-desc" onclick="copyOut('desc-text','cp-desc')">コピー</button>
     </div>
     <div class="output-text" id="desc-text"></div>
+  </div>
+
+  <!-- 梱包情報（変換後） -->
+  <div class="output-block" id="out-pkg">
+    <div class="output-header">
+      <span class="output-label">📦 梱包情報（eBay入力用）</span>
+      <button class="copy-btn" id="cp-pkg" onclick="copyOut('pkg-text','cp-pkg')">コピー</button>
+    </div>
+    <div class="output-text" id="pkg-text"></div>
   </div>
 
   <!-- Item Specifics -->
@@ -694,13 +721,13 @@ function getVal(id) {
 }
 
 function hideOutputs() {
-  ['out-title','out-condition','out-desc','out-specifics','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-pkg','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
 }
 
 function showOutputs() {
-  ['out-title','out-condition','out-desc','out-specifics','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-pkg','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'block';
   });
 }
@@ -1100,6 +1127,26 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Modified Item', v: 'No' },
     ];
   }
+
+  // 梱包情報の変換（g→lbs/oz、cm→inch、切り上げ）
+  const wg = parseFloat(document.getElementById('pkg-weight').value) || 0;
+  const pl = parseFloat(document.getElementById('pkg-l').value) || 0;
+  const pw = parseFloat(document.getElementById('pkg-w').value) || 0;
+  const ph = parseFloat(document.getElementById('pkg-h').value) || 0;
+  let pkgText = '';
+  if (wg || pl || pw || ph) {
+    const totalOz = Math.ceil(wg / 28.3495);
+    const lbs = Math.floor(totalOz / 16);
+    const oz = totalOz % 16;
+    const inL = Math.ceil(pl / 2.54);
+    const inW = Math.ceil(pw / 2.54);
+    const inH = Math.ceil(ph / 2.54);
+    const weightLine = wg ? `Weight: ${lbs > 0 ? lbs + ' lbs ' : ''}${oz} oz　（${wg}g）` : '';
+    const dimLine = (pl || pw || ph) ? `Package dimensions: ${inL} x ${inW} x ${inH} inches　（${pl} x ${pw} x ${ph} cm）` : '';
+    pkgText = [weightLine, dimLine].filter(Boolean).join('\n');
+  }
+  document.getElementById('pkg-text').textContent = pkgText || '（入力なし）';
+  document.getElementById('out-pkg').style.display = (wg || pl || pw || ph) ? 'block' : 'none';
 
   // 空の項目を除外してレンダリング
   const filtered = specs.filter(s => s.v);
