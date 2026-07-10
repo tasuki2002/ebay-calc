@@ -497,7 +497,8 @@ const forms = {
       {v:'Writing on label',l:'ラベルに書き込みあり'},
       {v:'Label damage on cartridge',l:'ラベル傷みあり'},
       {v:'Cartridge contacts cleaned and tested',l:'端子クリーニング済み・動作確認済み'},
-      {v:'Region locked - Japan version only',l:'リージョンロック・日本版専用'},
+      {v:'Region free - works on any system worldwide',l:'リージョンフリー・世界中のどの本体でも動作'},
+      {v:'Region locked - Japan version only. Only works on Japanese systems.',l:'リージョンロック・日本版本体専用'},
       {v:'Disc has minor scratches - plays without issues',l:'ディスクに軽微な傷・動作正常'}
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
@@ -911,25 +912,34 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     const isCIB = cib.includes('CIB');
     const isSealed = cib.includes('Sealed');
 
+    // リージョンフリー判定
+    const regionFreePlatforms = ['Game Boy', 'Game Boy Color', 'Game Boy Advance', 'Nintendo DS', 'PS3'];
+    const regionLocked3DS = ['3DS'];
+    const isFree = regionFreePlatforms.includes(platform);
+    const regionLabel = isFree ? 'Region Free' : region;
+    const regionNote = isFree
+      ? '✅ REGION FREE - Works on any system worldwide. No region restrictions.'
+      : '⚠️ IMPORTANT: This is a ' + region + ' title. Region locked - only works on ' + region + ' systems.';
+
     const titleType = isSealed ? 'Sealed' : isCIB ? 'CIB' : cib.includes('manual') ? 'Cart+Manual' : 'Cart Only';
-    title = (gameTitle + ' ' + platform + ' ' + region + ' ' + cond + ' ' + titleType + ' From Japan').substring(0, 80);
+    title = (gameTitle + ' ' + platform + ' ' + regionLabel + ' ' + cond + ' ' + titleType + ' From Japan').substring(0, 80);
     const boxLine = (hasBox && boxcond !== 'N/A (no box)') ? 'Box: ' + boxcond + '.' : '';
     const boxDetailLine = (hasBox && boxcond !== 'N/A (no box)') ? ('\nBox Condition: ' + boxcond) : '';
     const manualDetailLine = (hasManual && manualcond && manualcond !== 'N/A (no manual)') ? ('\nManual Condition: ' + manualcond) : '';
     const cartDetailLine = cartcond ? ('\nCart/Disc Condition: ' + cartcond) : '';
-    condition = cond + '. ' + cib + '. ' + boxLine + ' ' + (notes || 'No major issues.') + ' Region: ' + region + '.';
+    condition = cond + '. ' + cib + '. ' + boxLine + ' ' + (notes || 'No major issues.') + ' ' + regionLabel + '.';
     var gameLines = [
       'Thank you for visiting Hachi Shop!',
       '',
       'ITEM DETAILS',
       'Title: ' + gameTitle,
       'Platform: ' + platform,
-      'Region: ' + region,
+      'Region: ' + regionLabel,
       'Condition: ' + cond,
       'Includes: ' + cib + boxDetailLine + manualDetailLine + cartDetailLine,
       'Notes: ' + (allNotes || 'N/A'),
       '',
-      'IMPORTANT: This is a ' + region + ' title. Please verify compatibility with your system.',
+      regionNote,
       '',
       'SHIPPING',
       'Method: FedEx International Priority',
@@ -1081,11 +1091,13 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
   } else if (g === 'game') {
     const title = getVal('title'), platform = getVal('platform');
     const region = getVal('region'), releaseyear = getVal('releaseyear');
+    const regionFreePlatformsSpec = ['Game Boy', 'Game Boy Color', 'Game Boy Advance', 'Nintendo DS', 'PS3'];
+    const specRegion = regionFreePlatformsSpec.includes(platform) ? 'Region Free' : (region || 'NTSC-J');
     specs = [
       { k:'Platform', v: platform || '' },
       { k:'Game Name', v: title || '' },
       { k:'Release Year', v: releaseyear || '' },
-      { k:'Region Code', v: region || 'NTSC-J' },
+      { k:'Region Code', v: specRegion },
       { k:'Language', v: 'Japanese' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
