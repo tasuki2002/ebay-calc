@@ -148,8 +148,13 @@ html, body {
   display: flex; align-items: center; justify-content: space-between;
 }
 .output-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.pkg-dims { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.pkg-dims .field { margin: 0; }
+.pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.pkg-grid .field { margin: 0; }
+.pkg-input-wrap { position: relative; }
+.pkg-input-wrap input { padding-right: 36px; }
+.pkg-unit { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--muted); pointer-events: none; font-weight: 600; }
+.pkg-preview { margin-top: 10px; background: var(--surface2); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--muted); line-height: 1.8; min-height: 44px; }
+.pkg-preview span { color: var(--gold2); font-weight: 700; }
 
  display: flex; gap: 8px; align-items: center; }
 .year-search-wrap input { flex: 1; }
@@ -233,16 +238,37 @@ html, body {
   <!-- 梱包情報 -->
   <div class="section">
     <div class="section-title">📦 梱包サイズ・重さ（任意）</div>
-    <div class="field"><div class="field-label">重さ（g）</div>
-      <input type="number" id="pkg-weight" placeholder="例: 350"></div>
-    <div class="pkg-dims">
-      <div class="field"><div class="field-label">縦（cm）</div>
-        <input type="number" id="pkg-l" placeholder="例: 20"></div>
-      <div class="field"><div class="field-label">横（cm）</div>
-        <input type="number" id="pkg-w" placeholder="例: 15"></div>
-      <div class="field"><div class="field-label">高さ（cm）</div>
-        <input type="number" id="pkg-h" placeholder="例: 10"></div>
+    <div class="field">
+      <div class="field-label">重さ（梱包込み）</div>
+      <div class="pkg-input-wrap">
+        <input type="number" id="pkg-weight" placeholder="例: 350" oninput="updatePkgPreview()">
+        <span class="pkg-unit">g</span>
+      </div>
     </div>
+    <div class="pkg-grid">
+      <div class="field">
+        <div class="field-label">縦（長辺）</div>
+        <div class="pkg-input-wrap">
+          <input type="number" id="pkg-l" placeholder="例: 30" oninput="updatePkgPreview()">
+          <span class="pkg-unit">cm</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">横（短辺）</div>
+        <div class="pkg-input-wrap">
+          <input type="number" id="pkg-w" placeholder="例: 20" oninput="updatePkgPreview()">
+          <span class="pkg-unit">cm</span>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">高さ（深さ）</div>
+        <div class="pkg-input-wrap">
+          <input type="number" id="pkg-h" placeholder="例: 10" oninput="updatePkgPreview()">
+          <span class="pkg-unit">cm</span>
+        </div>
+      </div>
+    </div>
+    <div class="pkg-preview" id="pkg-preview">数値を入力するとlbs・oz・inchに変換されます</div>
   </div>
 
   <!-- 生成ボタン -->
@@ -731,6 +757,33 @@ function showOutputs() {
   ['out-title','out-condition','out-desc','out-pkg','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'block';
   });
+}
+
+function updatePkgPreview() {
+  const wg = parseFloat(document.getElementById('pkg-weight').value) || 0;
+  const pl = parseFloat(document.getElementById('pkg-l').value) || 0;
+  const pw = parseFloat(document.getElementById('pkg-w').value) || 0;
+  const ph = parseFloat(document.getElementById('pkg-h').value) || 0;
+  const el = document.getElementById('pkg-preview');
+  if (!wg && !pl && !pw && !ph) {
+    el.innerHTML = '数値を入力するとlbs・oz・inchに変換されます';
+    return;
+  }
+  let lines = [];
+  if (wg) {
+    const totalOz = Math.ceil(wg / 28.3495);
+    const lbs = Math.floor(totalOz / 16);
+    const oz = totalOz % 16;
+    const wStr = (lbs > 0 ? lbs + ' lbs ' : '') + oz + ' oz';
+    lines.push('重さ：<span>' + wStr + '</span>　（' + wg + 'g）');
+  }
+  if (pl || pw || ph) {
+    const inL = pl ? Math.ceil(pl / 2.54) : 0;
+    const inW = pw ? Math.ceil(pw / 2.54) : 0;
+    const inH = ph ? Math.ceil(ph / 2.54) : 0;
+    lines.push('寸法：<span>' + inL + ' × ' + inW + ' × ' + inH + ' inches</span>　（' + pl + ' × ' + pw + ' × ' + ph + ' cm）');
+  }
+  el.innerHTML = lines.join('<br>');
 }
 
 function generate() {
