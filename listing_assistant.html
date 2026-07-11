@@ -228,6 +228,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
+  <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
 </div>
 
 <div class="main">
@@ -691,6 +692,79 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Serial number・その他自由記入' },
   ],
+  slr: [
+    { id:'brand', label:'ブランド', type:'select', options:[
+      {v:'Canon',l:'Canon'},{v:'Nikon',l:'Nikon'},{v:'Olympus',l:'Olympus'},
+      {v:'Minolta',l:'Minolta'},{v:'Pentax',l:'Pentax'},{v:'Asahi Pentax',l:'Asahi Pentax'},
+      {v:'Contax',l:'Contax'},{v:'Yashica',l:'Yashica'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'機種名', type:'text', placeholder:'例: AE-1 Program, FM2, OM-1' },
+    { id:'color', label:'カラー', type:'select', options:[
+      {v:'Black',l:'Black（ブラック）'},{v:'Silver',l:'Silver（シルバー）'},
+      {v:'Black and Silver',l:'Black and Silver（ブラック×シルバー）'},
+      {v:'Chrome',l:'Chrome（クローム）'},{v:'Other',l:'その他'}
+    ]},
+    { id:'lens', label:'レンズ付属', type:'select', options:[
+      {v:'Body only (no lens)',l:'ボディのみ（レンズなし）'},
+      {v:'With 50mm f/1.4 lens',l:'50mm f/1.4 レンズ付き'},
+      {v:'With 50mm f/1.8 lens',l:'50mm f/1.8 レンズ付き'},
+      {v:'With 50mm f/2 lens',l:'50mm f/2 レンズ付き'},
+      {v:'With kit lens',l:'キットレンズ付き'},
+      {v:'With lens (see description)',l:'レンズ付き（詳細は説明参照）'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},{v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'optical', label:'① レンズ光学系', type:'select', options:[
+      {v:'Clear - no fungus, no haze',l:'✅ クリア（カビ・クモリなし）'},
+      {v:'Slight dust only - no effect on image',l:'微細なチリあり（写りに影響なし）'},
+      {v:'Minor haze on element - may affect image slightly',l:'⚠️ 軽微なクモリあり'},
+      {v:'Fungus spots visible - minor',l:'⚠️ カビあり（軽微）'},
+      {v:'Heavy fungus or haze - For Parts recommended',l:'❌ カビ・クモリ重度（For Parts推奨）'},
+      {v:'N/A - Body only',l:'該当なし（ボディのみ）'}
+    ]},
+    { id:'shutter', label:'② シャッター動作', type:'select', options:[
+      {v:'Fires smoothly and quietly at all speeds',l:'✅ 全速正常・異音なし'},
+      {v:'Fires at all speeds - minor squeak at slow speeds',l:'⚠️ 全速動作・低速時に軽微な鳴きあり'},
+      {v:'Fires but squeaks at all speeds',l:'⚠️ 動作するが全速で鳴きあり'},
+      {v:'Fires but speeds may be slightly off',l:'⚠️ 動作するがスピードが若干不安定'},
+      {v:'Shutter does not fire - For Parts',l:'❌ シャッター不動（For Parts）'}
+    ]},
+    { id:'mirror', label:'③ ミラー状態', type:'select', options:[
+      {v:'Mirror clear and functioning normally',l:'✅ クリア・正常動作'},
+      {v:'Mirror damper sticky - opens and closes fine',l:'ミラーダンパー劣化（ぺたぺた）・動作正常'},
+      {v:'Minor clouding on mirror',l:'⚠️ ミラーに軽微なクモリあり'},
+      {v:'Mirror has significant deterioration',l:'⚠️ ミラーに目立つ劣化あり'},
+      {v:'Mirror not functioning correctly',l:'❌ ミラー動作不良'}
+    ]},
+    { id:'cosmetic', label:'④ 外装', type:'select', options:[
+      {v:'Excellent - minimal signs of use',l:'Excellent（使用感ほぼなし）'},
+      {v:'Very Good - minor scratches only',l:'Very Good（細かい傷のみ）'},
+      {v:'Good - noticeable scratches and wear',l:'Good（目立つ傷・使用感あり）'},
+      {v:'Leatherette peeling on body',l:'軍幕（革張り）に剥がれあり'},
+      {v:'Dents or dings on body',l:'ボディに凹みあり'},
+      {v:'Film door hinge has issue',l:'⚠️ フィルム蓋のヒンジに問題あり（光漏れ注意）'}
+    ]},
+    { id:'meter', label:'露出計', type:'select', options:[
+      {v:'Meter working correctly',l:'✅ 露出計正常動作'},
+      {v:'Meter not tested - fully mechanical camera',l:'全機械式のため露出計テスト不要（FM2・OM-1・K1000等）'},
+      {v:'Meter slightly off but functional',l:'⚠️ 露出計にやや誤差あり'},
+      {v:'Meter not working',l:'⚠️ 露出計不動（機械式シャッターは使用可能）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Shutter fires smoothly and quietly - no squeak',l:'シャッター鳴きなし・快調'},
+      {v:'IPS screen confirmed',l:'IPS液晶確認済み（該当する場合のみ）'},
+      {v:'Tested with film - shutter confirmed accurate',l:'実写テスト済み・シャッター精度確認'},
+      {v:'Self-timer works correctly',l:'セルフタイマー正常動作'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Flash sync works',l:'フラッシュ同期動作確認済み'},
+      {v:'Light seals replaced',l:'モルトプレーン（遮光材）交換済み'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
 };
 
 // チェックリスト定義
@@ -702,6 +776,7 @@ const checklists = {
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
 function setGenre(genre) {
@@ -1007,6 +1082,49 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     ];
     desc = gameLines.join('\n');
 
+  } else if (g === 'slr') {
+    const brand = getVal('brand'), model = getVal('model'), color = getVal('color');
+    const lensAtt = getVal('lens'), cond = getVal('condition');
+    const optical = getVal('optical'), shutter = getVal('shutter');
+    const mirror = getVal('mirror'), cosmetic = getVal('cosmetic');
+    const meter = getVal('meter');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const bodyOnly = lensAtt.includes('Body only');
+    const lensLabel = bodyOnly ? 'Body Only' : 'With Lens';
+
+    title = `${brand} ${model} 35mm Film SLR Camera ${color} ${lensLabel} ${cond} Tested From Japan`.substring(0, 80);
+    condition = `${cond}. Shutter: ${shutter}. Lens: ${optical}. Mirror: ${mirror}. Body: ${cosmetic}. Meter: ${meter}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+
+ITEM DETAILS
+Brand: ${brand}
+Model: ${brand} ${model}
+Type: 35mm Film SLR Camera
+Color: ${color}
+Includes: ${lensAtt}
+
+CONDITION: ${cond}
+① Lens (Optical): ${optical}
+② Shutter: ${shutter}
+③ Mirror: ${mirror}
+④ Body / Cosmetic: ${cosmetic}
+Exposure Meter: ${meter}
+Notes: ${allNotes || 'N/A'}
+
+All functions have been tested and confirmed working before shipping.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'digicam') {
     const brand = getVal('brand'), model = getVal('model');
     const cond = getVal('condition'), screen = getVal('screen');
@@ -1188,6 +1306,26 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Country/Region of Manufacture', v: mij.includes('Japan') ? 'Japan' : 'Unknown' },
       { k:'Jewels', v: jewels || '' },
       { k:'Features', v: dialcheck.includes('Day') ? 'Day/Date' : '' },
+      { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'slr') {
+    const brand = getVal('brand'), model = getVal('model'), color = getVal('color');
+    const lensAtt = getVal('lens');
+    const mountMap = {
+      'Canon': 'Canon FD', 'Nikon': 'Nikon F', 'Olympus': 'Olympus OM',
+      'Minolta': 'Minolta SR/MC/MD', 'Pentax': 'Pentax K', 'Asahi Pentax': 'M42 / Pentax K',
+      'Contax': 'Contax/Yashica', 'Yashica': 'Contax/Yashica'
+    };
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Type', v: 'SLR' },
+      { k:'Film Format', v: '35mm' },
+      { k:'Lens Mount', v: mountMap[brand] || '' },
+      { k:'Color', v: color },
+      { k:'Includes Lens', v: lensAtt.includes('Body only') ? 'No' : 'Yes' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Vintage', v: 'Yes' },
       { k:'Modified Item', v: 'No' },
     ];
