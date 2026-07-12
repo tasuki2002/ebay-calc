@@ -273,7 +273,7 @@ html, body {
   </div>
 
   <!-- 生成ボタン -->
-  <button class="gen-btn" onclick="generate()">出品情報を生成 →</button>
+  <button class="gen-btn" id="gen-btn" onclick="handleGenerate()">出品情報を生成 →</button>
 
   <!-- 出力エリア -->
   <div class="output-block" id="out-title">
@@ -859,6 +859,48 @@ function updatePkgPreview() {
     lines.push('寸法：<span>' + inL + ' × ' + inW + ' × ' + inH + ' inches</span>　（' + pl + ' × ' + pw + ' × ' + ph + ' cm）');
   }
   el.innerHTML = lines.join('<br>');
+}
+
+// 日本語検出
+function hasJapanese(text) {
+  return /[　-鿿＀-￯]/.test(text);
+}
+
+// MyMemory APIで翻訳（JA→EN）
+async function translateText(text) {
+  if (!text || !hasJapanese(text)) return text;
+  try {
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=ja|en';
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.responseStatus === 200) return data.responseData.translatedText;
+    return text; // 失敗時はそのまま返す
+  } catch(e) {
+    return text;
+  }
+}
+
+// 翻訳が必要なフィールドID一覧（モデル名・型番・シリアルは除外）
+const TRANSLATE_FIELDS = ['notes','accessories','acc','issue','jewelsnote','dial','band'];
+
+// ボタン経由で呼ばれるラッパー
+async function handleGenerate() {
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.textContent = '翻訳中…';
+
+  // 翻訳対象フィールドを一括翻訳
+  for (const id of TRANSLATE_FIELDS) {
+    const el = document.getElementById('f_' + id);
+    if (el && el.value && hasJapanese(el.value)) {
+      el.value = await translateText(el.value);
+    }
+  }
+
+  btn.textContent = '生成中…';
+  generate();
+  btn.disabled = false;
+  btn.textContent = '出品情報を生成 →';
 }
 
 function generate() {
