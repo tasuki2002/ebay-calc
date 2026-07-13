@@ -234,6 +234,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
+  <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
 </div>
 
 <div class="main">
@@ -767,6 +768,62 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  '3do': [
+    { id:'model', label:'機種名', type:'select', options:[
+      {v:'Panasonic FZ-1',l:'Panasonic FZ-1（初代・トップローダー）'},
+      {v:'Panasonic FZ-10',l:'Panasonic FZ-10（フロントローダー・薄型）'},
+      {v:'Sanyo TRY IMP-21J',l:'Sanyo TRY IMP-21J'},
+      {v:'GoldStar 3DO',l:'GoldStar 3DO（韓国製）'},
+      {v:'Other',l:'その他'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・使用感あり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'power', label:'電源・起動', type:'select', options:[
+      {v:'Powers on - boot screen displays correctly',l:'✅ 起動OK・ブート画面正常表示'},
+      {v:'Powers on but no video output',l:'⚠️ 電源入るが映像出力なし'},
+      {v:'Does not power on',l:'❌ 電源入らず（For Parts）'}
+    ]},
+    { id:'discread', label:'ディスク読み込み', type:'select', options:[
+      {v:'Disc reads correctly - tested with game',l:'✅ ディスク読み込みOK・ゲーム起動確認'},
+      {v:'Reads disc but occasional load errors',l:'⚠️ 読み込むが時々エラーあり'},
+      {v:'Disc tray / loader opens and closes correctly',l:'トレイ・ローダー開閉正常'},
+      {v:'Disc read error - does not load games',l:'❌ 読み込みエラー・ゲーム起動しない'},
+      {v:'Disc loader not functioning',l:'❌ ローダー不動'}
+    ]},
+    { id:'av', label:'映像・音声出力', type:'select', options:[
+      {v:'Video and audio output confirmed working',l:'✅ 映像・音声出力正常'},
+      {v:'Video output working - audio not tested',l:'映像OK・音声未確認'},
+      {v:'Video output has issue',l:'⚠️ 映像出力に問題あり'},
+      {v:'No video output',l:'❌ 映像出力なし'}
+    ]},
+    { id:'controller', label:'コントローラー', type:'select', options:[
+      {v:'Original controller included - tested working',l:'純正コントローラー付き・動作確認済み'},
+      {v:'Original controller included - not tested',l:'純正コントローラー付き・未確認'},
+      {v:'No controller included',l:'コントローラーなし'},
+      {v:'Third-party controller included',l:'社外品コントローラー付き'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Console only',l:'本体のみ'},
+      {v:'Console and controller',l:'本体＋コントローラー'},
+      {v:'Console, controller and cables',l:'本体＋コントローラー＋ケーブル類'},
+      {v:'Complete in Box (CIB)',l:'CIB（箱・説明書付き・完品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Region locked - NTSC-J (Japan) only. Only works on Japanese 3DO systems.',l:'リージョンロック・NTSC-J日本版専用'},
+      {v:'Controller port 1 confirmed working',l:'コントローラーポート1動作確認済み'},
+      {v:'Expansion port not tested',l:'拡張ポート未テスト'},
+      {v:'Memory card slot working',l:'メモリーカードスロット動作OK'},
+      {v:'RF output only - no AV cable included',l:'RF出力のみ・AVケーブルなし'},
+      {v:'Capacitors may need replacement (common for age)',l:'コンデンサ経年劣化の可能性あり（年代相応）'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   slr: [
     { id:'brand', label:'ブランド', type:'select', options:[
       {v:'Canon',l:'Canon'},{v:'Nikon',l:'Nikon'},{v:'Olympus',l:'Olympus'},
@@ -851,6 +908,7 @@ const checklists = {
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
@@ -1200,6 +1258,48 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     ];
     desc = gameLines.join('\n');
 
+  } else if (g === '3do') {
+    const model = getVal('model'), cond = getVal('condition');
+    const power = getVal('power'), discread = getVal('discread');
+    const av = getVal('av'), controller = getVal('controller'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const hasCtrl = !controller.includes('No controller');
+    const cibLabel = cib.includes('CIB') ? 'CIB' : cib.includes('cables') ? 'With Controller & Cables' : hasCtrl ? 'With Controller' : 'Console Only';
+
+    title = `${model} 3DO Interactive Multiplayer Console NTSC-J ${cond} ${cibLabel} Japan`.substring(0, 80);
+    condition = `${cond}. Power: ${power}. Disc: ${discread}. AV: ${av}. Controller: ${controller}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+
+ITEM DETAILS
+Console: ${model}
+Platform: 3DO Interactive Multiplayer
+Region: NTSC-J (Japan)
+Condition: ${cond}
+Includes: ${cib}
+
+CONDITION DETAILS
+Power / Boot: ${power}
+Disc Read: ${discread}
+AV Output: ${av}
+Controller: ${controller}
+Notes: ${allNotes || 'N/A'}
+
+⚠️ REGION LOCKED - NTSC-J (Japan) version.
+This console plays Japanese 3DO software only.
+It will NOT play North American or European titles.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'gnw') {
     const type = getVal('type'), series = getVal('series');
     const gnwTitle = getVal('title'), modelnumber = getVal('modelnumber');
@@ -1466,6 +1566,19 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Country/Region of Manufacture', v: mij.includes('Japan') ? 'Japan' : 'Unknown' },
       { k:'Jewels', v: jewels || '' },
       { k:'Features', v: dialcheck.includes('Day') ? 'Day/Date' : '' },
+      { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === '3do') {
+    const model = getVal('model'), cib = getVal('cib');
+    const hasCtrl = !getVal('controller').includes('No controller');
+    specs = [
+      { k:'Brand', v: 'Panasonic' },
+      { k:'Model', v: model },
+      { k:'Platform', v: '3DO' },
+      { k:'Region', v: 'NTSC-J (Japan)' },
+      { k:'Includes Controller', v: hasCtrl ? 'Yes' : 'No' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Vintage', v: 'Yes' },
       { k:'Modified Item', v: 'No' },
     ];
