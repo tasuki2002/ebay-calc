@@ -233,6 +233,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
+  <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
 </div>
 
 <div class="main">
@@ -691,6 +692,81 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Serial number・その他自由記入' },
   ],
+  gnw: [
+    { id:'type', label:'種別（本家 or 復刻）', type:'select', options:[
+      {v:'Original (vintage)',l:'本家・オリジナル（ヴィンテージ）'},
+      {v:'Nintendo Game & Watch 35th Anniversary (2020)',l:'復刻版 - Game & Watch Super Mario Bros（2020年・35周年）'},
+      {v:'Nintendo Game & Watch Zelda (2021)',l:'復刻版 - Game & Watch The Legend of Zelda（2021年）'},
+      {v:'Nintendo Mini Classics (1998)',l:'Nintendo Mini Classics（1998年・ファストフード景品等）'}
+    ]},
+    { id:'series', label:'シリーズ（本家のみ）', type:'select', options:[
+      {v:'',l:'--- 復刻版・不明の場合は選択不要 ---'},
+      {v:'Silver Series',l:'Silver Series（シルバーシリーズ・最初期）'},
+      {v:'Gold Series',l:'Gold Series（ゴールドシリーズ）'},
+      {v:'Wide Screen Series',l:'Wide Screen Series（ワイドスクリーン）'},
+      {v:'Multi Screen Series',l:'Multi Screen Series（マルチスクリーン・2画面）'},
+      {v:'New Wide Screen Series',l:'New Wide Screen Series（ニューワイドスクリーン）'},
+      {v:'Panorama Screen Series',l:'Panorama Screen Series（パノラマスクリーン）'},
+      {v:'Super Color Series',l:'Super Color Series（スーパーカラー）'},
+      {v:'Crystal Screen Series',l:'Crystal Screen Series（クリスタルスクリーン）'},
+      {v:'Table Top Series',l:'Table Top Series（テーブルトップ）'},
+      {v:'Micro Vs. Series',l:'Micro Vs. Series（マイクロ対戦）'}
+    ]},
+    { id:'title', label:'タイトル', type:'text', placeholder:'例: Donkey Kong, Ball, Octopus, Mario Bros' },
+    { id:'modelnumber', label:'型番', type:'text', placeholder:'例: DK-52, BA-02, OC-22, MW-56' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・使用感あり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'gamework', label:'動作確認', type:'select', options:[
+      {v:'Game A and Game B both working. Clock function working.',l:'✅ ゲームA・B両方動作・時計機能正常'},
+      {v:'Game A working. Game B working. Clock not tested.',l:'ゲームA・B動作・時計未確認'},
+      {v:'Game A working only. Game B not responding.',l:'⚠️ ゲームAのみ動作・ゲームB不動'},
+      {v:'Clock function only - game modes not working.',l:'⚠️ 時計機能のみ動作・ゲーム不動'},
+      {v:'Powers on but gameplay has issues.',l:'⚠️ 通電するが動作に問題あり'},
+      {v:'Does not power on - For Parts.',l:'❌ 電源入らず（For Parts）'}
+    ]},
+    { id:'lcd', label:'液晶の状態', type:'select', options:[
+      {v:'LCD clear - no missing or bleeding segments',l:'✅ 液晶クリア（セグメント欠け・滲みなし）'},
+      {v:'Minor LCD bleeding in corner - does not affect gameplay',l:'⚠️ 端に軽微な滲みあり（ゲームに影響なし）'},
+      {v:'Some LCD bleeding visible during gameplay',l:'⚠️ プレイ中に滲みが目立つ'},
+      {v:'Missing LCD segments - affects display',l:'❌ セグメント欠けあり（表示に影響）'},
+      {v:'Significant LCD issues',l:'❌ 液晶に重大な問題あり'}
+    ]},
+    { id:'lens', label:'スクリーンレンズ', type:'select', options:[
+      {v:'Screen lens clear - no scratches',l:'✅ クリア（傷なし）'},
+      {v:'Minor hairline scratches on lens',l:'細かい傷あり（目立たない）'},
+      {v:'Noticeable scratches on lens',l:'⚠️ 目立つ傷あり'},
+      {v:'Deep scratches or cracks on lens',l:'❌ 深い傷・ひびあり'}
+    ]},
+    { id:'cosmetic', label:'外装', type:'select', options:[
+      {v:'Excellent - minimal signs of use',l:'Excellent（使用感ほぼなし）'},
+      {v:'Very Good - minor scuffs only',l:'Very Good（細かい傷のみ）'},
+      {v:'Good - noticeable wear and scratches',l:'Good（使用感・傷あり）'},
+      {v:'Paint loss or significant wear',l:'塗装剥げ・目立つ使用感あり'},
+      {v:'Yellowing of plastic',l:'プラスチックの黄変あり'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Unit only (no box or manual)',l:'本体のみ（箱・説明書なし）'},
+      {v:'With original manual',l:'説明書付き'},
+      {v:'Complete in Box (CIB)',l:'CIB（箱・説明書付き）'},
+      {v:'Complete in Box with all inserts',l:'CIB＋インサート類全付き（完品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Confirmed original - not a reproduction',l:'本家オリジナル確認済み（復刻版・コピーではない）'},
+      {v:'Original box has some wear but intact',l:'箱に使用感あり・破損なし'},
+      {v:'Battery contacts clean - no corrosion',l:'電池端子きれい・腐食なし'},
+      {v:'Battery contacts have minor corrosion - cleaned',l:'電池端子に腐食あり→クリーニング済み'},
+      {v:'Screen protector applied (not original)',l:'社外品スクリーン保護フィルム貼付あり'},
+      {v:'Alarm function tested and working',l:'アラーム機能動作確認済み'},
+      {v:'Made in Japan',l:'Made in Japan'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   slr: [
     { id:'brand', label:'ブランド', type:'select', options:[
       {v:'Canon',l:'Canon'},{v:'Nikon',l:'Nikon'},{v:'Olympus',l:'Olympus'},
@@ -775,6 +851,7 @@ const checklists = {
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
@@ -1123,6 +1200,48 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     ];
     desc = gameLines.join('\n');
 
+  } else if (g === 'gnw') {
+    const type = getVal('type'), series = getVal('series');
+    const gnwTitle = getVal('title'), modelnumber = getVal('modelnumber');
+    const cond = getVal('condition'), gamework = getVal('gamework');
+    const lcd = getVal('lcd'), gnwLens = getVal('lens'), cosmetic = getVal('cosmetic');
+    const cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notes = getVal('notes');
+    const allNotes = [notescheck, notes].filter(Boolean).join('. ');
+    const isOriginal = type.includes('Original');
+    const seriesLabel = (isOriginal && series) ? series + ' ' : '';
+    const cibLabel = cib.includes('CIB') ? 'CIB' : cib.includes('manual') ? 'With Manual' : 'Unit Only';
+
+    title = `Nintendo Game & Watch ${gnwTitle} ${seriesLabel}${isOriginal ? 'Vintage ' : ''}${cond} ${cibLabel} From Japan`.substring(0, 80);
+    condition = `${cond}. ${gamework} LCD: ${lcd}. Screen lens: ${gnwLens}. Body: ${cosmetic}. Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+
+ITEM DETAILS
+Item: Nintendo Game & Watch - ${gnwTitle}
+Type: ${type}${series ? '\nSeries: ' + series : ''}${modelnumber ? '\nModel No.: ' + modelnumber : ''}
+Condition: ${cond}
+Includes: ${cib}
+
+CONDITION DETAILS
+Gameplay: ${gamework}
+LCD Screen: ${lcd}
+Screen Lens: ${gnwLens}
+Body / Cosmetic: ${cosmetic}
+Notes: ${allNotes || 'N/A'}
+
+${isOriginal ? '✅ This is a VINTAGE ORIGINAL Game & Watch, not a modern reproduction.\nManufactured in Japan by Nintendo.' : '⚠️ This is the ' + type + '.'}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'slr') {
     const brand = getVal('brand'), model = getVal('model'), color = getVal('color');
     const lensAtt = getVal('lens'), cond = getVal('condition');
@@ -1348,6 +1467,21 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Jewels', v: jewels || '' },
       { k:'Features', v: dialcheck.includes('Day') ? 'Day/Date' : '' },
       { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'gnw') {
+    const type = getVal('type'), series = getVal('series');
+    const gnwTitle = getVal('title'), modelnumber = getVal('modelnumber');
+    const isOriginal = type.includes('Original');
+    specs = [
+      { k:'Brand', v: 'Nintendo' },
+      { k:'Model', v: gnwTitle || '' },
+      { k:'Model Number', v: modelnumber || '' },
+      { k:'Series', v: series || (isOriginal ? '' : 'Game & Watch Modern') },
+      { k:'Platform', v: 'Game & Watch' },
+      { k:'Type', v: isOriginal ? 'Vintage Original' : 'Modern Reissue' },
+      { k:'Country/Region of Manufacture', v: isOriginal ? 'Japan' : 'China' },
+      { k:'Vintage', v: isOriginal ? 'Yes' : 'No' },
       { k:'Modified Item', v: 'No' },
     ];
   } else if (g === 'slr') {
