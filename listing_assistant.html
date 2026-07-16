@@ -235,6 +235,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
+  <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
 </div>
 
 <div class="main">
@@ -1000,6 +1001,82 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  retrotoy: [
+    { id:'brand', label:'メーカー', type:'select', options:[
+      {v:'Bandai',l:'バンダイ'},{v:'Takara',l:'タカラ'},{v:'Tomy',l:'トミー'},
+      {v:'Popy',l:'ポピー'},{v:'Bullmark',l:'ブルマァク'},{v:'Marusan',l:'マルサン'},
+      {v:'Masudaya',l:'増田屋（マスダヤ）'},{v:'Yonezawa',l:'米澤玩具（ヨネザワ）'},
+      {v:'Nomura',l:'野村トーイ'},{v:'Aoshima',l:'アオシマ'},{v:'Nitto',l:'ニットー'},
+      {v:'Takatoku',l:'タカトクトイス'},{v:'Clover',l:'クローバー'},
+      {v:'Unknown',l:'メーカー不明'}
+    ]},
+    { id:'model', label:'商品名・型番', type:'text', placeholder:'例: Mazinger Z DX / No.51 Robot' },
+    { id:'era', label:'年代', type:'select', options:[
+      {v:'1950s',l:'1950年代'},{v:'1960s',l:'1960年代'},{v:'1970s',l:'1970年代'},
+      {v:'1980s',l:'1980年代'},{v:'1990s',l:'1990年代'},{v:'Year unknown',l:'年代不明'}
+    ]},
+    { id:'toytype', label:'素材・種類', type:'select', options:[
+      {v:'Tin toy (battery operated)',l:'ブリキ（電動）'},
+      {v:'Tin toy (wind-up)',l:'ブリキ（ゼンマイ）'},
+      {v:'Tin toy (friction)',l:'ブリキ（フリクション）'},
+      {v:'Soft vinyl figure (sofubi)',l:'ソフビ人形'},
+      {v:'Plastic figure',l:'プラスチックフィギュア'},
+      {v:'Chogokin / Diecast',l:'超合金・ダイキャスト'},
+      {v:'Plastic model kit',l:'プラモデル'},
+      {v:'Celluloid toy',l:'セルロイド人形'},
+      {v:'Rubber toy',l:'ゴム人形'},
+      {v:'Other',l:'その他'}
+    ]},
+    { id:'working', label:'動作状態', type:'select', options:[
+      {v:'Fully working',l:'完動品（全機能正常）'},
+      {v:'Partially working',l:'一部動作（詳細は特記事項に記載）'},
+      {v:'Not working',l:'不動品（For Parts）'},
+      {v:'Untested',l:'動作未確認'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'exterior', label:'外装', type:'select', options:[
+      {v:'No issues',l:'問題なし'},
+      {v:'Minor scuffs / light wear',l:'軽微な擦り傷・経年劣化'},
+      {v:'Paint loss / fading',l:'塗装剥げ・色褪せあり'},
+      {v:'Rust spots on tin parts',l:'ブリキ部分に錆あり'},
+      {v:'Cracks or chips on plastic',l:'プラスチック部分にヒビ・欠けあり'},
+      {v:'Heavy wear overall',l:'全体的に大きな劣化あり'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Complete in Box (CIB)',l:'箱・説明書・全付属品あり（CIB）'},
+      {v:'With original box',l:'箱あり（説明書なし）'},
+      {v:'With box and manual',l:'箱・説明書あり'},
+      {v:'Item only - no box',l:'本体のみ（箱なし）'},
+      {v:'For display only',l:'ディスプレイ用途'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Motor does not work',l:'モーター不動'},
+      {v:'Wind-up mechanism does not work',l:'ゼンマイ機構不動'},
+      {v:'Battery compartment has corrosion',l:'電池端子に腐食あり'},
+      {v:'Some parts missing',l:'一部パーツ欠品'},
+      {v:'Sticker / decal peeling',l:'シール・デカール剥がれあり'},
+      {v:'Repair or restoration has been done',l:'修理・レストア済み'},
+      {v:'Sold as display / parts only',l:'ディスプレイ・パーツ取り用として出品'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Motor does not work',l:'モーター不動'},
+      {v:'Wind-up mechanism does not work',l:'ゼンマイ機構不動'},
+      {v:'Battery compartment has corrosion',l:'電池端子に腐食あり'},
+      {v:'Some parts missing',l:'一部パーツ欠品'},
+      {v:'Sticker / decal peeling',l:'シール・デカール剥がれあり'},
+      {v:'Repair or restoration has been done',l:'修理・レストア済み'},
+      {v:'Sold as display / parts only',l:'ディスプレイ・パーツ取り用として出品'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Left arm does not move. Friction drive works.' },
+  ],
 };
 
 // チェックリスト定義
@@ -1014,6 +1091,7 @@ const checklists = {
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  retrotoy: ['動作確認（電動・ゼンマイ・フリクション）','電池端子の腐食確認','外装確認（錆・塗装剥げ・ヒビ・欠け）','可動部すべての動作確認','付属品・箱・説明書の有無確認','写真撮影（全面・可動部・不具合箇所・箱・底面刻印）','Terapeak実売確認（同メーカー・同ジャンル3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
 function setGenre(genre) {
@@ -1569,6 +1647,46 @@ RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+  } else if (g === 'retrotoy') {
+    const brand = getVal('brand'), model = getVal('model'), era = getVal('era');
+    const toytype = getVal('toytype'), working = getVal('working'), cond = getVal('condition');
+    const exterior = getVal('exterior'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const isForParts = working === 'Not working' || cond === 'For Parts';
+    const workingLabel = isForParts ? 'For Parts / Not Working' : working;
+
+    title = `${brand} ${model} ${era} ${toytype.split('(')[0].trim()} ${cond} ${isForParts ? 'For Parts' : 'From Japan'}`.substring(0, 80);
+    condition = `${cond}. ${workingLabel}. Exterior: ${exterior}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in vintage Japanese toys and collectibles.
+
+ITEM DETAILS
+Brand: ${brand}
+Model / Name: ${model}
+Era: ${era}
+Type: ${toytype}
+Includes: ${cib}
+
+CONDITION DETAILS
+Overall: ${cond}
+Working Status: ${workingLabel}
+Exterior: ${exterior}
+Notes: ${allNotes || 'N/A'}
+
+⚠️ This is a vintage toy. Age-related wear is expected and part of the character. Please see all photos carefully before purchasing.
+${isForParts ? '\n⚠️ Sold AS-IS for display or parts only. Not guaranteed to be in working condition.' : ''}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap to protect during transit
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
   }
 
   document.getElementById('title-text').textContent = title;
@@ -1716,6 +1834,22 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       { k:'Lens Mount', v: mountMap[brand] || '' },
       { k:'Color', v: color },
       { k:'Includes Lens', v: lensAtt.includes('Body only') ? 'No' : 'Yes' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'retrotoy') {
+    const brand = getVal('brand'), model = getVal('model'), era = getVal('era');
+    const toytype = getVal('toytype'), working = getVal('working'), cond = getVal('condition');
+    const cib = getVal('cib');
+    const isForParts = working === 'Not working' || cond === 'For Parts';
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Type', v: toytype },
+      { k:'Year', v: era },
+      { k:'Working', v: isForParts ? 'For Parts or Not Working' : working },
+      { k:'Original/Reproduction', v: 'Original' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Vintage', v: 'Yes' },
       { k:'Modified Item', v: 'No' },
