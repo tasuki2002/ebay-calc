@@ -352,9 +352,10 @@ const forms = {
       {v:'Sigma SA',l:'Sigma SA'},{v:'Other',l:'その他'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent+',l:'Excellent+（極上品）'},
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'optical', label:'光学系', type:'select', options:[
       {v:'Clear - No issues',l:'クリア（問題なし）'},
@@ -469,9 +470,10 @@ const forms = {
       {v:'Japan (JPN)',l:'Japan（日本版）'},{v:'USA (USA)',l:'USA（北米版）'},{v:'Europe (EUR)',l:'Europe（欧州版）'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},{v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'screen', label:'画面状態', type:'select', options:[
       {v:'No scratches',l:'傷なし'},{v:'Minor scratches',l:'微細な傷あり'},
@@ -523,9 +525,10 @@ const forms = {
       {v:'Japan (NTSC-J)',l:'日本版（NTSC-J）'},{v:'USA (NTSC-U)',l:'北米版（NTSC-U）'},{v:'Europe (PAL)',l:'欧州版（PAL）'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
       {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
-      {v:'Acceptable',l:'Acceptable（難あり・動作品）'}
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'cib', label:'付属品', type:'select', options:[
       {v:'Cartridge only (no box or manual)',l:'ソフトのみ（箱・説明書なし）'},
@@ -585,8 +588,10 @@ const forms = {
     ]},
     { id:'model', label:'型番', type:'text', placeholder:'例: PowerShot G7X, Cyber-shot RX100' },
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'screen', label:'液晶状態', type:'select', options:[
       {v:'No scratches',l:'傷なし'},{v:'Minor scratches',l:'微細な傷あり'},
@@ -637,14 +642,10 @@ const forms = {
     ]},
     { id:'color', label:'カラー', type:'text', placeholder:'例: Black, White, Silver, Piano Black' },
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Mint',l:'Mint（備品・未使用級）'},
-      {v:'Excellent+',l:'Excellent+（EX+・綺麗・目立った傷なし）'},
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},
-      {v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
-      {v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},
-      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'screen', label:'画面状態', type:'select', options:[
       {v:'No scratches - clean display',l:'傷なし・きれい'},
@@ -701,11 +702,10 @@ const forms = {
     ]},
     { id:'color', label:'カラー', type:'text', placeholder:'例: Black（ブラック）, White（ホワイト）, Aqua Blue' },
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},
-      {v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},
-      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'screen', label:'画面状態', type:'select', options:[
       {v:'No scratches - clean display',l:'傷なし・きれい'},
@@ -775,9 +775,10 @@ const forms = {
     ]},
     { id:'jewelsnote', label:'石数（補足・自由記入）', type:'text', placeholder:'例: 文字盤に "21 Jewels" 表記あり' },
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
       {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
-      {v:'For Parts',l:'For Parts（ジャンク・要修理）'}
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'movecheck', label:'稼働確認', type:'select', options:[
       {v:'Hand-wound and confirmed running',l:'手で振って稼働確認済み（針が動く）'},
@@ -858,11 +859,10 @@ const forms = {
     { id:'title', label:'タイトル', type:'text', placeholder:'例: Donkey Kong, Ball, Octopus, Mario Bros' },
     { id:'modelnumber', label:'型番', type:'text', placeholder:'例: DK-52, BA-02, OC-22, MW-56' },
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},
-      {v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・使用感あり）'},
-      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'gamework', label:'動作確認', type:'select', options:[
       {v:'Game A and Game B both working. Clock function working.',l:'✅ ゲームA・B両方動作・時計機能正常'},
@@ -929,11 +929,10 @@ const forms = {
       {v:'Other',l:'その他'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},
-      {v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・使用感あり）'},
-      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'power', label:'電源・起動', type:'select', options:[
       {v:'Powers on - boot screen displays correctly',l:'✅ 起動OK・ブート画面正常表示'},
@@ -1006,9 +1005,10 @@ const forms = {
       {v:'With lens (see description)',l:'レンズ付き（詳細は説明参照）'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},{v:'Acceptable',l:'Acceptable（難あり・動作品）'},
-      {v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'optical', label:'① レンズ光学系', type:'select', options:[
       {v:'Clear - no fungus, no haze',l:'✅ クリア（カビ・クモリなし）'},
@@ -1101,9 +1101,10 @@ const forms = {
       {v:'Untested',l:'動作未確認'}
     ]},
     { id:'condition', label:'状態', type:'select', options:[
-      {v:'Mint',l:'Mint（ほぼ未使用）'},{v:'Excellent+',l:'Excellent+（極上品）'},
-      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good',l:'Very Good（やや傷あり）'},
-      {v:'Good',l:'Good（傷・汚れあり）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
     ]},
     { id:'exterior', label:'外装', type:'select', options:[
       {v:'No issues',l:'問題なし'},
