@@ -232,6 +232,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
+  <button class="genre-btn" onclick="setGenre('psp')">🎮 PSP</button>
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
@@ -625,6 +626,69 @@ const forms = {
       {v:'Flash works normally',l:'フラッシュ正常動作'}
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Shutter count 500（シャッター回数）・その他自由記入' },
+  ],
+  psp: [
+    { id:'model', label:'機種', type:'select', options:[
+      {v:'PSP-1000',l:'PSP-1000（初代）'},
+      {v:'PSP-2000',l:'PSP-2000（スリム）'},
+      {v:'PSP-3000',l:'PSP-3000（液晶改良）'},
+      {v:'PSP Go (N1000)',l:'PSP Go（N1000）'},
+      {v:'PSP Street (E1000)',l:'PSP Street（E1000）'}
+    ]},
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Black, White, Silver, Piano Black' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'画面状態', type:'select', options:[
+      {v:'No scratches - clean display',l:'傷なし・きれい'},
+      {v:'Minor scratches on screen',l:'画面に微細な傷あり'},
+      {v:'Noticeable scratches on screen',l:'画面に目立つ傷あり'},
+      {v:'Dead pixels present',l:'ドット欠けあり'},
+      {v:'Screen crack',l:'画面割れあり'}
+    ]},
+    { id:'umd', label:'UMDドライブ', type:'select', options:[
+      {v:'UMD drive works normally',l:'正常動作'},
+      {v:'UMD drive reads slowly',l:'読み込みが遅い'},
+      {v:'UMD drive does not read',l:'読み込み不可'},
+      {v:'N/A (PSP Go)',l:'N/A（PSP Goのためドライブなし）'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Body only (no charger)',l:'本体のみ（充電器なし）'},
+      {v:'With charger',l:'充電器付き'},
+      {v:'With charger and battery',l:'充電器＋バッテリー付き'},
+      {v:'CIB (box, manual, charger)',l:'CIB（箱・説明書・充電器付き）'}
+    ]},
+    { id:'battery', label:'バッテリー', type:'select', options:[
+      {v:'Battery holds charge well',l:'充電良好'},
+      {v:'Battery drains faster than normal',l:'バッテリーの減りがやや早い'},
+      {v:'Battery does not hold charge',l:'バッテリー劣化・充電できない'},
+      {v:'No battery included',l:'バッテリーなし'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Region free - works worldwide',l:'リージョンフリー・世界中で使用可'},
+      {v:'Buttons all responsive and working',l:'全ボタン正常動作確認済み'},
+      {v:'Analog stick in good condition',l:'アナログパッド良好'},
+      {v:'Analog stick shows minor drift',l:'アナログパッドにわずかなドリフトあり'},
+      {v:'Back panel has minor scratches',l:'背面パネルに軽微な傷あり'},
+      {v:'Custom firmware installed (CFW)',l:'カスタムファームウェア導入済み（CFW）'},
+      {v:'Original firmware (OFW)',l:'オリジナルファームウェア（OFW）'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Region free - works worldwide',l:'リージョンフリー・世界中で使用可'},
+      {v:'Buttons all responsive and working',l:'全ボタン正常動作確認済み'},
+      {v:'Analog stick in good condition',l:'アナログパッド良好'},
+      {v:'Analog stick shows minor drift',l:'アナログパッドにわずかなドリフトあり'},
+      {v:'Back panel has minor scratches',l:'背面パネルに軽微な傷あり'},
+      {v:'Custom firmware installed (CFW)',l:'カスタムファームウェア導入済み（CFW）'},
+      {v:'Original firmware (OFW)',l:'オリジナルファームウェア（OFW）'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
   vita: [
     { id:'model', label:'機種', type:'select', options:[
@@ -1086,6 +1150,7 @@ const checklists = {
   '3ds': ['動作確認（電源・画面・ボタン）','リージョン確認','ヒンジ・液晶・外観チェック','写真撮影（全面・画面・ヒンジ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  psp: ['動作確認（電源・画面・ボタン・アナログパッド）','UMDドライブ読み込み確認','画面傷・ドット欠け確認','バッテリー充電・持ち確認','写真撮影（全面・画面・背面・UMD口・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1341,6 +1406,46 @@ Method: FedEx International Priority
 Handling: Ships within 1 business day after payment
 Tracking: Full tracking provided
 Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'psp') {
+    const model = getVal('model'), color = getVal('color');
+    const cond = getVal('condition'), screen = getVal('screen');
+    const umd = getVal('umd'), cib = getVal('cib'), battery = getVal('battery');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const isCIB = cib.includes('CIB');
+    const isGo = model.includes('Go');
+
+    title = `Sony ${model} ${color} ${cond} ${isCIB ? 'CIB' : 'Tested Working'} Region Free From Japan`.substring(0, 80);
+    condition = `${cond}. Screen: ${screen}.${isGo ? '' : ' UMD: ' + umd + '.'} Battery: ${battery}. ${cib}. ${allNotes || 'All buttons and functions work normally.'} Region free - works worldwide.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+System: Sony ${model}
+Color: ${color}
+Condition: ${cond}
+Includes: ${cib}
+
+✅ REGION FREE - Works on any system worldwide. No region restrictions.
+
+CONDITION DETAILS
+Screen: ${screen}
+${isGo ? '' : 'UMD Drive: ' + umd + '\n'}Battery: ${battery}
+Notes: ${allNotes || 'All buttons and analog pad tested and working normally.'}
+
+Fully tested before shipping. Power on, all buttons, analog pad, and ${isGo ? 'storage' : 'UMD drive'} confirmed working.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and protective box
 
 RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
@@ -1751,6 +1856,17 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Release Year', v: releaseyear || '' },
       { k:'Region Code', v: specRegion },
       { k:'Language', v: 'Japanese' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'psp') {
+    const model = getVal('model'), color = getVal('color');
+    specs = [
+      { k:'Brand', v: 'Sony' },
+      { k:'Model', v: model },
+      { k:'Color', v: color },
+      { k:'Platform', v: 'PlayStation Portable' },
+      { k:'Region', v: 'Region Free' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
