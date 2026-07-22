@@ -188,6 +188,11 @@ html, body {
 .copy-btn.done { background: #1a2a1a; color: var(--green); border-color: #1e3a1e; }
 .copy-btn:active { background: #333; }
 
+/* HSコード */
+.hs-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.hs-code { font-size: 20px; font-weight: 800; color: var(--gold); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.hs-desc { font-size: 12px; color: var(--sub); flex: 1; min-width: 120px; }
+
 .output-text {
   padding: 12px 14px;
   font-size: 12px; line-height: 1.7;
@@ -244,6 +249,16 @@ html, body {
 
   <!-- 入力フォーム（ジャンル別） -->
   <div id="form-area"></div>
+
+  <!-- HSコード -->
+  <div class="section" id="hs-section">
+    <div class="section-title">🌐 HSコード（e-Logi入力用）</div>
+    <div class="hs-row">
+      <span class="hs-code" id="hs-code-text">-</span>
+      <span class="hs-desc" id="hs-desc-text"></span>
+      <button class="copy-btn" id="cp-hs" onclick="copyHS()">コピー</button>
+    </div>
+  </div>
 
   <!-- 梱包情報 -->
   <div class="section">
@@ -1232,11 +1247,45 @@ const checklists = {
   cdplayer: ['電源確認（ACアダプター・電池両方）','ディスク読み込み確認（CD-R含む数枚でテスト）','液晶表示確認','ヘッドホン端子・音声出力確認','リモコン端子確認','電池端子の腐食確認','外装傷・ボタン動作確認','付属品確認（ACアダプター・リモコン・イヤホン）','写真撮影（全面・液晶・端子類・付属品）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
+// HSコード定義（e-Logi入力用）
+const hsCodes = {
+  lens:      { code:'9002.11', desc:'カメラ用対物レンズ' },
+  boss:      { code:'8543.70', desc:'エフェクター（電気機器）' },
+  '3ds':     { code:'9504.50', desc:'ビデオゲーム機' },
+  game:      { code:'9504.50', desc:'ビデオゲームソフト' },
+  digicam:   { code:'8525.89', desc:'デジタルカメラ' },
+  watch:     { code:'9102.21', desc:'腕時計（機械式・自動巻）' },
+  vita:      { code:'9504.50', desc:'ビデオゲーム機' },
+  psp:       { code:'9504.50', desc:'ビデオゲーム機' },
+  slr:       { code:'9006.53', desc:'35mmフィルムカメラ' },
+  gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
+  '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
+  retrotoy:  { code:'9503.00', desc:'玩具（その他）' },
+  cdplayer:  { code:'8519.81', desc:'ポータブルCDプレーヤー' },
+};
+
+function updateHS() {
+  const hs = hsCodes[currentGenre];
+  document.getElementById('hs-code-text').textContent = hs ? hs.code : '-';
+  document.getElementById('hs-desc-text').textContent = hs ? hs.desc : '';
+}
+
+function copyHS() {
+  const hs = hsCodes[currentGenre];
+  if (!hs) return;
+  navigator.clipboard.writeText(hs.code);
+  const btn = document.getElementById('cp-hs');
+  btn.classList.add('done');
+  btn.textContent = '✓ コピー済';
+  setTimeout(() => { btn.classList.remove('done'); btn.textContent = 'コピー'; }, 1500);
+}
+
 function setGenre(genre) {
   currentGenre = genre;
   document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
   renderForm();
+  updateHS();
   hideOutputs();
 }
 
@@ -2242,6 +2291,7 @@ function copyOut(textId, btnId) {
 
 // 初期表示
 renderForm();
+updateHS();
 </script>
 </body>
 </html>
