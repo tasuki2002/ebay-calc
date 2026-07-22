@@ -237,6 +237,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
+  <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
 </div>
 
 <div class="main">
@@ -1145,6 +1146,73 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Left arm does not move. Friction drive works.' },
   ],
+  cdplayer: [
+    { id:'brand', label:'ブランド', type:'select', options:[
+      {v:'Sony',l:'Sony（ソニー）'},{v:'Panasonic',l:'Panasonic（パナソニック）'},
+      {v:'Aiwa',l:'Aiwa（アイワ）'},{v:'Kenwood',l:'Kenwood（ケンウッド）'},
+      {v:'Pioneer',l:'Pioneer（パイオニア）'},{v:'Denon',l:'Denon（デノン）'},
+      {v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: CDP-D11, D-E700, SL-S200' },
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Silver, Black, Champagne Gold' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},
+      {v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},
+      {v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},
+      {v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},
+      {v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'discread', label:'ディスク読み込み', type:'select', options:[
+      {v:'Reads all discs normally',l:'✅ 全ディスク正常読み込み'},
+      {v:'Reads most discs - occasional skip',l:'ほぼ正常・まれにスキップあり'},
+      {v:'Reads with difficulty',l:'読み込みが不安定'},
+      {v:'Does not read discs',l:'ディスク読み込み不可'}
+    ]},
+    { id:'display', label:'液晶・表示', type:'select', options:[
+      {v:'Display works normally',l:'✅ 表示正常'},
+      {v:'Display dim but readable',l:'表示が薄いが読める'},
+      {v:'Display partially working',l:'表示が一部欠けあり'},
+      {v:'No display',l:'表示なし'}
+    ]},
+    { id:'power', label:'電源', type:'select', options:[
+      {v:'Powers on via AC adapter',l:'✅ ACアダプター動作確認済み'},
+      {v:'Powers on via batteries',l:'✅ 電池動作確認済み'},
+      {v:'AC adapter only tested',l:'ACアダプターのみ確認'},
+      {v:'Powers on - battery compartment corroded',l:'通電OK・電池端子に腐食あり'},
+      {v:'Does not power on',l:'電源入らず'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Body only',l:'本体のみ'},
+      {v:'With AC adapter',l:'ACアダプター付き'},
+      {v:'With AC adapter and remote',l:'ACアダプター＋リモコン付き'},
+      {v:'With AC adapter, remote and earphones',l:'ACアダプター＋リモコン＋イヤホン付き'},
+      {v:'CIB (box, manual, all accessories)',l:'CIB（箱・説明書・全付属品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'No AC adapter included',l:'ACアダプターなし'},
+      {v:'Anti-skip (ESP) function works normally',l:'アンチスキップ（ESP）正常動作'},
+      {v:'Battery compartment has minor corrosion',l:'電池端子に軽微な腐食あり'},
+      {v:'Lid opens and closes smoothly',l:'蓋の開閉スムーズ'},
+      {v:'Headphone jack works normally',l:'ヘッドホン端子正常動作'},
+      {v:'Remote control jack works normally',l:'リモコン端子正常動作'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'No AC adapter included',l:'ACアダプターなし'},
+      {v:'Anti-skip (ESP) function works normally',l:'アンチスキップ（ESP）正常動作'},
+      {v:'Battery compartment has minor corrosion',l:'電池端子に軽微な腐食あり'},
+      {v:'Lid opens and closes smoothly',l:'蓋の開閉スムーズ'},
+      {v:'Headphone jack works normally',l:'ヘッドホン端子正常動作'},
+      {v:'Remote control jack works normally',l:'リモコン端子正常動作'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
 };
 
 // チェックリスト定義
@@ -1161,6 +1229,7 @@ const checklists = {
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   retrotoy: ['動作確認（電動・ゼンマイ・フリクション）','電池端子の腐食確認','外装確認（錆・塗装剥げ・ヒビ・欠け）','可動部すべての動作確認','付属品・箱・説明書の有無確認','写真撮影（全面・可動部・不具合箇所・箱・底面刻印）','Terapeak実売確認（同メーカー・同ジャンル3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  cdplayer: ['電源確認（ACアダプター・電池両方）','ディスク読み込み確認（CD-R含む数枚でテスト）','液晶表示確認','ヘッドホン端子・音声出力確認','リモコン端子確認','電池端子の腐食確認','外装傷・ボタン動作確認','付属品確認（ACアダプター・リモコン・イヤホン）','写真撮影（全面・液晶・端子類・付属品）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
 
 function setGenre(genre) {
@@ -1756,6 +1825,45 @@ RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+  } else if (g === 'cdplayer') {
+    const brand = getVal('brand'), model = getVal('model'), color = getVal('color');
+    const cond = getVal('condition'), discread = getVal('discread');
+    const display = getVal('display'), power = getVal('power'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const isForParts = cond === 'For Parts';
+
+    title = `${brand} ${model} ${color} Portable CD Player Discman ${cond} ${isForParts ? 'For Parts' : 'Tested'} Japan`.substring(0, 80);
+    condition = `${cond}. Disc: ${discread}. Display: ${display}. Power: ${power}. Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese vintage audio and electronics.
+
+ITEM DETAILS
+Brand: ${brand}
+Model: ${model}
+Color: ${color}
+Includes: ${cib}
+
+CONDITION DETAILS
+Overall: ${cond}
+Disc Reading: ${discread}
+Display: ${display}
+Power: ${power}
+Notes: ${allNotes || 'N/A'}
+
+${isForParts ? '⚠️ Sold AS-IS for parts or repair only.' : 'Fully tested before shipping. Disc reading, display, and audio output confirmed working.'}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and protective box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'retrotoy') {
     const brand = getVal('brand'), model = getVal('model'), era = getVal('era');
     const toytype = getVal('toytype'), working = getVal('working'), cond = getVal('condition');
@@ -1956,6 +2064,17 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Includes Lens', v: lensAtt.includes('Body only') ? 'No' : 'Yes' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'cdplayer') {
+    const brand = getVal('brand'), model = getVal('model'), color = getVal('color');
+    const cond = getVal('condition');
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Color', v: color },
+      { k:'Type', v: 'Portable CD Player' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
   } else if (g === 'retrotoy') {
