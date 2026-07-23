@@ -240,6 +240,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('psp')">🎮 PSP</button>
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
+  <button class="genre-btn" onclick="setGenre('gamecube')">🎮 ゲームキューブ</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
   <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
@@ -936,6 +937,84 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  gamecube: [
+    { id:'color', label:'カラー', type:'select', options:[
+      {v:'Indigo (Violet)',l:'インディゴ（紫・定番）'},
+      {v:'Jet Black',l:'ジェットブラック'},
+      {v:'Pearl White',l:'パールホワイト'},
+      {v:'Spice Orange',l:'スパイスオレンジ（希少）'},
+      {v:'Symphonic Green',l:'シンフォニックグリーン'},
+      {v:'Platinum Silver',l:'プラチナシルバー'},
+      {v:'Other / Limited Edition',l:'その他・限定色'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: DOL-001（初期型・GBP対応）, DOL-101（後期型）' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'region', label:'リージョン', type:'select', options:[
+      {v:'NTSC-J (Japan)',l:'NTSC-J（日本版）'},
+      {v:'NTSC-U (North America)',l:'NTSC-U（北米版）'},
+      {v:'PAL (Europe)',l:'PAL（欧州版）'}
+    ]},
+    { id:'power', label:'電源・起動', type:'select', options:[
+      {v:'Powers on - boot screen displays correctly',l:'✅ 起動OK・ブート画面正常表示'},
+      {v:'Powers on but no video output',l:'⚠️ 電源入るが映像出力なし'},
+      {v:'Does not power on',l:'❌ 電源入らず（For Parts）'}
+    ]},
+    { id:'discread', label:'ディスク読み込み', type:'select', options:[
+      {v:'Disc reads correctly - tested with game',l:'✅ ディスク読み込みOK・ゲーム起動確認'},
+      {v:'Reads disc but occasional load errors',l:'⚠️ 読み込むが時々エラーあり'},
+      {v:'Disc read error - does not load games',l:'❌ 読み込みエラー・ゲーム起動しない'}
+    ]},
+    { id:'gbplayer', label:'ゲームボーイプレーヤー（本体下部拡張）', type:'select', options:[
+      {v:'',l:'なし（付属しない）'},
+      {v:'Game Boy Player included (DOL-017) - tested working',l:'✅ ゲームボーイプレーヤー付き（DOL-017）動作確認済み'},
+      {v:'Game Boy Player included (DOL-017) - not tested',l:'ゲームボーイプレーヤー付き（DOL-017）未確認'},
+      {v:'Game Boy Player attachment only - no start-up disc',l:'ゲームボーイプレーヤー本体のみ・起動ディスクなし'}
+    ]},
+    { id:'gbpdisc', label:'ゲームボーイプレーヤー起動ディスク', type:'select', options:[
+      {v:'',l:'なし（付属しない）'},
+      {v:'Game Boy Player Start-up Disc included',l:'✅ 起動ディスク付き'},
+      {v:'Start-up Disc included - some scratches',l:'起動ディスク付き（傷あり）'},
+      {v:'Start-up Disc only (no Game Boy Player attachment)',l:'起動ディスクのみ（プレーヤー本体なし）'}
+    ]},
+    { id:'controller', label:'コントローラー', type:'select', options:[
+      {v:'Original controller included - tested working',l:'純正コントローラー付き・動作確認済み'},
+      {v:'Original controller included - not tested',l:'純正コントローラー付き・未確認'},
+      {v:'No controller included',l:'コントローラーなし'},
+      {v:'Third-party controller included',l:'社外品コントローラー付き'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Console only',l:'本体のみ'},
+      {v:'Console and controller',l:'本体＋コントローラー'},
+      {v:'Console, controller and cables',l:'本体＋コントローラー＋ケーブル類'},
+      {v:'Complete in Box (CIB)',l:'CIB（箱・説明書付き・完品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'DOL-001 model - supports Game Boy Player',l:'DOL-001型番・ゲームボーイプレーヤー対応'},
+      {v:'DOL-101 model - digital AV out removed, no GBP bottom port',l:'DOL-101型番・GBP非対応'},
+      {v:'Controller ports all tested working',l:'全コントローラーポート動作確認済み'},
+      {v:'Memory card included',l:'メモリーカード付き'},
+      {v:'Component / D-Terminal AV out available',l:'コンポーネント/D端子出力あり'},
+      {v:'Region locked - plays same-region discs only',l:'リージョンロック・同一地域ディスク専用'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'DOL-001 model - supports Game Boy Player',l:'DOL-001型番・ゲームボーイプレーヤー対応'},
+      {v:'DOL-101 model - digital AV out removed, no GBP bottom port',l:'DOL-101型番・GBP非対応'},
+      {v:'Controller ports all tested working',l:'全コントローラーポート動作確認済み'},
+      {v:'Memory card included',l:'メモリーカード付き'},
+      {v:'Component / D-Terminal AV out available',l:'コンポーネント/D端子出力あり'},
+      {v:'Region locked - plays same-region discs only',l:'リージョンロック・同一地域ディスク専用'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   '3do': [
     { id:'model', label:'機種名', type:'select', options:[
       {v:'Panasonic FZ-1',l:'Panasonic FZ-1（初代・トップローダー）'},
@@ -1240,6 +1319,7 @@ const checklists = {
   psp: ['動作確認（電源・画面・ボタン・アナログパッド）','UMDドライブ読み込み確認','画面傷・ドット欠け確認','バッテリー充電・持ち確認','写真撮影（全面・画面・背面・UMD口・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1259,6 +1339,7 @@ const hsCodes = {
   psp:       { code:'9504.50', desc:'ビデオゲーム機' },
   slr:       { code:'9006.53', desc:'35mmフィルムカメラ' },
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
+  gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
   retrotoy:  { code:'9503.00', desc:'玩具（その他）' },
   cdplayer:  { code:'8519.81', desc:'ポータブルCDプレーヤー' },
@@ -1666,6 +1747,56 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     ];
     desc = gameLines.join('\n');
 
+  } else if (g === 'gamecube') {
+    const color = getVal('color'), model = getVal('model'), cond = getVal('condition');
+    const region = getVal('region'), power = getVal('power'), discread = getVal('discread');
+    const gbplayer = getVal('gbplayer'), gbpdisc = getVal('gbpdisc');
+    const controller = getVal('controller'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const hasGBP = !!gbplayer;
+    const hasGBPDisc = !!gbpdisc;
+    const gbpTitle = hasGBP ? 'with Game Boy Player ' : '';
+    const isCIB = cib.includes('CIB');
+    const cibLabel = isCIB ? 'CIB' : cib.includes('cables') ? 'Bundle' : 'Tested';
+
+    title = `Nintendo GameCube ${color.split('(')[0].trim()} Console ${gbpTitle}${region.includes('Japan') ? 'NTSC-J ' : ''}${cond} ${cibLabel} Japan`.substring(0, 80);
+    condition = `${cond}. Power: ${power}. Disc: ${discread}.${hasGBP ? ' Game Boy Player: ' + gbplayer + '.' : ''}${hasGBPDisc ? ' GBP Start-up Disc: ' + gbpdisc + '.' : ''} Controller: ${controller}. Region: ${region}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+Console: Nintendo GameCube
+Color: ${color}
+Model: ${model || 'N/A'}
+Region: ${region}
+Condition: ${cond}
+Includes: ${cib}
+
+GAME BOY PLAYER
+Game Boy Player: ${gbplayer || 'Not included'}
+Start-up Disc: ${gbpdisc || 'Not included'}
+
+CONDITION DETAILS
+Power / Boot: ${power}
+Disc Read: ${discread}
+Controller: ${controller}
+Notes: ${allNotes || 'N/A'}
+
+⚠️ This is a ${region} console. Region locked - plays ${region} discs only.
+${hasGBP ? '✅ Includes the Game Boy Player attachment' + (hasGBPDisc ? ' and its start-up disc — ready to play Game Boy / GBC / GBA games on your TV!' : ' (start-up disc required to use it — please check before purchase).') : ''}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === '3do') {
     const model = getVal('model'), cond = getVal('condition');
     const power = getVal('power'), discread = getVal('discread');
@@ -2065,6 +2196,20 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Jewels', v: jewels || '' },
       { k:'Features', v: dialcheck.includes('Day') ? 'Day/Date' : '' },
       { k:'Vintage', v: 'Yes' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'gamecube') {
+    const color = getVal('color'), model = getVal('model'), region = getVal('region');
+    const gbplayer = getVal('gbplayer'), gbpdisc = getVal('gbpdisc');
+    specs = [
+      { k:'Brand', v: 'Nintendo' },
+      { k:'Model', v: model || 'GameCube' },
+      { k:'Platform', v: 'Nintendo GameCube' },
+      { k:'Color', v: color },
+      { k:'Region Code', v: region },
+      { k:'Includes Game Boy Player', v: gbplayer ? 'Yes' : 'No' },
+      { k:'Includes Start-up Disc', v: gbpdisc ? 'Yes' : 'No' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
   } else if (g === '3do') {
