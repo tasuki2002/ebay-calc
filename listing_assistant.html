@@ -241,6 +241,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('gamecube')">🎮 ゲームキューブ</button>
+  <button class="genre-btn" onclick="setGenre('wiiu')">🎮 Wii U</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
   <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
@@ -1015,6 +1016,74 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  wiiu: [
+    { id:'storage', label:'モデル・容量', type:'select', options:[
+      {v:'Basic Set 8GB (White)',l:'ベーシック 8GB（ホワイト）'},
+      {v:'Premium Set 32GB (Black)',l:'プレミアム 32GB（ブラック）'},
+      {v:'Premium Set 32GB (White)',l:'プレミアム 32GB（ホワイト）'},
+      {v:'Limited / Bundle Edition',l:'限定・同梱版'}
+    ]},
+    { id:'color', label:'カラー', type:'select', options:[
+      {v:'Black',l:'ブラック'},{v:'White',l:'ホワイト'},{v:'Other / Limited',l:'その他・限定色'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'region', label:'リージョン', type:'select', options:[
+      {v:'NTSC-J (Japan)',l:'NTSC-J（日本版）'},
+      {v:'NTSC-U (North America)',l:'NTSC-U（北米版）'},
+      {v:'PAL (Europe)',l:'PAL（欧州版）'}
+    ]},
+    { id:'power', label:'電源・起動', type:'select', options:[
+      {v:'Powers on - boots to Wii U menu',l:'✅ 起動OK・Wii Uメニュー表示'},
+      {v:'Powers on but no video output',l:'⚠️ 電源入るが映像出力なし'},
+      {v:'Does not power on',l:'❌ 電源入らず（For Parts）'}
+    ]},
+    { id:'gamepad', label:'GamePad（タブレット型コントローラー）', type:'select', options:[
+      {v:'GamePad included - screen and touch working, syncs correctly',l:'✅ GamePad付き・画面/タッチ/同期すべて動作'},
+      {v:'GamePad included - works but screen has scratches',l:'GamePad付き・動作OKだが画面に傷'},
+      {v:'GamePad included - battery drains fast',l:'GamePad付き・バッテリー消耗早い'},
+      {v:'GamePad included - not tested',l:'GamePad付き・未確認'},
+      {v:'No GamePad included (required to use console)',l:'❌ GamePadなし（本体使用に必須）'}
+    ]},
+    { id:'discread', label:'ディスク読み込み', type:'select', options:[
+      {v:'Reads Wii U and Wii discs correctly',l:'✅ Wii U/Wii両ディスク読み込みOK'},
+      {v:'Reads Wii U discs only - Wii not tested',l:'Wii Uディスク読み込みOK・Wii未確認'},
+      {v:'Reads disc but occasional errors',l:'⚠️ 読み込むが時々エラー'},
+      {v:'Disc read error - does not load games',l:'❌ 読み込みエラー・ゲーム起動しない'},
+      {v:'No disc drive tested / digital only',l:'ディスクドライブ未確認・デジタル専用'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Console and GamePad only',l:'本体＋GamePadのみ'},
+      {v:'Console, GamePad and all cables',l:'本体＋GamePad＋ケーブル類'},
+      {v:'Console, GamePad, cables and sensor bar',l:'本体＋GamePad＋ケーブル＋センサーバー'},
+      {v:'Complete in Box (CIB)',l:'CIB（箱・説明書付き・完品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Backward compatible - plays Wii games and Wii U games',l:'Wii後方互換・WiiとWii U両対応'},
+      {v:'GamePad charger and stand included',l:'GamePad充電器・スタンド付き'},
+      {v:'System updated to latest firmware',l:'最新ファームウェアに更新済み'},
+      {v:'Factory reset done - no personal data',l:'初期化済み・個人データなし'},
+      {v:'Region locked - plays same-region games only',l:'リージョンロック・同一地域ゲーム専用'},
+      {v:'HDMI cable included',l:'HDMIケーブル付き'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Backward compatible - plays Wii games and Wii U games',l:'Wii後方互換・WiiとWii U両対応'},
+      {v:'GamePad charger and stand included',l:'GamePad充電器・スタンド付き'},
+      {v:'System updated to latest firmware',l:'最新ファームウェアに更新済み'},
+      {v:'Factory reset done - no personal data',l:'初期化済み・個人データなし'},
+      {v:'Region locked - plays same-region games only',l:'リージョンロック・同一地域ゲーム専用'},
+      {v:'HDMI cable included',l:'HDMIケーブル付き'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   '3do': [
     { id:'model', label:'機種名', type:'select', options:[
       {v:'Panasonic FZ-1',l:'Panasonic FZ-1（初代・トップローダー）'},
@@ -1320,6 +1389,7 @@ const checklists = {
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  wiiu: ['電源ON・Wii Uメニュー表示確認','GamePad同期・画面・タッチ動作確認','GamePadバッテリー充電・持ち確認','ディスク読み込みテスト（Wii U/Wii両方）','リージョン確認','初期化（個人データ消去）','付属品確認（GamePad充電器・ケーブル・センサーバー）','外観チェック（本体・GamePad画面）','写真撮影（本体・GamePad・端子・付属品・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1340,6 +1410,7 @@ const hsCodes = {
   slr:       { code:'9006.53', desc:'35mmフィルムカメラ' },
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
   gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
+  wiiu:      { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
   retrotoy:  { code:'9503.00', desc:'玩具（その他）' },
   cdplayer:  { code:'8519.81', desc:'ポータブルCDプレーヤー' },
@@ -1797,6 +1868,50 @@ RETURN POLICY
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
 
+  } else if (g === 'wiiu') {
+    const storage = getVal('storage'), color = getVal('color'), cond = getVal('condition');
+    const region = getVal('region'), power = getVal('power'), gamepad = getVal('gamepad');
+    const discread = getVal('discread'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const noGamePad = gamepad.includes('No GamePad');
+    const isCIB = cib.includes('CIB');
+    const cibLabel = isCIB ? 'CIB' : cib.includes('sensor') ? 'Bundle' : 'Tested';
+    const storageShort = storage.split('(')[0].trim();
+
+    title = `Nintendo Wii U ${storageShort} ${color} Console ${region.includes('Japan') ? 'NTSC-J ' : ''}${cond} ${cibLabel} Japan`.substring(0, 80);
+    condition = `${cond}. Power: ${power}. GamePad: ${gamepad}. Disc: ${discread}. Region: ${region}. Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+Console: Nintendo Wii U
+Model: ${storage}
+Color: ${color}
+Region: ${region}
+Condition: ${cond}
+Includes: ${cib}
+
+CONDITION DETAILS
+Power / Boot: ${power}
+GamePad: ${gamepad}
+Disc Read: ${discread}
+Notes: ${allNotes || 'N/A'}
+
+⚠️ This is a ${region} console. Region locked - plays ${region} games only.
+${noGamePad ? '⚠️ NOTE: The Wii U GamePad is NOT included. The GamePad is required to operate the console — please make sure you have one before purchasing.' : '✅ Includes the Wii U GamePad (required to operate the console).'}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === '3do') {
     const model = getVal('model'), cond = getVal('condition');
     const power = getVal('power'), discread = getVal('discread');
@@ -2209,6 +2324,21 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Region Code', v: region },
       { k:'Includes Game Boy Player', v: gbplayer ? 'Yes' : 'No' },
       { k:'Includes Start-up Disc', v: gbpdisc ? 'Yes' : 'No' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'wiiu') {
+    const storage = getVal('storage'), color = getVal('color'), region = getVal('region');
+    const gamepad = getVal('gamepad');
+    const storageCap = storage.includes('32GB') ? '32 GB' : storage.includes('8GB') ? '8 GB' : '';
+    specs = [
+      { k:'Brand', v: 'Nintendo' },
+      { k:'Model', v: 'Wii U' },
+      { k:'Platform', v: 'Nintendo Wii U' },
+      { k:'Color', v: color },
+      { k:'Storage Capacity', v: storageCap },
+      { k:'Region Code', v: region },
+      { k:'Includes GamePad', v: gamepad.includes('No GamePad') ? 'No' : 'Yes' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
