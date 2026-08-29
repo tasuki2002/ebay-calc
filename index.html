@@ -190,6 +190,17 @@
         <span class="unit">%</span>
       </div>
     </div>
+    <div class="input-row">
+      <div class="input-label">
+        重さ（梱包込み）
+        <small>入力すると送料を自動計算（US・FedEx基準）</small>
+      </div>
+      <div class="input-right">
+        <input type="number" id="weightKg" inputmode="decimal" placeholder="1.5" oninput="calcShippingFromWeight()">
+        <span class="unit">kg</span>
+      </div>
+    </div>
+    <div class="footnote" id="weight-note" style="padding:4px 16px 8px; color:var(--gold);"></div>
     <div class="shipping-pair">
       <div class="shipping-col">
         <label>送料（USD）</label>
@@ -206,7 +217,7 @@
         </div>
       </div>
     </div>
-    <div class="footnote" style="padding:8px 16px;">どちらか一方を入力 → 自動換算</div>
+    <div class="footnote" style="padding:8px 16px;">重さを入れると自動／送料は直接入力もOK（どちらか一方 → 自動換算）</div>
   </div>
 
   <div class="section">
@@ -296,11 +307,60 @@
   }
 
   function resetAll() {
-    ['cost','priceUsd','priceJpy','shippingUsd','shippingJpy'].forEach(id => document.getElementById(id).value = '');
+    ['cost','priceUsd','priceJpy','shippingUsd','shippingJpy','weightKg'].forEach(id => document.getElementById(id).value = '');
     priceSource = null;
     document.getElementById('rate').value = '155';
     document.getElementById('feeRate').value = '17';
     shippingSource = null;
+    document.getElementById('weight-note').textContent = '';
+    calc();
+  }
+
+  // e-Logi FedEx 送料テーブル（アメリカ向け・梱包込み重量kg → 円）
+  // ユーザー提供データ（2026年時点）
+  const SHIPPING_TABLE_US = [
+    [1.0, 4100], [2.0, 4500], [2.5, 5000], [3.0, 5200],
+    [3.5, 6000], [4.0, 6700], [4.5, 7500], [5.0, 8300],
+  ];
+
+  function shippingFromWeight(kg) {
+    if (!kg || kg <= 0) return null;
+    const t = SHIPPING_TABLE_US;
+    // 1kg以下は最小料金
+    if (kg <= t[0][0]) return t[0][1];
+    // 5kg超は範囲外
+    if (kg > t[t.length - 1][0]) return null;
+    // 線形補間
+    for (let i = 0; i < t.length - 1; i++) {
+      const [w1, p1] = t[i], [w2, p2] = t[i + 1];
+      if (kg > w1 && kg <= w2) {
+        const ratio = (kg - w1) / (w2 - w1);
+        return Math.round((p1 + (p2 - p1) * ratio) / 100) * 100;
+      }
+    }
+    return null;
+  }
+
+  function calcShippingFromWeight() {
+    const kg = parseFloat(document.getElementById('weightKg').value);
+    const note = document.getElementById('weight-note');
+    const rate = parseFloat(document.getElementById('rate').value) || 155;
+    const jpy = shippingFromWeight(kg);
+    if (jpy === null) {
+      if (kg > 5) {
+        note.textContent = '⚠️ 5kg超は表の範囲外。送料を直接入力してください。';
+        note.style.color = 'var(--red)';
+      } else {
+        note.textContent = '';
+      }
+      return;
+    }
+    // 送料欄に自動反映（円→USDも換算）
+    document.getElementById('shippingJpy').value = jpy;
+    document.getElementById('shippingUsd').value = (jpy / rate).toFixed(0);
+    shippingSource = 'jpy';
+    note.textContent = `送料 約¥${jpy.toLocaleString()}（US・FedEx・${kg}kg）を自動入力しました`;
+    note.style.color = 'var(--gold)';
     calc();
   }
 
