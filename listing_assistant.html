@@ -574,6 +574,15 @@ const forms = {
       {v:'Good - label damage or writing',l:'Good（ラベル傷み・書き込みあり）'},
       {v:'Acceptable - heavy label damage',l:'Acceptable（ラベル大きく傷んでいる）'}
     ]},
+    { id:'savefunc', label:'セーブ機能', type:'select', options:[
+      {v:'',l:'--- 未確認・記載しない ---'},
+      {v:'Save function tested and working - save data retains correctly',l:'✅ セーブ動作確認済み・正常に保存できる'},
+      {v:'Save battery replaced with new one - saves correctly',l:'✅ セーブ電池交換済み・正常に保存できる'},
+      {v:'Save function not tested',l:'セーブ機能は未確認'},
+      {v:'Save battery may be weak - save data may not retain',l:'⚠️ セーブ電池が弱っている可能性・保存できないことがある'},
+      {v:'Save battery is dead - cannot save (battery replacement needed)',l:'❌ セーブ電池切れ・保存できない（要電池交換）'},
+      {v:'Password/code save system - no battery needed',l:'パスワード式セーブ（電池不要）'}
+    ]},
     { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
       {v:'',l:'なし'},
       {v:'Save battery may be dead - save data may not retain',l:'セーブ電池切れの可能性あり'},
@@ -1773,6 +1782,7 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     const region = getVal('region'), cond = getVal('condition');
     const cib = getVal('cib'), boxcond = getVal('boxcond');
     const manualcond = getVal('manualcond'), cartcond = getVal('cartcond');
+    const savefunc = getVal('savefunc');
     const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
     const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
     const hasBox = !cib.includes('no box') && !cib.includes('only');
@@ -1795,7 +1805,8 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
     const boxDetailLine = (hasBox && boxcond !== 'N/A (no box)') ? ('\nBox Condition: ' + boxcond) : '';
     const manualDetailLine = (hasManual && manualcond && manualcond !== 'N/A (no manual)') ? ('\nManual Condition: ' + manualcond) : '';
     const cartDetailLine = cartcond ? ('\nCart/Disc Condition: ' + cartcond) : '';
-    condition = cond + '. ' + cib + '. ' + boxLine + ' ' + (notes || 'No major issues.') + ' ' + regionLabel + '.';
+    const saveDetailLine = savefunc ? ('\nSave Function: ' + savefunc) : '';
+    condition = cond + '. ' + cib + '. ' + boxLine + (savefunc ? ' Save: ' + savefunc + '.' : '') + ' ' + (notes || 'No major issues.') + ' ' + regionLabel + '.';
     var gameLines = [
       'Thank you for visiting Hachi Shop!',
       '',
@@ -1804,7 +1815,7 @@ Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
       'Platform: ' + platform,
       'Region: ' + regionLabel,
       'Condition: ' + cond,
-      'Includes: ' + cib + boxDetailLine + manualDetailLine + cartDetailLine,
+      'Includes: ' + cib + boxDetailLine + manualDetailLine + cartDetailLine + saveDetailLine,
       'Notes: ' + (allNotes || 'N/A'),
       '',
       regionNote,
