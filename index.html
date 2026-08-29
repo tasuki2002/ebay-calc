@@ -87,6 +87,13 @@
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
   input[type="number"]:focus { border-color: var(--gold); background: #161616; }
+  select.weight-select {
+    background: var(--input-bg); border: 1px solid #333; border-radius: 10px;
+    color: #fff; font-size: 16px; font-weight: 700;
+    padding: 10px 12px; width: 148px; text-align: left; outline: none;
+    appearance: none; -webkit-appearance: none;
+  }
+  select.weight-select:focus { border-color: var(--gold); background: #161616; }
   .unit { font-size: 12px; color: var(--muted); min-width: 26px; }
 
   .shipping-pair { display: flex; border-bottom: 1px solid #1e1e1e; }
@@ -192,11 +199,32 @@
     </div>
     <div class="input-row">
       <div class="input-label">
-        重さ（梱包込み）
-        <small>入力すると送料を自動計算（US・FedEx基準）</small>
+        重さを選ぶ
+        <small>よく使う重さから選択（US・FedEx基準）</small>
       </div>
       <div class="input-right">
-        <input type="number" id="weightKg" inputmode="decimal" placeholder="1.5" oninput="calcShippingFromWeight()">
+        <select class="weight-select" id="weightSelect" onchange="onWeightSelect()">
+          <option value="">選択…</option>
+          <option value="0.5">0.5 kg</option>
+          <option value="1">1 kg</option>
+          <option value="1.5">1.5 kg</option>
+          <option value="2">2 kg</option>
+          <option value="2.5">2.5 kg</option>
+          <option value="3">3 kg</option>
+          <option value="3.5">3.5 kg</option>
+          <option value="4">4 kg</option>
+          <option value="4.5">4.5 kg</option>
+          <option value="5">5 kg</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-label">
+        重さを入力
+        <small>正確な数値を直接入力（梱包込み）</small>
+      </div>
+      <div class="input-right">
+        <input type="number" id="weightKg" inputmode="decimal" placeholder="1.5" oninput="onWeightInput()">
         <span class="unit">kg</span>
       </div>
     </div>
@@ -313,6 +341,7 @@
     document.getElementById('feeRate').value = '17';
     shippingSource = null;
     document.getElementById('weight-note').textContent = '';
+    document.getElementById('weightSelect').value = '';
     calc();
   }
 
@@ -339,6 +368,23 @@
       }
     }
     return null;
+  }
+
+  // プルダウンで選んだら入力欄に反映して計算
+  function onWeightSelect() {
+    const v = document.getElementById('weightSelect').value;
+    if (v) document.getElementById('weightKg').value = v;
+    calcShippingFromWeight();
+  }
+
+  // 自由入力したらプルダウンの選択を解除して計算
+  function onWeightInput() {
+    const kg = document.getElementById('weightKg').value;
+    const sel = document.getElementById('weightSelect');
+    // 入力値がプルダウンの選択肢と一致すれば同期、しなければ「選択…」に戻す
+    const match = Array.from(sel.options).some(o => o.value === kg);
+    sel.value = match ? kg : '';
+    calcShippingFromWeight();
   }
 
   function calcShippingFromWeight() {
