@@ -1438,11 +1438,15 @@ function updateHS() {
 function copyHS() {
   const hs = hsCodes[currentGenre];
   if (!hs) return;
-  navigator.clipboard.writeText(hs.code);
   const btn = document.getElementById('cp-hs');
-  btn.classList.add('done');
-  btn.textContent = '✓ コピー済';
-  setTimeout(() => { btn.classList.remove('done'); btn.textContent = 'コピー'; }, 1500);
+  robustCopy(hs.code).then(() => {
+    btn.classList.add('done');
+    btn.textContent = '✓ コピー済';
+    setTimeout(() => { btn.classList.remove('done'); btn.textContent = 'コピー'; }, 1500);
+  }).catch(() => {
+    btn.textContent = 'コピー失敗';
+    setTimeout(() => { btn.textContent = 'コピー'; }, 1500);
+  });
 }
 
 function setGenre(genre) {
@@ -2546,11 +2550,14 @@ async function searchReleaseYear() {
 
 function copySpec(i) {
   const text = document.getElementById('sv-' + i).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('sc-' + i);
+  const btn = document.getElementById('sc-' + i);
+  robustCopy(text).then(() => {
     btn.textContent = '✓';
     btn.classList.add('done');
     setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('done'); }, 2000);
+  }).catch(() => {
+    btn.textContent = '✗';
+    setTimeout(() => { btn.textContent = 'コピー'; }, 2000);
   });
 }
 
@@ -2561,21 +2568,62 @@ function copySpecsAll() {
     const v = r.querySelector('.spec-val').textContent;
     return `${k}: ${v}`;
   }).join('\n');
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('cp-specs-all');
+  const btn = document.getElementById('cp-specs-all');
+  robustCopy(text).then(() => {
     btn.textContent = 'コピー済！';
     btn.classList.add('done');
     setTimeout(() => { btn.textContent = '全部コピー'; btn.classList.remove('done'); }, 2000);
+  }).catch(() => {
+    btn.textContent = 'コピー失敗';
+    setTimeout(() => { btn.textContent = '全部コピー'; }, 2000);
+  });
+}
+
+// どの環境でも確実にコピーする（clipboard API → 失敗時はexecCommandにフォールバック）
+function robustCopy(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  }
+  return fallbackCopy(text);
+}
+
+function fallbackCopy(text) {
+  return new Promise((resolve, reject) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '0';
+      ta.style.left = '0';
+      ta.style.width = '1px';
+      ta.style.height = '1px';
+      ta.style.opacity = '0';
+      ta.setAttribute('readonly', '');
+      document.body.appendChild(ta);
+      const range = document.createRange();
+      range.selectNodeContents(ta);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      ta.setSelectionRange(0, text.length);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      ok ? resolve() : reject();
+    } catch (e) { reject(e); }
   });
 }
 
 function copyOut(textId, btnId) {
   const text = document.getElementById(textId).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById(btnId);
+  const btn = document.getElementById(btnId);
+  robustCopy(text).then(() => {
     btn.textContent = 'コピー済！';
     btn.classList.add('done');
     setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('done'); }, 2000);
+  }).catch(() => {
+    btn.textContent = 'コピー失敗';
+    setTimeout(() => { btn.textContent = 'コピー'; }, 2000);
   });
 }
 
