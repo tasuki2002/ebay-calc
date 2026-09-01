@@ -238,6 +238,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
   <button class="genre-btn" onclick="setGenre('psp')">🎮 PSP</button>
+  <button class="genre-btn" onclick="setGenre('wonderswan')">🎮 ワンダースワン</button>
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('gamecube')">🎮 ゲームキューブ</button>
@@ -720,6 +721,66 @@ const forms = {
       {v:'Back panel has minor scratches',l:'背面パネルに軽微な傷あり'},
       {v:'Custom firmware installed (CFW)',l:'カスタムファームウェア導入済み（CFW）'},
       {v:'Original firmware (OFW)',l:'オリジナルファームウェア（OFW）'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
+  wonderswan: [
+    { id:'model', label:'機種', type:'select', options:[
+      {v:'WonderSwan (original)',l:'ワンダースワン（初代・モノクロ）'},
+      {v:'WonderSwan Color',l:'ワンダースワンカラー'},
+      {v:'SwanCrystal',l:'スワンクリスタル'}
+    ]},
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Skeleton Blue, Pearl Pink, Crystal Black' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'画面状態', type:'select', options:[
+      {v:'No scratches - clean display',l:'傷なし・きれい'},
+      {v:'Minor scratches on screen',l:'画面に微細な傷あり'},
+      {v:'Noticeable scratches on screen',l:'画面に目立つ傷あり'},
+      {v:'Dead pixels / lines present',l:'ドット欠け・線あり'},
+      {v:'Screen crack',l:'画面割れあり'}
+    ]},
+    { id:'power', label:'電源・動作', type:'select', options:[
+      {v:'Powers on and boots correctly (tested with battery)',l:'✅ 電源ON・起動確認済み（電池でテスト）'},
+      {v:'Powers on but display faint',l:'⚠️ 電源入るが表示が薄い'},
+      {v:'Does not power on',l:'❌ 電源入らず（For Parts）'},
+      {v:'Not tested',l:'動作未確認'}
+    ]},
+    { id:'battery', label:'電池ボックス端子', type:'select', options:[
+      {v:'Battery terminals clean - no corrosion',l:'端子きれい・腐食なし'},
+      {v:'Battery terminals have minor corrosion',l:'端子に軽微な腐食あり'},
+      {v:'Battery terminals corroded - cleaned',l:'端子に腐食あり・清掃済み'},
+      {v:'Battery terminals heavily corroded',l:'端子の腐食が激しい'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Console only',l:'本体のみ'},
+      {v:'Console with battery cover',l:'本体＋電池フタ'},
+      {v:'Console with manual',l:'本体＋説明書'},
+      {v:'CIB (box and manual)',l:'CIB（箱・説明書付き）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Region free - works with any WonderSwan game worldwide',l:'リージョンフリー・世界中のワンダースワンソフト対応'},
+      {v:'Runs on a single AA battery',l:'単三電池1本で動作'},
+      {v:'All buttons responsive and working',l:'全ボタン正常動作確認済み'},
+      {v:'Speaker / sound works normally',l:'スピーカー・音声正常'},
+      {v:'Vertical and horizontal display both working',l:'縦持ち・横持ち両表示OK'},
+      {v:'Battery cover missing',l:'電池フタなし'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Region free - works with any WonderSwan game worldwide',l:'リージョンフリー・世界中のワンダースワンソフト対応'},
+      {v:'Runs on a single AA battery',l:'単三電池1本で動作'},
+      {v:'All buttons responsive and working',l:'全ボタン正常動作確認済み'},
+      {v:'Speaker / sound works normally',l:'スピーカー・音声正常'},
+      {v:'Vertical and horizontal display both working',l:'縦持ち・横持ち両表示OK'},
+      {v:'Battery cover missing',l:'電池フタなし'}
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
@@ -1399,6 +1460,7 @@ const checklists = {
   game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   psp: ['動作確認（電源・画面・ボタン・アナログパッド）','UMDドライブ読み込み確認','画面傷・ドット欠け確認','バッテリー充電・持ち確認','写真撮影（全面・画面・背面・UMD口・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  wonderswan: ['単三電池を入れて電源ON・起動確認','全ボタン動作確認','画面の傷・ドット欠け・線を確認','縦持ち・横持ち両表示を確認','電池ボックス端子の腐食を確認','スピーカー・音声確認','写真撮影（全面・画面・背面・電池端子・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1420,6 +1482,7 @@ const hsCodes = {
   watch:     { code:'9102.21', desc:'腕時計（機械式・自動巻）' },
   vita:      { code:'9504.50', desc:'ビデオゲーム機' },
   psp:       { code:'9504.50', desc:'ビデオゲーム機' },
+  wonderswan: { code:'9504.50', desc:'携帯型ゲーム機' },
   slr:       { code:'9006.53', desc:'35mmフィルムカメラ' },
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
   gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
@@ -1731,6 +1794,45 @@ ${isGo ? '' : 'UMD Drive: ' + umd + '\n'}Battery: ${battery}
 Notes: ${allNotes || 'All buttons and analog pad tested and working normally.'}
 
 Fully tested before shipping. Power on, all buttons, analog pad, and ${isGo ? 'storage' : 'UMD drive'} confirmed working.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and protective box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'wonderswan') {
+    const model = getVal('model'), color = getVal('color'), cond = getVal('condition');
+    const screen = getVal('screen'), power = getVal('power'), battery = getVal('battery');
+    const cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const isCIB = cib.includes('CIB');
+
+    title = `Bandai ${model} ${color} Handheld Console ${cond} ${isCIB ? 'CIB' : 'Tested'} Region Free Japan`.substring(0, 80);
+    condition = `${cond}. Screen: ${screen}. Power: ${power}. Battery terminals: ${battery}. Includes: ${cib}. ${allNotes || 'All buttons work normally.'} Region free.`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+System: Bandai ${model}
+Color: ${color}
+Condition: ${cond}
+Includes: ${cib}
+
+✅ REGION FREE - WonderSwan is region free and plays all WonderSwan games worldwide.
+🔋 Runs on a single AA battery (not included).
+
+CONDITION DETAILS
+Screen: ${screen}
+Power / Boot: ${power}
+Battery Terminals: ${battery}
+Notes: ${allNotes || 'All buttons tested and working normally.'}
 
 SHIPPING
 Method: FedEx International Priority
@@ -2292,6 +2394,17 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Model', v: model },
       { k:'Color', v: color },
       { k:'Platform', v: 'PlayStation Portable' },
+      { k:'Region', v: 'Region Free' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'wonderswan') {
+    const model = getVal('model'), color = getVal('color');
+    specs = [
+      { k:'Brand', v: 'Bandai' },
+      { k:'Model', v: model },
+      { k:'Color', v: color },
+      { k:'Platform', v: 'Bandai WonderSwan' },
       { k:'Region', v: 'Region Free' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
