@@ -235,6 +235,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('3ds')">🎮 3DS・2DS</button>
   <button class="genre-btn" onclick="setGenre('game')">💿 ゲームソフト</button>
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
+  <button class="genre-btn" onclick="setGenre('handycam')">🎥 ハンディカム</button>
   <button class="genre-btn" onclick="setGenre('watch')">⌚ 時計</button>
   <button class="genre-btn" onclick="setGenre('vita')">🎮 PS Vita</button>
   <button class="genre-btn" onclick="setGenre('psp')">🎮 PSP</button>
@@ -659,6 +660,71 @@ const forms = {
       {v:'Flash works normally',l:'フラッシュ正常動作'}
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Shutter count 500（シャッター回数）・その他自由記入' },
+  ],
+  handycam: [
+    { id:'brand', label:'メーカー', type:'select', options:[
+      {v:'Sony',l:'Sony'},{v:'Panasonic',l:'Panasonic'},{v:'Canon',l:'Canon'},
+      {v:'JVC',l:'JVC（Victor）'},{v:'Hitachi',l:'Hitachi'},{v:'Sharp',l:'Sharp'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: HDR-CX680, DCR-TRV900, CCD-TR555' },
+    { id:'format', label:'記録方式', type:'select', options:[
+      {v:'Hi8',l:'Hi8'},{v:'Video8',l:'Video8（8mm）'},{v:'Digital8',l:'Digital8'},
+      {v:'MiniDV',l:'MiniDV'},{v:'DVD',l:'DVD'},{v:'HDD',l:'HDD'},
+      {v:'Flash Memory',l:'フラッシュメモリ（SD/内蔵）'},{v:'VHS-C',l:'VHS-C'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'playback', label:'録画・再生', type:'select', options:[
+      {v:'Recording and playback confirmed',l:'録画・再生とも確認済み'},
+      {v:'Playback confirmed, recording not tested',l:'再生のみ確認（録画未確認）'},
+      {v:'Tape loading works, playback not tested',l:'テープ出し入れのみ確認'},
+      {v:'Tape mechanism error',l:'テープメカ不良'},
+      {v:'Not tested',l:'未確認'}
+    ]},
+    { id:'screen', label:'液晶・ファインダー', type:'select', options:[
+      {v:'LCD and viewfinder clear',l:'液晶・ファインダーともきれい'},
+      {v:'Minor scratches on LCD',l:'液晶に微細な傷あり'},
+      {v:'LCD has dark spots or lines',l:'液晶にシミ・線あり'},
+      {v:'LCD does not display, viewfinder works',l:'液晶映らず・ファインダーは正常'},
+      {v:'No LCD (viewfinder model)',l:'液晶なし（ファインダーのみの機種）'}
+    ]},
+    { id:'acccheck', label:'付属品（選択）', type:'select', options:[
+      {v:'Body only',l:'本体のみ'},
+      {v:'Battery included',l:'バッテリー付き'},
+      {v:'Battery and AC adapter included',l:'バッテリー＋ACアダプター付き'},
+      {v:'Battery, AC adapter and AV cable included',l:'バッテリー・ACアダプター・AVケーブル付き'},
+      {v:'Complete with box and all accessories',l:'箱・全付属品付き（CIB）'},
+      {v:'Remote control included',l:'リモコン付き'},
+      {v:'Case included',l:'ケース付き'}
+    ]},
+    { id:'acc', label:'付属品（自由記入）', type:'text', placeholder:'その他付属品・自由記入' },
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'日本製（Made in Japan）'},
+      {v:'NTSC video system (Japan/USA standard)',l:'NTSC方式（日本・北米規格）'},
+      {v:'Battery holds charge well',l:'バッテリー充電良好'},
+      {v:'Battery life reduced - recommend replacement',l:'バッテリー消耗・交換推奨'},
+      {v:'Zoom and autofocus work smoothly',l:'ズーム・AFスムーズ'},
+      {v:'Nightshot (infrared) works',l:'ナイトショット動作OK'},
+      {v:'Minor dust inside lens - no effect on video',l:'レンズ内に微細なチリ・映像に影響なし'},
+      {v:'Tape not included',l:'テープ付属なし'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'日本製（Made in Japan）'},
+      {v:'NTSC video system (Japan/USA standard)',l:'NTSC方式（日本・北米規格）'},
+      {v:'Battery holds charge well',l:'バッテリー充電良好'},
+      {v:'Battery life reduced - recommend replacement',l:'バッテリー消耗・交換推奨'},
+      {v:'Zoom and autofocus work smoothly',l:'ズーム・AFスムーズ'},
+      {v:'Nightshot (infrared) works',l:'ナイトショット動作OK'},
+      {v:'Minor dust inside lens - no effect on video',l:'レンズ内に微細なチリ・映像に影響なし'},
+      {v:'Tape not included',l:'テープ付属なし'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Drum hours unknown・その他自由記入' },
   ],
   psp: [
     { id:'model', label:'機種', type:'select', options:[
@@ -1459,6 +1525,7 @@ const checklists = {
   '3ds': ['動作確認（電源・画面・ボタン）','リージョン確認','ヒンジ・液晶・外観チェック','写真撮影（全面・画面・ヒンジ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   game: ['動作確認','ラベル状態確認','写真撮影（前面・裏面・ラベル・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   digicam: ['動作確認（電源・撮影・液晶）','写真撮影（全面・液晶・レンズ・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  handycam: ['電源ON（バッテリー・ACアダプター両方）','テープ／メディアで録画→再生確認','ズーム・AF・音声（マイク・スピーカー）確認','液晶・ファインダー表示確認','テープ出し入れ・異音確認（テープ機）','レンズのカビ・クモリ確認','写真撮影（全面・液晶・レンズ・テープ口・端子・傷箇所）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   psp: ['動作確認（電源・画面・ボタン・アナログパッド）','UMDドライブ読み込み確認','画面傷・ドット欠け確認','バッテリー充電・持ち確認','写真撮影（全面・画面・背面・UMD口・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   wonderswan: ['単三電池を入れて電源ON・起動確認','全ボタン動作確認','画面の傷・ドット欠け・線を確認','縦持ち・横持ち両表示を確認','電池ボックス端子の腐食を確認','スピーカー・音声確認','写真撮影（全面・画面・背面・電池端子・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1479,6 +1546,7 @@ const hsCodes = {
   '3ds':     { code:'9504.50', desc:'ビデオゲーム機' },
   game:      { code:'9504.50', desc:'ビデオゲームソフト' },
   digicam:   { code:'8525.89', desc:'デジタルカメラ' },
+  handycam:  { code:'8525.89', desc:'ビデオカメラ' },
   watch:     { code:'9102.21', desc:'腕時計（機械式・自動巻）' },
   vita:      { code:'9504.50', desc:'ビデオゲーム機' },
   psp:       { code:'9504.50', desc:'ビデオゲーム機' },
@@ -2193,6 +2261,43 @@ RETURN POLICY
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
 
+  } else if (g === 'handycam') {
+    const brand = getVal('brand'), model = getVal('model'), format = getVal('format');
+    const cond = getVal('condition'), playback = getVal('playback'), screen = getVal('screen');
+    const acccheck = getVal('acccheck'), acc = getVal('acc');
+    const allAcc = [acccheck, acc].filter(Boolean).join(', ');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notes].filter(Boolean).join('. ');
+    const series = brand === 'Sony' ? ' Handycam' : '';
+
+    title = `${brand}${series} ${model} ${format} Camcorder ${cond} Tested From Japan`.substring(0, 80);
+    condition = `${cond}. ${playback}. ${screen}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in cameras and optical equipment.
+
+ITEM DETAILS
+Brand: ${brand}
+Model: ${model}
+Format: ${format}
+Condition: ${cond}
+Recording / Playback: ${playback}
+LCD / Viewfinder: ${screen}
+Includes: ${allAcc || 'N/A'}
+Notes: ${allNotes || 'N/A'}
+
+Tested in Japan. Power, zoom, LCD and functions checked as described above.
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'watch') {
     const brand = getVal('brand'), model = getVal('model'), movement = getVal('movement');
     const mij = getVal('mij'), jewels = getVal('jewels'), jewelsnote = getVal('jewelsnote'), cond = getVal('condition');
@@ -2429,6 +2534,18 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Type', v: 'Compact Digital Camera' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Compatible Memory Card', v: 'SD / SDHC' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'handycam') {
+    const brand = getVal('brand'), model = getVal('model'), format = getVal('format');
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Series', v: brand === 'Sony' ? 'Handycam' : '' },
+      { k:'Type', v: 'Camcorder' },
+      { k:'Recording Format', v: format },
+      { k:'Video System', v: 'NTSC' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
   } else if (g === 'watch') {
