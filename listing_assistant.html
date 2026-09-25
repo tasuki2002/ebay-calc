@@ -244,6 +244,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('gamecube')">🎮 ゲームキューブ</button>
   <button class="genre-btn" onclick="setGenre('wiiu')">🎮 Wii U</button>
+  <button class="genre-btn" onclick="setGenre('ps3')">🎮 PS3</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
   <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
@@ -866,6 +867,110 @@ const forms = {
       {v:'Original firmware (OFW)',l:'オリジナルファームウェア（OFW）'}
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
+  ps3: [
+    { id:'model', label:'機種', type:'select', options:[
+      {v:'PS3 CECHA00 (60GB, backward compatible)',l:'初期型 CECHA00（60GB・PS2互換あり）'},
+      {v:'PS3 CECHB00 (20GB, backward compatible)',l:'初期型 CECHB00（20GB・PS2互換あり）'},
+      {v:'PS3 CECHL00 (Fat)',l:'厚型 CECHL00（互換なし）'},
+      {v:'PS3 Slim CECH-2000',l:'薄型 CECH-2000'},
+      {v:'PS3 Slim CECH-2500',l:'薄型 CECH-2500'},
+      {v:'PS3 Slim CECH-3000',l:'薄型 CECH-3000'},
+      {v:'PS3 Super Slim CECH-4000',l:'超薄型 CECH-4000'},
+      {v:'PS3 (model unknown)',l:'その他・型番不明'}
+    ]},
+    { id:'storage', label:'HDD容量', type:'select', options:[
+      {v:'20GB',l:'20GB'},{v:'40GB',l:'40GB'},{v:'60GB',l:'60GB'},{v:'80GB',l:'80GB'},
+      {v:'120GB',l:'120GB'},{v:'160GB',l:'160GB'},{v:'250GB',l:'250GB'},
+      {v:'320GB',l:'320GB'},{v:'500GB',l:'500GB'},{v:'',l:'HDDなし'}
+    ]},
+    { id:'color', label:'カラー', type:'text', placeholder:'例: Charcoal Black, Classic White, Satin Silver' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'power', label:'電源・起動', type:'select', options:[
+      {v:'Powers on and boots to XMB menu normally',l:'電源ON・XMBメニュー正常表示'},
+      {v:'Powers on but takes time to boot',l:'起動するが時間がかかる'},
+      {v:'Yellow Light of Death (YLOD) - for parts',l:'YLOD（黄ランプ）・ジャンク'},
+      {v:'Does not power on',l:'電源が入らない'}
+    ]},
+    { id:'discread', label:'ディスク読み込み', type:'select', options:[
+      {v:'Blu-ray drive reads game discs normally - tested with actual games',l:'実ゲームで読み込み確認済み'},
+      {v:'Reads discs but drive is noisy',l:'読み込むがドライブ音が大きい'},
+      {v:'Drive reads slowly',l:'読み込みが遅い'},
+      {v:'Disc drive does not read',l:'読み込み不可'},
+      {v:'Not tested',l:'未確認'}
+    ]},
+    { id:'backward', label:'PS2互換', type:'select', options:[
+      {v:'Backward compatible - PS2 and PS1 games tested and working',l:'PS2・PS1ソフト動作確認済み（互換モデル）'},
+      {v:'Backward compatible with PS1 games only',l:'PS1ソフトのみ動作（互換なしモデル）'},
+      {v:'Not backward compatible - PS3 games only',l:'互換なし・PS3ソフト専用'}
+    ]},
+    { id:'controller', label:'コントローラー', type:'select', options:[
+      {v:'No controller included',l:'コントローラーなし'},
+      {v:'1 DualShock 3 controller included - tested',l:'DualShock3 ×1（動作確認済み）'},
+      {v:'2 DualShock 3 controllers included - tested',l:'DualShock3 ×2（動作確認済み）'},
+      {v:'1 SIXAXIS controller included - tested',l:'SIXAXIS ×1（動作確認済み）'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Console only (no cables)',l:'本体のみ（ケーブルなし）'},
+      {v:'With power cable',l:'電源ケーブル付き'},
+      {v:'With power cable and HDMI cable',l:'電源＋HDMIケーブル付き'},
+      {v:'With power cable, HDMI cable and controller',l:'電源・HDMI・コントローラー付き'},
+      {v:'CIB (box, manual and all accessories)',l:'CIB（箱・説明書・全付属品）'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Fully reset to factory settings - no personal data',l:'初期化済み・個人データなし'},
+      {v:'PS3 game discs are region free - plays games from any region',l:'PS3ゲームはリージョンフリー・全地域のソフトが動作'},
+      {v:'Blu-ray and DVD playback are region locked (Japan region)',l:'Blu-ray/DVD再生はリージョンロック（日本）'},
+      {v:'Backward compatible - plays PS2 and PS1 games',l:'PS2・PS1ソフトが動作（後方互換モデル）'},
+      {v:'Cooling fan quiet - runs cool',l:'ファン静か・発熱少なめ'},
+      {v:'Cooling fan noisy under load',l:'高負荷時にファン音が大きい'},
+      {v:'Internally cleaned and thermal paste replaced',l:'内部清掃・グリス塗り直し済み'},
+      {v:'HDMI output confirmed working',l:'HDMI出力確認済み'},
+      {v:'Blu-ray drive reads discs without issues',l:'BDドライブ読み込み良好'},
+      {v:'Disc drive slow to read - may need service',l:'ディスク読み込みが遅い・要整備'},
+      {v:'Controller analog sticks in good condition',l:'コントローラーのスティック良好'},
+      {v:'AC power cable included (Japan plug - adapter may be required)',l:'電源ケーブル付属（日本プラグ・変換要）'},
+      {v:'100V Japanese model - step-down transformer may be required',l:'日本仕様100V・変圧器が必要な場合あり'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Fully reset to factory settings - no personal data',l:'初期化済み・個人データなし'},
+      {v:'PS3 game discs are region free - plays games from any region',l:'PS3ゲームはリージョンフリー・全地域のソフトが動作'},
+      {v:'Blu-ray and DVD playback are region locked (Japan region)',l:'Blu-ray/DVD再生はリージョンロック（日本）'},
+      {v:'Backward compatible - plays PS2 and PS1 games',l:'PS2・PS1ソフトが動作（後方互換モデル）'},
+      {v:'Cooling fan quiet - runs cool',l:'ファン静か・発熱少なめ'},
+      {v:'Cooling fan noisy under load',l:'高負荷時にファン音が大きい'},
+      {v:'Internally cleaned and thermal paste replaced',l:'内部清掃・グリス塗り直し済み'},
+      {v:'HDMI output confirmed working',l:'HDMI出力確認済み'},
+      {v:'Blu-ray drive reads discs without issues',l:'BDドライブ読み込み良好'},
+      {v:'Disc drive slow to read - may need service',l:'ディスク読み込みが遅い・要整備'},
+      {v:'Controller analog sticks in good condition',l:'コントローラーのスティック良好'},
+      {v:'AC power cable included (Japan plug - adapter may be required)',l:'電源ケーブル付属（日本プラグ・変換要）'},
+      {v:'100V Japanese model - step-down transformer may be required',l:'日本仕様100V・変圧器が必要な場合あり'}
+    ]},
+    { id:'notescheck3', label:'特記事項３（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Fully reset to factory settings - no personal data',l:'初期化済み・個人データなし'},
+      {v:'PS3 game discs are region free - plays games from any region',l:'PS3ゲームはリージョンフリー・全地域のソフトが動作'},
+      {v:'Blu-ray and DVD playback are region locked (Japan region)',l:'Blu-ray/DVD再生はリージョンロック（日本）'},
+      {v:'Backward compatible - plays PS2 and PS1 games',l:'PS2・PS1ソフトが動作（後方互換モデル）'},
+      {v:'Cooling fan quiet - runs cool',l:'ファン静か・発熱少なめ'},
+      {v:'Cooling fan noisy under load',l:'高負荷時にファン音が大きい'},
+      {v:'Internally cleaned and thermal paste replaced',l:'内部清掃・グリス塗り直し済み'},
+      {v:'HDMI output confirmed working',l:'HDMI出力確認済み'},
+      {v:'Blu-ray drive reads discs without issues',l:'BDドライブ読み込み良好'},
+      {v:'Disc drive slow to read - may need service',l:'ディスク読み込みが遅い・要整備'},
+      {v:'Controller analog sticks in good condition',l:'コントローラーのスティック良好'},
+      {v:'AC power cable included (Japan plug - adapter may be required)',l:'電源ケーブル付属（日本プラグ・変換要）'},
+      {v:'100V Japanese model - step-down transformer may be required',l:'日本仕様100V・変圧器が必要な場合あり'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'例: Firmware 4.88・その他自由記入' },
   ],
   wonderswan: [
     { id:'model', label:'機種', type:'select', options:[
@@ -1717,6 +1822,7 @@ const checklists = {
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  ps3: ['電源ON・XMBメニュー表示確認','実ゲームディスクで読み込みテスト（BD/DVD両方）','PS2・PS1ソフトの互換確認（初期型のみ）','HDMI出力・映像音声確認','コントローラー動作確認（充電・スティック・全ボタン）','ファン音・発熱の確認','型番確認（裏面ラベルでCECH-◯◯◯◯）','HDD容量確認（本体設定から）','初期化（アカウント・個人データ消去）','写真撮影（全面・裏面型番・端子・コントローラー・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   wiiu: ['電源ON・Wii Uメニュー表示確認','GamePad同期・画面・タッチ動作確認','GamePadバッテリー充電・持ち確認','ディスク読み込みテスト（Wii U/Wii両方）','リージョン確認','初期化（個人データ消去）','付属品確認（GamePad充電器・ケーブル・センサーバー）','外観チェック（本体・GamePad画面）','写真撮影（本体・GamePad・端子・付属品・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1741,6 +1847,7 @@ const hsCodes = {
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
   gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   wiiu:      { code:'9504.50', desc:'ビデオゲーム機（据置）' },
+  ps3:       { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
   retrotoy:  { code:'9503.00', desc:'玩具（その他）' },
   cdplayer:  { code:'8519.81', desc:'ポータブルCDプレーヤー' },
@@ -2231,6 +2338,52 @@ Notes: ${allNotes || 'N/A'}
 
 ⚠️ This is a ${region} console. Region locked - plays ${region} discs only.
 ${hasGBP ? '✅ Includes the Game Boy Player attachment' + (hasGBPDisc ? ' and its start-up disc — ready to play Game Boy / GBC / GBA games on your TV!' : ' (start-up disc required to use it — please check before purchase).') : ''}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 1 business day after payment
+Tracking: Full tracking provided
+Packing: Carefully packed with bubble wrap and rigid box
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'ps3') {
+    const model = getVal('model'), storage = getVal('storage'), color = getVal('color');
+    const cond = getVal('condition'), power = getVal('power'), discread = getVal('discread');
+    const backward = getVal('backward'), controller = getVal('controller'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notescheck3 = getVal('notescheck3'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notescheck3, notes].filter(Boolean).join('. ');
+    const modelShort = model.replace('PS3 ', '').split('(')[0].trim();
+    const isBC = backward.includes('PS2 and PS1');
+    const isCIB = cib.includes('CIB');
+
+    title = `Sony PlayStation 3 ${modelShort} ${storage} Console${isBC ? ' Backward Compatible' : ''} ${cond} ${isCIB ? 'CIB' : 'Tested'} Japan`.substring(0, 80);
+    condition = `${cond}. ${power}. Disc: ${discread}. ${backward}. Controller: ${controller}. Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+Console: Sony PlayStation 3
+Model: ${model}
+Storage: ${storage || 'No HDD'}
+Color: ${color}
+Condition: ${cond}
+Includes: ${cib}
+Controller: ${controller}
+
+CONDITION DETAILS
+Power / Boot: ${power}
+Disc Read: ${discread}
+Backward Compatibility: ${backward}
+Notes: ${allNotes || 'N/A'}
+
+PS3 game discs are REGION FREE - games from any region will play on this console.
+Blu-ray and DVD video playback IS region locked (Japan / Region A / Region 2).
+This is a Japanese 100V console. A step-down transformer may be required in your country.
+${isBC ? 'This is a backward compatible model - PS2 and PS1 games also play on this console.' : ''}
 
 SHIPPING
 Method: FedEx International Priority
@@ -2760,6 +2913,20 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Region Code', v: region },
       { k:'Includes Game Boy Player', v: gbplayer ? 'Yes' : 'No' },
       { k:'Includes Start-up Disc', v: gbpdisc ? 'Yes' : 'No' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'ps3') {
+    const model = getVal('model'), storage = getVal('storage'), color = getVal('color');
+    const backward = getVal('backward');
+    specs = [
+      { k:'Brand', v: 'Sony' },
+      { k:'Model', v: model.split('(')[0].replace('PS3', 'PlayStation 3').trim() },
+      { k:'Platform', v: 'Sony PlayStation 3' },
+      { k:'Color', v: color },
+      { k:'Storage Capacity', v: storage },
+      { k:'Region Code', v: 'NTSC-J (Japan)' },
+      { k:'Backward Compatible', v: backward.includes('PS2 and PS1') ? 'Yes' : 'No' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
