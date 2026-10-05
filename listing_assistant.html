@@ -3344,7 +3344,8 @@ function buildDescHtml(text) {
       const t = l.trim();
       if (!t) return;
       const m = t.match(/^([A-Za-z][A-Za-z0-9 \/()'.&-]{1,34}):\s*(.*)$/);
-      if (m && m[2]) rows.push([m[1], m[2]]); else paras.push(t);
+      if (m) { if (m[2]) rows.push([m[1], m[2]]); }  // 値が空の行は出さない
+      else paras.push(t);
     });
     if (rows.length) {
       out += '<table style="width:100%;border-collapse:collapse;">';
