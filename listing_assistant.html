@@ -324,6 +324,19 @@ html, body {
     <div class="output-text" id="desc-text"></div>
   </div>
 
+  <div class="output-block" id="out-deschtml">
+    <div class="output-header">
+      <span class="output-label">🎨 Description（HTML版・色付き）</span>
+      <button class="copy-btn" id="cp-deschtml" onclick="copyOut('deschtml-src','cp-deschtml')">HTMLをコピー</button>
+    </div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:8px;">
+      eBayの説明欄を「コードビュー（&lt;/&gt;）」に切り替えて貼り付けてください。
+    </div>
+    <div class="output-text" id="deschtml-src" style="max-height:140px;overflow:auto;font-size:11px;"></div>
+    <div style="font-size:12px;color:var(--sub);margin:10px 0 6px;">▼ 見え方のプレビュー</div>
+    <div id="deschtml-preview" style="background:#fff;border-radius:6px;padding:12px;overflow:auto;"></div>
+  </div>
+
   <!-- 梱包情報（変換後） -->
   <div class="output-block" id="out-pkg">
     <div class="output-header">
@@ -2855,6 +2868,9 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
   document.getElementById('title-text').textContent = title;
   document.getElementById('cond-text').textContent = condition;
   document.getElementById('desc-text').textContent = desc;
+  const descHtml = buildDescHtml(desc);
+  document.getElementById('deschtml-src').textContent = descHtml;
+  document.getElementById('deschtml-preview').innerHTML = descHtml;
 
   // チェックリスト
   const checks = checklists[g];
@@ -3288,6 +3304,75 @@ function syncCopy(text) {
   } catch (e) {
     return false;
   }
+}
+
+// プレーンな説明文を、色付きHTMLに変換する
+function buildDescHtml(text) {
+  const esc = (t) => t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const isHeading = (l) => /^[A-Z][A-Z0-9 &\/'\-\u2010-\u2014]{3,}$/.test(l.trim());
+  // 黄色の注意帯にする見出し
+  const warnHeads = ['INTERNATIONAL BUYERS - PLEASE NOTE', 'RETURN POLICY'];
+
+  const lines = text.split('\n');
+  let out = '';
+  let intro = [];
+  let i = 0;
+  while (i < lines.length && !isHeading(lines[i])) { if (lines[i].trim()) intro.push(lines[i]); i++; }
+
+  out += '<div style="font-family:Arial,Helvetica,sans-serif;color:#333;max-width:760px;margin:0 auto;line-height:1.6;">';
+  if (intro.length) {
+    out += '<div style="background:#1a2b4a;color:#fff;padding:14px 18px;border-radius:6px 6px 0 0;">'
+         + '<div style="font-size:20px;font-weight:bold;">Hachi Shop</div>'
+         + '<div style="font-size:13px;opacity:.85;">Quality items shipped from Japan</div></div>'
+         + '<div style="border:1px solid #ddd;border-top:none;padding:14px 18px;font-size:14px;">'
+         + intro.map(l => esc(l)).join('<br>') + '</div>';
+  }
+
+  let cur = null, body = [];
+  const flush = () => {
+    if (cur === null) return;
+    const warn = warnHeads.indexOf(cur.trim()) !== -1;
+    const headBg = warn ? '#fff3cd' : '#f1f3f5';
+    const headColor = warn ? '#7a5c00' : '#1a2b4a';
+    const bar = warn ? '#f0ad00' : '#1a2b4a';
+    out += '<div style="margin-top:16px;border:1px solid ' + (warn ? '#ffe08a' : '#ddd') + ';border-radius:6px;overflow:hidden;">'
+         + '<div style="background:' + headBg + ';color:' + headColor + ';border-left:5px solid ' + bar + ';'
+         + 'padding:9px 14px;font-weight:bold;font-size:15px;letter-spacing:.5px;">' + esc(cur) + '</div>'
+         + '<div style="padding:12px 14px;font-size:14px;background:' + (warn ? '#fffdf5' : '#fff') + ';">';
+    const rows = [], paras = [];
+    body.forEach(l => {
+      const t = l.trim();
+      if (!t) return;
+      const m = t.match(/^([A-Za-z][A-Za-z0-9 \/()'.&-]{1,34}):\s*(.*)$/);
+      if (m && m[2]) rows.push([m[1], m[2]]); else paras.push(t);
+    });
+    if (rows.length) {
+      out += '<table style="width:100%;border-collapse:collapse;">';
+      rows.forEach((r, n) => {
+        out += '<tr style="background:' + (n % 2 ? (warn ? '#fffaf0' : '#fafafa') : 'transparent') + ';">'
+             + '<td style="padding:6px 10px;width:38%;color:#666;border-bottom:1px solid #eee;">' + esc(r[0]) + '</td>'
+             + '<td style="padding:6px 10px;font-weight:bold;border-bottom:1px solid #eee;">' + esc(r[1]) + '</td></tr>';
+      });
+      out += '</table>';
+    }
+    if (paras.length) {
+      out += (rows.length ? '<div style="margin-top:8px;">' : '<div>')
+           + paras.map(t => esc(t)).join('<br>') + '</div>';
+    }
+    out += '</div></div>';
+    cur = null; body = [];
+  };
+
+  for (; i < lines.length; i++) {
+    if (isHeading(lines[i])) { flush(); cur = lines[i].trim(); }
+    else if (cur !== null) body.push(lines[i]);
+  }
+  flush();
+
+  out += '<div style="margin-top:16px;text-align:center;background:#1a2b4a;color:#fff;padding:12px;border-radius:6px;font-size:14px;">'
+       + 'Thank you for shopping with Hachi Shop! &#9733; Japan Quality &#9733;</div>';
+  out += '</div>';
+  return out;
 }
 
 function copyOut(textId, btnId) {
