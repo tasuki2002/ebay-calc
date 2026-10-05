@@ -1931,13 +1931,13 @@ function getVal(id) {
 }
 
 function hideOutputs() {
-  ['out-title','out-condition','out-desc','out-pkg','out-specifics','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-deschtml','out-pkg','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
 }
 
 function showOutputs() {
-  ['out-title','out-condition','out-desc','out-pkg','out-specifics','out-check'].forEach(id => {
+  ['out-title','out-condition','out-desc','out-deschtml','out-pkg','out-specifics','out-check'].forEach(id => {
     document.getElementById(id).style.display = 'block';
   });
 }
