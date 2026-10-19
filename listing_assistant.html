@@ -232,7 +232,7 @@ html, body {
 <div class="genre-bar">
   <button class="genre-btn active" onclick="setGenre('lens')">📷 カメラレンズ</button>
   <button class="genre-btn" onclick="setGenre('boss')">🎸 BOSS</button>
-  <button class="genre-btn" onclick="setGenre('3ds')">🎮 3DS・2DS</button>
+  <button class="genre-btn" onclick="setGenre('3ds')">🎮 3DS・2DS・DSi</button>
   <button class="genre-btn" onclick="setGenre('game')">💿 ゲームソフト</button>
   <button class="genre-btn" onclick="setGenre('digicam')">📸 コンデジ</button>
   <button class="genre-btn" onclick="setGenre('handycam')">🎥 ハンディカム</button>
@@ -519,7 +519,8 @@ const forms = {
     { id:'model', label:'機種', type:'select', options:[
       {v:'New 3DS XL',l:'New 3DS XL'},{v:'New 3DS',l:'New 3DS'},
       {v:'3DS XL',l:'3DS XL'},{v:'3DS',l:'3DS'},
-      {v:'New 2DS XL',l:'New 2DS XL'},{v:'2DS',l:'2DS'}
+      {v:'New 2DS XL',l:'New 2DS XL'},{v:'2DS',l:'2DS'},
+      {v:'DSi LL',l:'DSi LL（DSi XL・大画面）'},{v:'DSi',l:'DSi'}
     ]},
     { id:'color', label:'カラー', type:'text', placeholder:'例: Black（ブラック）, Pikachu Edition（ピカチュウ）' },
     { id:'region', label:'リージョン', type:'select', options:[
@@ -2168,6 +2169,7 @@ Includes: ${cib}
 Notes: ${notes || 'N/A'}
 
 ⚠️ IMPORTANT: This is a ${region} unit. Please check region compatibility before purchasing.
+${model.includes('DSi') ? 'Note: Nintendo DS game cards are region free, but DSiWare and DSi-enhanced titles are region locked.' : ''}
 
 All buttons, screens, and functions have been tested and work normally.
 
@@ -3108,10 +3110,14 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
     ];
   } else if (g === '3ds') {
     const brand = getVal('brand'), model = getVal('model');
+    // DSi系は Platform が別物なので切り替える
+    const platform = model.includes('DSi') ? 'Nintendo DSi'
+                   : model.includes('2DS') ? 'Nintendo 2DS'
+                   : 'Nintendo 3DS';
     specs = [
       { k:'Brand', v: brand || 'Nintendo' },
       { k:'Model', v: model },
-      { k:'Platform', v: 'Nintendo 3DS' },
+      { k:'Platform', v: platform },
       { k:'Region', v: 'NTSC-J (Japan)' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
