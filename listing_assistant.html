@@ -247,6 +247,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('ps3')">🎮 PS3</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
+  <button class="genre-btn" onclick="setGenre('etoy')">🔋 電子玩具</button>
   <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
 </div>
 
@@ -1666,6 +1667,124 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  etoy: [
+    { id:'brand', label:'メーカー', type:'select', options:[
+      {v:'Bandai',l:'バンダイ'},{v:'Takara',l:'タカラ'},{v:'Tomy',l:'トミー'},
+      {v:'Takara Tomy',l:'タカラトミー'},{v:'Epoch',l:'エポック社'},
+      {v:'Sega Toys',l:'セガトイズ'},{v:'Nintendo',l:'任天堂'},
+      {v:'Konami',l:'コナミ'},{v:'Casio',l:'カシオ'},{v:'Other',l:'その他'}
+    ]},
+    { id:'model', label:'商品名・型番', type:'text', placeholder:'例: Digivice Ver.15th / Tamagotchi Plus' },
+    { id:'series', label:'シリーズ・作品名', type:'text', placeholder:'例: Digimon / Tamagotchi / Pokemon（なければ空欄）' },
+    { id:'year', label:'製造年', type:'text', placeholder:'例: 2010（分かる範囲で）' },
+    { id:'etype', label:'種類', type:'select', options:[
+      {v:'Virtual pet / LCD game',l:'育成ゲーム・液晶ゲーム'},
+      {v:'Handheld electronic game',l:'携帯電子ゲーム'},
+      {v:'Electronic toy',l:'電子玩具（その他）'},
+      {v:'Talking / sound toy',l:'音声・サウンド玩具'},
+      {v:'Electronic pedometer toy',l:'歩数計連動玩具'},
+      {v:'Other',l:'その他'}
+    ]},
+    { id:'battery', label:'電池', type:'select', options:[
+      {v:'Button cell (CR2032) x1',l:'ボタン電池 CR2032 ×1'},
+      {v:'Button cell (CR2032) x2',l:'ボタン電池 CR2032 ×2'},
+      {v:'Button cell (LR44) x2',l:'ボタン電池 LR44 ×2'},
+      {v:'Button cell (LR44) x3',l:'ボタン電池 LR44 ×3'},
+      {v:'Button cell (CR2025) x1',l:'ボタン電池 CR2025 ×1'},
+      {v:'AAA battery x2',l:'単4電池 ×2'},
+      {v:'AA battery x2',l:'単3電池 ×2'},
+      {v:'Other / unknown',l:'その他・不明'}
+    ]},
+    { id:'working', label:'動作状態', type:'select', options:[
+      {v:'Fully working - all functions tested',l:'完動品（全機能確認済み）'},
+      {v:'Powers on - basic functions confirmed',l:'電源ON・基本動作確認'},
+      {v:'Partially working',l:'一部動作（詳細は特記事項へ）'},
+      {v:'Not working',l:'不動品（For Parts）'},
+      {v:'Untested - sold as-is',l:'動作未確認・現状渡し'}
+    ]},
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'screen', label:'液晶の状態', type:'select', options:[
+      {v:'Clear - no missing segments',l:'きれい・欠けなし'},
+      {v:'Minor scratches on the screen cover',l:'画面カバーに小傷あり'},
+      {v:'Some missing segments',l:'一部セグメント欠けあり'},
+      {v:'Faint or fading display',l:'表示が薄い'},
+      {v:'No display',l:'表示されない'},
+      {v:'N/A (no screen)',l:'液晶なし'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Complete in Box (CIB) - box, manual and all accessories',l:'CIB（箱・説明書・全付属品）'},
+      {v:'With original box',l:'箱あり（説明書なし）'},
+      {v:'With manual',l:'説明書あり（箱なし）'},
+      {v:'Body only',l:'本体のみ'},
+      {v:'Body with strap',l:'本体＋ストラップ'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Powers on and all functions confirmed working',l:'電源ON・全機能動作確認済み'},
+      {v:'Power-on confirmed only - other functions not tested',l:'通電のみ確認・その他は未確認'},
+      {v:'Screen (LCD) is clear with no missing segments',l:'液晶きれい・欠けなし'},
+      {v:'LCD has some missing segments',l:'液晶に一部欠けあり'},
+      {v:'LCD has faint lines or fading',l:'液晶に薄い線・色あせあり'},
+      {v:'Buttons all responsive',l:'全ボタン正常反応'},
+      {v:'Sound / buzzer works',l:'音・ブザー正常'},
+      {v:'Battery cover and screw present',l:'電池フタ・ネジあり'},
+      {v:'Battery cover missing',l:'電池フタなし'},
+      {v:'Battery terminals clean - no corrosion',l:'電池端子きれい・腐食なし'},
+      {v:'Slight corrosion on battery terminals - cleaned',l:'電池端子に軽微な腐食・清掃済み'},
+      {v:'A new battery was installed for testing',l:'動作確認用に新しい電池を入れました'},
+      {v:'Battery NOT included - please prepare your own',l:'電池は付属しません・ご用意ください'},
+      {v:'Strap included',l:'ストラップ付き'},
+      {v:'Japanese language display only',l:'表示は日本語のみ'},
+      {v:'Minor scratches on the shell',l:'本体に細かい傷あり'},
+      {v:'Yellowing on the plastic shell',l:'プラスチックに黄ばみあり'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Powers on and all functions confirmed working',l:'電源ON・全機能動作確認済み'},
+      {v:'Power-on confirmed only - other functions not tested',l:'通電のみ確認・その他は未確認'},
+      {v:'Screen (LCD) is clear with no missing segments',l:'液晶きれい・欠けなし'},
+      {v:'LCD has some missing segments',l:'液晶に一部欠けあり'},
+      {v:'LCD has faint lines or fading',l:'液晶に薄い線・色あせあり'},
+      {v:'Buttons all responsive',l:'全ボタン正常反応'},
+      {v:'Sound / buzzer works',l:'音・ブザー正常'},
+      {v:'Battery cover and screw present',l:'電池フタ・ネジあり'},
+      {v:'Battery cover missing',l:'電池フタなし'},
+      {v:'Battery terminals clean - no corrosion',l:'電池端子きれい・腐食なし'},
+      {v:'Slight corrosion on battery terminals - cleaned',l:'電池端子に軽微な腐食・清掃済み'},
+      {v:'A new battery was installed for testing',l:'動作確認用に新しい電池を入れました'},
+      {v:'Battery NOT included - please prepare your own',l:'電池は付属しません・ご用意ください'},
+      {v:'Strap included',l:'ストラップ付き'},
+      {v:'Japanese language display only',l:'表示は日本語のみ'},
+      {v:'Minor scratches on the shell',l:'本体に細かい傷あり'},
+      {v:'Yellowing on the plastic shell',l:'プラスチックに黄ばみあり'}
+    ]},
+    { id:'notescheck3', label:'特記事項３（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Powers on and all functions confirmed working',l:'電源ON・全機能動作確認済み'},
+      {v:'Power-on confirmed only - other functions not tested',l:'通電のみ確認・その他は未確認'},
+      {v:'Screen (LCD) is clear with no missing segments',l:'液晶きれい・欠けなし'},
+      {v:'LCD has some missing segments',l:'液晶に一部欠けあり'},
+      {v:'LCD has faint lines or fading',l:'液晶に薄い線・色あせあり'},
+      {v:'Buttons all responsive',l:'全ボタン正常反応'},
+      {v:'Sound / buzzer works',l:'音・ブザー正常'},
+      {v:'Battery cover and screw present',l:'電池フタ・ネジあり'},
+      {v:'Battery cover missing',l:'電池フタなし'},
+      {v:'Battery terminals clean - no corrosion',l:'電池端子きれい・腐食なし'},
+      {v:'Slight corrosion on battery terminals - cleaned',l:'電池端子に軽微な腐食・清掃済み'},
+      {v:'A new battery was installed for testing',l:'動作確認用に新しい電池を入れました'},
+      {v:'Battery NOT included - please prepare your own',l:'電池は付属しません・ご用意ください'},
+      {v:'Strap included',l:'ストラップ付き'},
+      {v:'Japanese language display only',l:'表示は日本語のみ'},
+      {v:'Minor scratches on the shell',l:'本体に細かい傷あり'},
+      {v:'Yellowing on the plastic shell',l:'プラスチックに黄ばみあり'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   retrotoy: [
     { id:'brand', label:'メーカー', type:'select', options:[
       {v:'Bandai',l:'バンダイ'},{v:'Takara',l:'タカラ'},{v:'Tomy',l:'トミー'},
@@ -1851,6 +1970,7 @@ const checklists = {
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gnw: ['本家・復刻の判別確認（裏面・型番・製造年）','ゲームA・B動作確認','時計機能確認','液晶セグメント確認（欠け・滲み）','スクリーンレンズ傷確認','電池端子の腐食確認','写真撮影（前面・スクリーン・裏面・型番・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   slr: ['①レンズ光に透かす（クモリ・カビ確認）','②シャッターを低速で切って異音確認','③ミラー状態確認','④外装確認（フィルム蓋ヒンジ重点）','露出計動作確認','写真撮影（前面・背面・レンズ・ファインダー・傷箇所）','Terapeak実売確認（同機種3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  etoy: ['新しいボタン電池を入れて電源ON確認','液晶の欠け・薄れを確認（全セグメント表示）','全ボタンの反応を確認','音・ブザーの確認','電池フタ・ネジの有無を確認','電池端子の腐食を確認（あれば清掃）','外装の傷・黄ばみを確認','写真撮影（全面・液晶表示中・裏面・電池室・箱）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   retrotoy: ['動作確認（電動・ゼンマイ・フリクション）','電池端子の腐食確認','外装確認（錆・塗装剥げ・ヒビ・欠け）','可動部すべての動作確認','付属品・箱・説明書の有無確認','写真撮影（全面・可動部・不具合箇所・箱・底面刻印）','Terapeak実売確認（同メーカー・同ジャンル3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   cdplayer: ['電源確認（ACアダプター・電池両方）','ディスク読み込み確認（CD-R含む数枚でテスト）','液晶表示確認','ヘッドホン端子・音声出力確認','リモコン端子確認','電池端子の腐食確認','外装傷・ボタン動作確認','付属品確認（ACアダプター・リモコン・イヤホン）','写真撮影（全面・液晶・端子類・付属品）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
 };
@@ -1874,6 +1994,7 @@ const hsCodes = {
   ps3:       { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
   retrotoy:  { code:'9503.00', desc:'玩具（その他）' },
+  etoy:      { code:'9503.00', desc:'電子玩具' },
   cdplayer:  { code:'8519.81', desc:'ポータブルCDプレーヤー' },
 };
 
@@ -3006,6 +3127,68 @@ RETURN POLICY
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
 
+  } else if (g === 'etoy') {
+    const brand = getVal('brand'), model = getVal('model'), series = getVal('series');
+    const year = getVal('year'), etype = getVal('etype'), battery = getVal('battery');
+    const working = getVal('working'), cond = getVal('condition');
+    const screen = getVal('screen'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notescheck3 = getVal('notescheck3'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notescheck3, notes].filter(Boolean).join('. ');
+    const isForParts = working.indexOf('Not working') === 0 || cond === 'For Parts';
+    const isCIB = cib.indexOf('Complete in Box') === 0;
+    const isButton = battery.indexOf('Button cell') === 0;
+
+    title = `${brand} ${series ? series + ' ' : ''}${model} ${year ? year + ' ' : ''}Electronic Toy ${cond} ${isForParts ? 'For Parts' : 'Tested'} Japan`.substring(0, 80);
+    condition = `${cond}. ${working}. Screen: ${screen}. Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and ship Japanese toys and collectibles worldwide.
+
+ITEM DETAILS
+Brand: ${brand}
+Item: ${model}
+Series: ${series || 'N/A'}
+Year: ${year || 'Unknown'}
+Type: ${etype}
+Battery: ${battery}
+Condition: ${cond}
+Includes: ${cib}
+
+CONDITION DETAILS
+Working: ${working}
+Screen / Display: ${screen}
+Notes: ${allNotes || 'N/A'}
+
+This is an original Japanese release. Menus and text are in Japanese.
+${isButton ? 'This item uses a button cell battery. For international shipping, the battery is removed and NOT included - please prepare your own.' : 'Batteries are not included - please prepare your own.'}
+${isForParts ? 'Sold as-is for parts or repair. Please review the photos carefully before purchasing.' : ''}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 2 business days after payment
+In practice, unless something unexpected comes up, we ship on the next business day.
+Tracking: Full tracking provided
+We ship Monday through Saturday Japan time - yes, we ship on Saturdays too!
+On Sundays (Japan time), pickups are closed and shipping will be arranged the next day.
+Packing: Carefully packed with bubble wrap
+
+COMBINED SHIPPING
+Buying more than one item? We are happy to combine shipping.
+As a guide, each additional item adds about US $15 to the shipping cost.
+Depending on the actual weight and size, it is often less - sometimes much less.
+Please message us BEFORE paying so we can calculate the exact combined rate and send you a revised invoice.
+If you have already paid, contact us and we will refund the difference.
+Please note: very large or heavy items may not be combinable.
+
+INTERNATIONAL BUYERS - PLEASE NOTE
+Import duties, taxes and charges are not included in the item price or shipping cost.
+These charges are the buyer's responsibility. Please check with your country's customs
+office to determine what these additional costs will be prior to buying.
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
   } else if (g === 'retrotoy') {
     const brand = getVal('brand'), model = getVal('model'), era = getVal('era');
     const toytype = getVal('toytype'), working = getVal('working'), cond = getVal('condition');
@@ -3305,6 +3488,22 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Model', v: model },
       { k:'Color', v: color },
       { k:'Type', v: 'Portable CD Player' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'etoy') {
+    const brand = getVal('brand'), model = getVal('model'), series = getVal('series');
+    const year = getVal('year'), etype = getVal('etype'), working = getVal('working'), cond = getVal('condition');
+    const isForParts = working.indexOf('Not working') === 0 || cond === 'For Parts';
+    specs = [
+      { k:'Brand', v: brand },
+      { k:'Model', v: model },
+      { k:'Character Family', v: series || '' },
+      { k:'Type', v: etype },
+      { k:'Year Manufactured', v: year || '' },
+      { k:'Working', v: isForParts ? 'For Parts or Not Working' : 'Yes' },
+      { k:'Power Source', v: 'Battery' },
+      { k:'Original/Reproduction', v: 'Original' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
