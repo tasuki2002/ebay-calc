@@ -3667,44 +3667,51 @@ function copySpecsAll() {
 }
 
 // どの環境でも確実にコピーする。
-// 同期のexecCommand方式を「先」に実行（クリック操作の中でその場で実行されるため最も確実）。
-// 一部ブラウザで clipboard API を先に使うと「前回の内容が残る」不具合が出るため、この順序にしている。
+// 標準のClipboard APIを「先」に使う（これが実際にOSのクリップボードへ書き込む方式）。
+// 旧方式のexecCommandはコピーに失敗しても true を返すことがあり、
+// 先に実行すると「コピー済！」と出るのに貼り付けできない状態になるため、あくまで保険として後ろに置く。
 function robustCopy(text) {
-  // ① 同期コピー（ユーザー操作内で即実行）
-  if (syncCopy(text)) {
-    return Promise.resolve();
-  }
-  // ② それが使えない環境ではモダンAPIに回す
   if (navigator.clipboard && window.isSecureContext) {
-    return navigator.clipboard.writeText(text);
+    return navigator.clipboard.writeText(text).catch(() => {
+      if (syncCopy(text)) return;
+      throw new Error('copy failed');
+    });
   }
-  return Promise.reject();
+  // httpなど、Clipboard APIが使えない環境向けのフォールバック
+  if (syncCopy(text)) return Promise.resolve();
+  return Promise.reject(new Error('copy failed'));
 }
 
 function syncCopy(text) {
+  let ta = null;
   try {
-    const ta = document.createElement('textarea');
+    ta = document.createElement('textarea');
     ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.top = '0';
-    ta.style.left = '0';
-    ta.style.width = '1px';
-    ta.style.height = '1px';
-    ta.style.opacity = '0';
-    ta.setAttribute('readonly', '');
+    // 画面外に置くだけにする。opacity:0 や 1px サイズ、readonly は
+    // ブラウザが「選択できない要素」と見なしてコピー内容が空になることがある。
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    ta.style.top = (window.pageYOffset || document.documentElement.scrollTop) + 'px';
+    ta.style.fontSize = '16px';   // iOSの自動ズーム防止
+    ta.setAttribute('aria-hidden', 'true');
+    ta.contentEditable = 'true';  // iOS Safariで選択を通すため
     document.body.appendChild(ta);
-    const range = document.createRange();
-    range.selectNodeContents(ta);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
+
+    ta.focus();
     ta.setSelectionRange(0, text.length);
-    ta.select();
-    const ok = document.execCommand('copy');
-    document.body.removeChild(ta);
-    return ok;
+    const sel = window.getSelection();
+    if (sel && !ta.selectionEnd) {   // 選択が効かない環境向けの保険
+      const range = document.createRange();
+      range.selectNodeContents(ta);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    return document.execCommand('copy');
   } catch (e) {
     return false;
+  } finally {
+    if (ta && ta.parentNode) ta.parentNode.removeChild(ta);
   }
 }
 
