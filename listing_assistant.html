@@ -243,6 +243,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('slr')">📷 フィルム一眼レフ</button>
   <button class="genre-btn" onclick="setGenre('gnw')">🕹️ ゲーム&ウォッチ</button>
   <button class="genre-btn" onclick="setGenre('gamecube')">🎮 ゲームキューブ</button>
+  <button class="genre-btn" onclick="setGenre('gcpad')">🕹️ GCコントローラ</button>
   <button class="genre-btn" onclick="setGenre('wiiu')">🎮 Wii U</button>
   <button class="genre-btn" onclick="setGenre('ps3')">🎮 PS3</button>
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
@@ -1422,6 +1423,120 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  gcpad: [
+    { id:'ctype', label:'種類', type:'select', options:[
+      {v:'Official Nintendo wired controller (DOL-003)',l:'純正・有線（DOL-003）'},
+      {v:'Official Nintendo WaveBird wireless controller (DOL-004)',l:'純正・WaveBird 無線（DOL-004）'},
+      {v:'Official Nintendo controller - limited edition',l:'純正・限定/特別デザイン'},
+      {v:'Third-party controller',l:'社外品コントローラー'}
+    ]},
+    { id:'color', label:'カラー', type:'select', options:[
+      {v:'Indigo (Violet)',l:'インディゴ（紫・定番）'},
+      {v:'Jet Black',l:'ジェットブラック'},
+      {v:'Platinum Silver',l:'プラチナシルバー'},
+      {v:'Spice Orange',l:'スパイスオレンジ（希少）'},
+      {v:'Emerald Blue',l:'エメラルドブルー'},
+      {v:'Clear / Crystal',l:'クリア・スケルトン'},
+      {v:'WaveBird Light Gray',l:'WaveBird ライトグレー'},
+      {v:'White',l:'ホワイト'},
+      {v:'Other / Limited Edition',l:'その他・限定色'}
+    ]},
+    { id:'model', label:'型番', type:'text', placeholder:'例: DOL-003（有線）, DOL-004（WaveBird）' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（備品・未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'stick', label:'アナログスティック（最重要）', type:'select', options:[
+      {v:'Analog stick centers correctly - no drift, full range tested',l:'✅ センターに戻る・ドリフトなし・全方向OK'},
+      {v:'Analog stick works but slight drift when idle',l:'⚠️ 動作するが放置で軽微なドリフトあり'},
+      {v:'Analog stick is loose / rattles but functional',l:'⚠️ ややガタつきあり・動作はする'},
+      {v:'Analog stick has drift or dead zone - sold as is',l:'❌ ドリフト・不感帯あり（現状品）'}
+    ]},
+    { id:'cstick', label:'Cスティック', type:'select', options:[
+      {v:'C-stick tested working in all directions',l:'✅ 全方向動作OK'},
+      {v:'C-stick works but feels stiff',l:'⚠️ 動作するが動きが硬い'},
+      {v:'C-stick not responding correctly',l:'❌ 反応不良'}
+    ]},
+    { id:'buttons', label:'ボタン（A/B/X/Y・D-Pad・Start）', type:'select', options:[
+      {v:'All buttons tested and respond correctly',l:'✅ 全ボタン動作確認済み'},
+      {v:'All buttons work - some have light wear on the surface',l:'✅ 全ボタン動作OK・表面に使用感あり'},
+      {v:'One or more buttons need a firm press',l:'⚠️ 一部ボタンは強く押す必要あり'},
+      {v:'One or more buttons not responding',l:'❌ 反応しないボタンあり'}
+    ]},
+    { id:'triggers', label:'L/Rトリガー・Zボタン', type:'select', options:[
+      {v:'L / R analog triggers and Z button tested working - click felt at full press',l:'✅ L/R・Z 動作OK・奥のクリック感あり'},
+      {v:'L / R triggers work but one has a weak click',l:'⚠️ 片方のクリック感が弱い'},
+      {v:'L / R triggers work - Z button needs a firm press',l:'⚠️ Zボタンが押しにくい'},
+      {v:'Trigger fault - sold as is',l:'❌ トリガー不良（現状品）'}
+    ]},
+    { id:'rumble', label:'振動モーター', type:'select', options:[
+      {v:'Rumble motor tested working',l:'✅ 振動OK'},
+      {v:'Rumble motor works but feels weak',l:'⚠️ 振動が弱い'},
+      {v:'Rumble motor does not work',l:'❌ 振動しない'},
+      {v:'',l:'未確認・記載しない'}
+    ]},
+    { id:'cable', label:'ケーブル・コネクタ（有線のみ）', type:'select', options:[
+      {v:'Cable and connector in good condition - no cuts, no exposed wire',l:'✅ ケーブル良好・被覆破れなし'},
+      {v:'Cable has light scuffs but no exposed wire',l:'ケーブルに擦れあり・導体露出なし'},
+      {v:'Cable has a repaired section - tested working',l:'⚠️ ケーブル補修跡あり・動作確認済み'},
+      {v:'',l:'無線のため該当なし'}
+    ]},
+    { id:'wavebird', label:'WaveBird（無線）の付属品', type:'select', options:[
+      {v:'',l:'該当なし（有線）'},
+      {v:'Wireless receiver (DOL-005) included - tested working',l:'✅ 受信機（DOL-005）付き・動作確認済み'},
+      {v:'Wireless receiver (DOL-005) included - battery cover present',l:'✅ 受信機付き・電池カバーあり'},
+      {v:'Controller only - wireless receiver NOT included',l:'⚠️ 本体のみ・受信機なし'},
+      {v:'Battery cover is missing',l:'⚠️ 電池カバー欠品'}
+    ]},
+    { id:'cib', label:'付属品', type:'select', options:[
+      {v:'Controller only',l:'コントローラーのみ'},
+      {v:'Controller and wireless receiver',l:'コントローラー＋受信機'},
+      {v:'Complete in Box (CIB) - box and manual included',l:'CIB（箱・説明書付き・完品）'},
+      {v:'Boxed - box shows shelf wear',l:'箱付き（箱に傷み・経年あり）'}
+    ]},
+    { id:'qty', label:'セット数', type:'select', options:[
+      {v:'1',l:'1個'},{v:'2',l:'2個セット'},{v:'3',l:'3個セット'},{v:'4',l:'4個セット'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Also works on Nintendo Wii (ports 1-4)',l:'Wiiでも使用可（1〜4番ポート）'},
+      {v:'Also works on PC with a USB adapter',l:'USBアダプタ経由でPCでも使用可'},
+      {v:'Analog stick tested in all directions - no drift',l:'スティック全方向テスト済み・ドリフトなし'},
+      {v:'Rumble motor tested working',l:'振動モーター動作確認済み'},
+      {v:'Cable fully tested - no breaks or shorts',l:'ケーブル導通確認済み・断線なし'},
+      {v:'Serial number sticker intact on the back',l:'裏面シール・製造番号あり'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Smash Bros tournament favorite - OEM Nintendo build',l:'スマブラ勢に人気の純正品'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Also works on Nintendo Wii (ports 1-4)',l:'Wiiでも使用可（1〜4番ポート）'},
+      {v:'Also works on PC with a USB adapter',l:'USBアダプタ経由でPCでも使用可'},
+      {v:'Analog stick tested in all directions - no drift',l:'スティック全方向テスト済み・ドリフトなし'},
+      {v:'Rumble motor tested working',l:'振動モーター動作確認済み'},
+      {v:'Cable fully tested - no breaks or shorts',l:'ケーブル導通確認済み・断線なし'},
+      {v:'Serial number sticker intact on the back',l:'裏面シール・製造番号あり'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Smash Bros tournament favorite - OEM Nintendo build',l:'スマブラ勢に人気の純正品'}
+    ]},
+    { id:'notescheck3', label:'特記事項３（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Also works on Nintendo Wii (ports 1-4)',l:'Wiiでも使用可（1〜4番ポート）'},
+      {v:'Also works on PC with a USB adapter',l:'USBアダプタ経由でPCでも使用可'},
+      {v:'Analog stick tested in all directions - no drift',l:'スティック全方向テスト済み・ドリフトなし'},
+      {v:'Rumble motor tested working',l:'振動モーター動作確認済み'},
+      {v:'Cable fully tested - no breaks or shorts',l:'ケーブル導通確認済み・断線なし'},
+      {v:'Serial number sticker intact on the back',l:'裏面シール・製造番号あり'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Smash Bros tournament favorite - OEM Nintendo build',l:'スマブラ勢に人気の純正品'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   wiiu: [
     { id:'storage', label:'モデル・容量', type:'select', options:[
       {v:'Basic Set 8GB (White)',l:'ベーシック 8GB（ホワイト）'},
@@ -1965,6 +2080,7 @@ const checklists = {
   vita: ['動作確認（電源・画面・ボタン・スティック）','画面傷・ドット欠け確認','アナログスティックのドリフト確認','ゲームカードスロット確認','バッテリー確認（充電→起動）','写真撮影（全面・画面・背面・傷箇所）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  gcpad: ['型番確認（DOL-003=有線/DOL-004=WaveBird）','アナログスティック：全方向＋放置してセンター戻りを確認（ドリフトは最大のクレーム源）','Cスティック動作確認','A/B/X/Y・D-Pad・Start 全ボタン確認','L/Rトリガーのアナログ量＋奥のクリック感、Zボタン確認','振動モーター確認','ケーブル全長を手でなぞって断線・被覆破れチェック（有線）','WaveBirdは受信機の有無・電池カバーの有無・チャンネル切替を確認','裏面シールと製造番号の有無を確認（純正の証明になる）','清掃（溝の汚れ・スティックのテカリ）','写真撮影（表・裏・スティック接写・トリガー・コネクタ・受信機・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   ps3: ['電源ON・XMBメニュー表示確認','実ゲームディスクで読み込みテスト（BD/DVD両方）','PS2・PS1ソフトの互換確認（初期型のみ）','HDMI出力・映像音声確認','コントローラー動作確認（充電・スティック・全ボタン）','ファン音・発熱の確認','型番確認（裏面ラベルでCECH-◯◯◯◯）','HDD容量確認（本体設定から）','初期化（アカウント・個人データ消去）','写真撮影（全面・裏面型番・端子・コントローラー・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   wiiu: ['電源ON・Wii Uメニュー表示確認','GamePad同期・画面・タッチ動作確認','GamePadバッテリー充電・持ち確認','ディスク読み込みテスト（Wii U/Wii両方）','リージョン確認','初期化（個人データ消去）','付属品確認（GamePad充電器・ケーブル・センサーバー）','外観チェック（本体・GamePad画面）','写真撮影（本体・GamePad・端子・付属品・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -1990,6 +2106,7 @@ const hsCodes = {
   slr:       { code:'9006.53', desc:'35mmフィルムカメラ' },
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
   gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
+  gcpad:     { code:'9504.50', desc:'ビデオゲーム機の付属品（コントローラー）' },
   wiiu:      { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   ps3:       { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
@@ -2607,6 +2724,102 @@ RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+
+  } else if (g === 'gcpad') {
+    const ctype = getVal('ctype'), color = getVal('color'), model = getVal('model');
+    const cond = getVal('condition'), stick = getVal('stick'), cstick = getVal('cstick');
+    const buttons = getVal('buttons'), triggers = getVal('triggers'), rumble = getVal('rumble');
+    const cable = getVal('cable'), wavebird = getVal('wavebird'), cib = getVal('cib');
+    const qty = getVal('qty') || '1';
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notescheck3 = getVal('notescheck3'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notescheck3, notes].filter(Boolean).join('. ');
+    const isWireless = ctype.includes('WaveBird');
+    const isOfficial = ctype.includes('Official');
+    const noReceiver = wavebird.includes('NOT included');
+    const isCIB = cib.includes('CIB');
+    const n = parseInt(qty, 10) || 1;
+    // DOL-003 / DOL-004 は任天堂の型番。社外品には既定値を入れない
+    const modelShort = model.split('(')[0].trim() || (isOfficial ? (isWireless ? 'DOL-004' : 'DOL-003') : '');
+    // カラー名から「WaveBird」を外す（タイトルで二重になるため）。「その他」はタイトルに出さない
+    const colorShort = /^Other/.test(color) ? '' : color.split('(')[0].split('/')[0].replace(/WaveBird/i, '').trim();
+
+    // 80字に収まるまで、優先度の低い語から落とす（途中で切れるのを防ぐ）
+    const tParts = [
+      'Nintendo GameCube',
+      isWireless ? 'WaveBird' : null,
+      'Controller',
+      colorShort,
+      modelShort,
+      n > 1 ? `x${n} Lot` : null,
+      cond,
+      isCIB ? 'CIB' : (cond === 'For Parts' ? null : 'Tested'),
+      'Japan'
+    ];
+    const dropOrder = isCIB ? [4, 7, 3] : [7, 4, 3];  // 型番/Tested/カラーの順に落とす
+    let tJoined = tParts.filter(Boolean).join(' ');
+    for (const di of dropOrder) {
+      if (tJoined.length <= 80) break;
+      tParts[di] = null;
+      tJoined = tParts.filter(Boolean).join(' ');
+    }
+    title = tJoined.substring(0, 80);
+    condition = `${cond}. Stick: ${stick}. C-stick: ${cstick}. Buttons: ${buttons}. Triggers: ${triggers}.${rumble ? ' Rumble: ' + rumble + '.' : ''}${cable ? ' Cable: ' + cable + '.' : ''}${wavebird ? ' ' + wavebird + '.' : ''} Includes: ${cib}.${allNotes ? ' ' + allNotes + '.' : ''}`;
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese gaming hardware.
+
+ITEM DETAILS
+Item: Nintendo GameCube Controller${isWireless ? ' (WaveBird Wireless)' : ''}
+Type: ${ctype}
+Model: ${modelShort}
+Color: ${color}
+Connectivity: ${isWireless ? 'Wireless (2.4GHz, receiver required)' : 'Wired'}
+Quantity: ${n}
+Condition: ${cond}
+Includes: ${cib}
+
+TESTED AND WORKING
+Analog Stick: ${stick}
+C-Stick: ${cstick}
+Buttons (A/B/X/Y, D-Pad, Start): ${buttons}
+L / R Triggers and Z: ${triggers}
+Rumble: ${rumble || 'Not tested'}
+${cable ? 'Cable / Connector: ' + cable : ''}
+${wavebird ? 'Wireless: ' + wavebird : ''}
+Notes: ${allNotes || 'N/A'}
+
+COMPATIBILITY
+Works with Nintendo GameCube, and with Nintendo Wii using controller ports 1-4.
+Can also be used on a PC or Nintendo Switch with a third-party USB adapter (adapter not included).
+${isWireless ? (noReceiver ? '\u26a0\ufe0f IMPORTANT: this is the controller only. The WaveBird requires the DOL-005 wireless receiver, which is NOT included. The controller will not work without it.' : 'Includes the DOL-005 wireless receiver. Runs on 2 AA batteries (not included). The WaveBird has no rumble motor by design.') : 'Standard wired controller - plug and play, no batteries needed.'}
+${isOfficial ? '\u2705 Genuine Nintendo product, not a reproduction.' : ''}
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 2 business days after payment
+In practice, unless something unexpected comes up, we ship on the next business day.
+Tracking: Full tracking provided
+We ship Monday through Saturday Japan time - yes, we ship on Saturdays too!
+On Sundays (Japan time), pickups are closed and shipping will be arranged the next day.
+Packing: Carefully packed with bubble wrap and rigid box
+
+COMBINED SHIPPING
+Buying more than one item? We are happy to combine shipping.
+As a guide, each additional item adds about US $15 to the shipping cost.
+Depending on the actual weight and size, it is often less - sometimes much less.
+Please message us BEFORE paying so we can calculate the exact combined rate and send you a revised invoice.
+If you have already paid, contact us and we will refund the difference.
+Please note: very large or heavy items may not be combinable.
+
+INTERNATIONAL BUYERS - PLEASE NOTE
+Import duties, taxes and charges are not included in the item price or shipping cost.
+These charges are the buyer's responsibility. Please check with your country's customs
+office to determine what these additional costs will be prior to buying.
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+    desc = desc.replace(/\n{3,}/g, '\n\n');  // 未選択の行が空行として残らないように詰める
 
   } else if (g === 'ps3') {
     const model = getVal('model'), storage = getVal('storage'), color = getVal('color');
@@ -3400,6 +3613,24 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Region Code', v: region },
       { k:'Includes Game Boy Player', v: gbplayer ? 'Yes' : 'No' },
       { k:'Includes Start-up Disc', v: gbpdisc ? 'Yes' : 'No' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'gcpad') {
+    const ctype = getVal('ctype'), color = getVal('color'), model = getVal('model');
+    const wavebird = getVal('wavebird'), qty = getVal('qty') || '1';
+    const isWireless = ctype.includes('WaveBird');
+    const isOfficial = ctype.includes('Official');
+    specs = [
+      { k:'Brand', v: isOfficial ? 'Nintendo' : 'Unbranded' },
+      { k:'Model', v: model.split('(')[0].trim() || (isOfficial ? (isWireless ? 'DOL-004' : 'DOL-003') : 'Unbranded Controller') },
+      { k:'Platform', v: 'Nintendo GameCube' },
+      { k:'Type', v: 'Controller' },
+      { k:'Color', v: color },
+      { k:'Connectivity', v: isWireless ? 'Wireless' : 'Wired' },
+      { k:'Compatible Product', v: 'Nintendo GameCube, Nintendo Wii' },
+      { k:'Number of Items', v: qty },
+      { k:'Includes Wireless Receiver', v: isWireless ? (wavebird.includes('NOT included') ? 'No' : 'Yes') : 'Not Applicable' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
