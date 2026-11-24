@@ -249,6 +249,7 @@ html, body {
   <button class="genre-btn" onclick="setGenre('3do')">💿 3DO</button>
   <button class="genre-btn" onclick="setGenre('retrotoy')">🤖 レトロおもちゃ</button>
   <button class="genre-btn" onclick="setGenre('etoy')">🔋 電子玩具</button>
+  <button class="genre-btn" onclick="setGenre('duel')">🃏 デュエルディスク</button>
   <button class="genre-btn" onclick="setGenre('cdplayer')">💿 CDプレーヤー</button>
 </div>
 
@@ -1537,6 +1538,118 @@ const forms = {
     ]},
     { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
   ],
+  duel: [
+    { id:'ctype', label:'モデル', type:'select', options:[
+      {v:'Yu-Gi-Oh! Duel Disk Battle City Ver. (Konami)',l:'バトルシティ版（KONAMI・音声/発光つき）'},
+      {v:'Yu-Gi-Oh! Duel Disk - Yugi Muto Ver. (Konami)',l:'武藤遊戯Ver.（KONAMI）'},
+      {v:'Yu-Gi-Oh! Duel Disk Launcher (Takara, Battle City)',l:'初代ディスクランチャー（タカラ）'},
+      {v:'Yu-Gi-Oh! GX Academia Duel Disk',l:'GX アカデミア デュエルディスク'},
+      {v:'Yu-Gi-Oh! 5Ds Duel Disk',l:'5D\u2019s デュエルディスク'},
+      {v:'Yu-Gi-Oh! ZEXAL Duel Disk',l:'ZEXAL デュエルディスク'},
+      {v:'Yu-Gi-Oh! ARC-V Duel Disk',l:'ARC-V デュエルディスク'},
+      {v:'Yu-Gi-Oh! Duel Disk (other version)',l:'その他のデュエルディスク'}
+    ]},
+    { id:'color', label:'カラー・仕様', type:'select', options:[
+      {v:'',l:'指定しない'},
+      {v:'Silver',l:'シルバー'},
+      {v:'White',l:'ホワイト'},
+      {v:'Black',l:'ブラック'},
+      {v:'Blue',l:'ブルー'},
+      {v:'Red',l:'レッド'},
+      {v:'Gold',l:'ゴールド'},
+      {v:'Clear',l:'クリア・スケルトン'},
+      {v:'Limited Edition',l:'限定版・特別仕様'}
+    ]},
+    { id:'model', label:'型番・発売年', type:'text', placeholder:'例: 2016年版, Takara 2002 など' },
+    { id:'condition', label:'状態', type:'select', options:[
+      {v:'Mint',l:'Mint（未使用級）'},{v:'Excellent+',l:'Excellent+（極上品）'},
+      {v:'Excellent',l:'Excellent（目立った傷なし）'},{v:'Very Good+',l:'Very Good+（VG+・軽微な傷あり）'},
+      {v:'Very Good',l:'Very Good（やや傷あり）'},{v:'Good',l:'Good（傷・汚れあり）'},
+      {v:'Acceptable',l:'Acceptable（難あり・動作品）'},{v:'For Parts',l:'For Parts（ジャンク）'}
+    ]},
+    { id:'sound', label:'音声・効果音（最重要）', type:'select', options:[
+      {v:'Sound and voice effects tested working - all confirmed with fresh batteries',l:'\u2705 音声OK・効果音すべて確認済み'},
+      {v:'Sound tested working - voice clips confirmed',l:'\u2705 音声OK（ボイス確認済み）'},
+      {v:'Sound works but the volume is lower than expected',l:'\u26a0\ufe0f 音は出るが音量が小さい'},
+      {v:'Sound works intermittently',l:'\u26a0\ufe0f 音が出たり出なかったりする'},
+      {v:'No sound - sold as is',l:'\u274c 音が出ない（現状品）'},
+      {v:'Sound not tested',l:'未確認・テストしていない'}
+    ]},
+    { id:'light', label:'LED・発光', type:'select', options:[
+      {v:'LED lights tested working',l:'\u2705 LED点灯OK'},
+      {v:'LED lights work but one is dim',l:'\u26a0\ufe0f 点灯するが一部が暗い'},
+      {v:'LED lights do not work',l:'\u274c 点灯しない'},
+      {v:'',l:'該当なし・記載しない'}
+    ]},
+    { id:'mech', label:'アームの展開・固定', type:'select', options:[
+      {v:'Arm deploys and locks smoothly - no cracks',l:'\u2705 展開・固定ともスムーズ・割れなし'},
+      {v:'Arm deploys but the lock feels loose',l:'\u26a0\ufe0f 展開するが固定がゆるい'},
+      {v:'Arm has a repaired or stress-marked section',l:'\u26a0\ufe0f 補修跡・ストレス痕あり'},
+      {v:'Arm does not stay locked - sold as is',l:'\u274c 固定されない（現状品）'}
+    ]},
+    { id:'cards', label:'カードの付属', type:'select', options:[
+      {v:'No cards included - duel disk only',l:'カードなし（本体のみ）'},
+      {v:'Includes the original sample cards that came with the toy',l:'\u2705 付属のサンプルカードあり'},
+      {v:'Includes a bonus set of genuine Yu-Gi-Oh! cards (random titles)',l:'\u2705 遊戯王カードをおまけで同梱（ランダム）'},
+      {v:'Includes genuine Yu-Gi-Oh! cards - see photos for the exact titles',l:'\u2705 遊戯王カード同梱（写真のとおり）'},
+      {v:'Complete with all originally included cards',l:'\u2705 付属カード完品'}
+    ]},
+    { id:'batttype', label:'使用電池', type:'select', options:[
+      {v:'3 x AA batteries',l:'単3形 \u00d7 3'},
+      {v:'4 x AA batteries',l:'単3形 \u00d7 4'},
+      {v:'3 x AAA batteries',l:'単4形 \u00d7 3'},
+      {v:'4 x AAA batteries',l:'単4形 \u00d7 4'},
+      {v:'2 x AA batteries',l:'単3形 \u00d7 2'},
+      {v:'',l:'電池不要・不明'}
+    ]},
+    { id:'battery', label:'電池ボックスの状態', type:'select', options:[
+      {v:'Battery compartment is clean - no corrosion or leakage',l:'\u2705 電池ボックス清潔・液漏れなし'},
+      {v:'Battery compartment had light corrosion - cleaned before listing',l:'\u26a0\ufe0f 軽微な腐食あり・清掃済み'},
+      {v:'Battery compartment shows corrosion - please see photos',l:'\u26a0\ufe0f 腐食あり（写真参照）'},
+      {v:'Battery cover is missing',l:'\u26a0\ufe0f 電池カバー欠品'}
+    ]},
+    { id:'cib', label:'付属品・箱', type:'select', options:[
+      {v:'Duel disk only',l:'本体のみ'},
+      {v:'Duel disk with box',l:'本体＋箱'},
+      {v:'Complete in Box (CIB) - box, manual and inserts included',l:'CIB（箱・説明書・内箱つき完品）'},
+      {v:'Boxed - box shows shelf wear',l:'箱付き（箱に傷み・経年あり）'},
+      {v:'Includes the shoulder strap / belt',l:'ベルト・ストラップ付き'}
+    ]},
+    { id:'notescheck', label:'特記事項（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Japanese version - voice clips are in Japanese',l:'日本語版（ボイスは日本語）'},
+      {v:'Tested with fresh batteries before listing',l:'新品電池でテスト済み'},
+      {v:'Genuine licensed product - not a reproduction',l:'正規品・レプリカではない'},
+      {v:'Rare item - hard to find outside Japan',l:'日本国外では入手困難なレア品'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Great display piece for Yu-Gi-Oh! collectors',l:'コレクターの飾り用にも最適'},
+      {v:'Stickers are intact with no peeling',l:'シールの剥がれなし'}
+    ]},
+    { id:'notescheck2', label:'特記事項２（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Japanese version - voice clips are in Japanese',l:'日本語版（ボイスは日本語）'},
+      {v:'Tested with fresh batteries before listing',l:'新品電池でテスト済み'},
+      {v:'Genuine licensed product - not a reproduction',l:'正規品・レプリカではない'},
+      {v:'Rare item - hard to find outside Japan',l:'日本国外では入手困難なレア品'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Great display piece for Yu-Gi-Oh! collectors',l:'コレクターの飾り用にも最適'},
+      {v:'Stickers are intact with no peeling',l:'シールの剥がれなし'}
+    ]},
+    { id:'notescheck3', label:'特記事項３（選択）', type:'select', options:[
+      {v:'',l:'なし'},
+      {v:'Made in Japan',l:'Made in Japan'},
+      {v:'Japanese version - voice clips are in Japanese',l:'日本語版（ボイスは日本語）'},
+      {v:'Tested with fresh batteries before listing',l:'新品電池でテスト済み'},
+      {v:'Genuine licensed product - not a reproduction',l:'正規品・レプリカではない'},
+      {v:'Rare item - hard to find outside Japan',l:'日本国外では入手困難なレア品'},
+      {v:'Cleaned and sanitized before shipping',l:'清掃・消毒済み'},
+      {v:'Great display piece for Yu-Gi-Oh! collectors',l:'コレクターの飾り用にも最適'},
+      {v:'Stickers are intact with no peeling',l:'シールの剥がれなし'}
+    ]},
+    { id:'notes', label:'特記事項（自由記入）', type:'text', placeholder:'その他・自由記入' },
+  ],
   wiiu: [
     { id:'storage', label:'モデル・容量', type:'select', options:[
       {v:'Basic Set 8GB (White)',l:'ベーシック 8GB（ホワイト）'},
@@ -2081,6 +2194,7 @@ const checklists = {
   watch: ['裏蓋でMade in Japan確認','型番・Cal.確認','振って稼働確認（針が動くか）','リューズの動作確認','写真撮影（文字盤・裏蓋・ケース4面・風防・バンド）','Terapeak実売確認（同型番3〜5件）','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gamecube: ['型番確認（DOL-001=GBP対応/DOL-101=非対応）','電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','ゲームボーイプレーヤー装着・起動ディスク動作確認','コントローラー動作確認（全ポート）','リージョン確認','外観チェック（天板・底面・端子）','写真撮影（全面・底面GBP・コントローラー・端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   gcpad: ['型番確認（DOL-003=有線/DOL-004=WaveBird）','アナログスティック：全方向＋放置してセンター戻りを確認（ドリフトは最大のクレーム源）','Cスティック動作確認','A/B/X/Y・D-Pad・Start 全ボタン確認','L/Rトリガーのアナログ量＋奥のクリック感、Zボタン確認','振動モーター確認','ケーブル全長を手でなぞって断線・被覆破れチェック（有線）','WaveBirdは受信機の有無・電池カバーの有無・チャンネル切替を確認','裏面シールと製造番号の有無を確認（純正の証明になる）','清掃（溝の汚れ・スティックのテカリ）','写真撮影（表・裏・スティック接写・トリガー・コネクタ・受信機・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
+  duel: ['モデル・発売年を確認（KONAMI版かタカラ版かで相場が大きく違う）','新品電池を入れて音声・ボイスを全パターン鳴らす（音が出るかは最大の判断材料）','LEDの点灯を確認','アームを展開→固定→収納、を数回繰り返して割れ・ゆるみを確認','カード置き場の爪・ツメ折れを確認','電池ボックスを開けて液漏れ・腐食・カバーの有無を確認','ベルト／ストラップの有無と劣化を確認','シールの剥がれ・日焼けを確認','付属カードの枚数とタイトルを数えて写真に撮る','清掃（溝のホコリ・手垢）','写真撮影（展開状態・収納状態・電池ボックス内・カード・箱）','電池を抜いてから梱包する（空輸規制。入れたまま送らない）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   ps3: ['電源ON・XMBメニュー表示確認','実ゲームディスクで読み込みテスト（BD/DVD両方）','PS2・PS1ソフトの互換確認（初期型のみ）','HDMI出力・映像音声確認','コントローラー動作確認（充電・スティック・全ボタン）','ファン音・発熱の確認','型番確認（裏面ラベルでCECH-◯◯◯◯）','HDD容量確認（本体設定から）','初期化（アカウント・個人データ消去）','写真撮影（全面・裏面型番・端子・コントローラー・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   wiiu: ['電源ON・Wii Uメニュー表示確認','GamePad同期・画面・タッチ動作確認','GamePadバッテリー充電・持ち確認','ディスク読み込みテスト（Wii U/Wii両方）','リージョン確認','初期化（個人データ消去）','付属品確認（GamePad充電器・ケーブル・センサーバー）','外観チェック（本体・GamePad画面）','写真撮影（本体・GamePad・端子・付属品・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
   '3do': ['電源ON・ブート画面確認','ディスク読み込みテスト（実ゲームで確認）','映像・音声出力確認','コントローラー動作確認（全ボタン）','トレイ・ローダー開閉確認','外観チェック（天板・前面・背面）','写真撮影（全面・トレイ・コントローラー・背面端子・箱）','Terapeak実売確認','eBay利益計算ツールで確認','タイトル・Condition・Description貼り付け','ビジネスポリシー選択','Preview確認→List it'],
@@ -2107,6 +2221,7 @@ const hsCodes = {
   gnw:       { code:'9504.50', desc:'携帯型電子ゲーム' },
   gamecube:  { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   gcpad:     { code:'9504.50', desc:'ビデオゲーム機の付属品（コントローラー）' },
+  duel:      { code:'9503.00', desc:'玩具（なりきり玩具・電子玩具）' },
   wiiu:      { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   ps3:       { code:'9504.50', desc:'ビデオゲーム機（据置）' },
   '3do':     { code:'9504.50', desc:'ビデオゲーム機' },
@@ -2819,6 +2934,100 @@ RETURN POLICY
 30-day returns accepted. Please contact us before opening a return request.
 
 Thank you for shopping with Hachi Shop! ★ Japan Quality ★`;
+    desc = desc.replace(/\n{3,}/g, '\n\n');  // 未選択の行が空行として残らないように詰める
+
+  } else if (g === 'duel') {
+    const ctype = getVal('ctype'), color = getVal('color'), model = getVal('model');
+    const cond = getVal('condition'), sound = getVal('sound'), light = getVal('light');
+    const mech = getVal('mech'), cards = getVal('cards'), batttype = getVal('batttype');
+    const battery = getVal('battery'), cib = getVal('cib');
+    const notescheck = getVal('notescheck'), notescheck2 = getVal('notescheck2'), notescheck3 = getVal('notescheck3'), notes = getVal('notes');
+    const allNotes = [notescheck, notescheck2, notescheck3, notes].filter(Boolean).join('. ');
+    const isKonami = ctype.includes('Konami');
+    const isTakara = ctype.includes('Takara');
+    const isCIB = cib.includes('CIB');
+    const soundOK = sound.includes('tested working') || sound.includes('works');
+    const hasCards = !cards.includes('No cards');
+    // 「Yu-Gi-Oh! 」とメーカー名の括弧を外した短い版（タイトル用）
+    const typeShort = ctype.replace('Yu-Gi-Oh! ', '').replace(/\s*\([^)]*\)/, '').trim();
+
+    // 80字に収まるまで優先度の低い語から落とす（途中で切れるのを防ぐ）
+    const tParts = [
+      'Yu-Gi-Oh!',
+      typeShort,
+      color,
+      isKonami ? 'Konami' : (isTakara ? 'Takara' : ''),
+      cond,
+      soundOK ? 'Sound Tested' : (cond === 'For Parts' ? '' : 'Tested'),
+      hasCards ? 'with Cards' : '',
+      isCIB ? 'CIB' : '',
+      'Japan'
+    ];
+    const dropOrder = [2, 3, 7, 6, 4];   // カラー→メーカー→CIB→カード→状態 の順に落とす
+    // 「Sound Tested」と「with Cards」は売りなので最後まで残す
+    let tJoined = tParts.filter(Boolean).join(' ');
+    for (const di of dropOrder) {
+      if (tJoined.length <= 80) break;
+      tParts[di] = null;
+      tJoined = tParts.filter(Boolean).join(' ');
+    }
+    title = tJoined.substring(0, 80);
+
+    condition = `${cond}. Sound: ${sound}.${light ? ' LED: ' + light + '.' : ''} Arm: ${mech}. Cards: ${cards}. ${battery}. Includes: ${cib}. Batteries are removed before shipping.${allNotes ? ' ' + allNotes + '.' : ''}`;
+
+    desc = `Thank you for visiting Hachi Shop!
+We are based in Japan and specialize in Japanese collectibles and gaming items.
+
+ITEM DETAILS
+Item: ${ctype}
+${model ? 'Model / Year: ' + model : ''}
+${color ? 'Color: ' + color : ''}
+Condition: ${cond}
+Includes: ${cib}
+Cards: ${cards}
+
+TESTED AND WORKING
+Sound / Voice: ${sound}
+${light ? 'LED Lights: ' + light : ''}
+Arm Deployment: ${mech}
+Battery Compartment: ${battery}
+Notes: ${allNotes || 'N/A'}
+
+BATTERIES - PLEASE READ
+${batttype ? 'This item runs on ' + batttype + '. ' : ''}Batteries are NOT included.
+For safety and to comply with international air shipping rules, any batteries are
+REMOVED before packing. Please insert fresh batteries to enjoy the sound and light effects.
+${soundOK ? 'We tested this item with fresh batteries before listing, so it is confirmed working\nat the time of shipping.' : 'Please note: this item is sold as is. See the condition notes above for details\nof what was and was not working during our test.'}
+
+${isKonami ? 'This is a genuine KONAMI licensed product.' : (isTakara ? 'This is a genuine TAKARA licensed product from the original Battle City era.' : 'Genuine licensed product.')}
+Voice clips and on-item text are in Japanese (Japanese domestic version).
+
+SHIPPING
+Method: FedEx International Priority
+Handling: Ships within 2 business days after payment
+In practice, unless something unexpected comes up, we ship on the next business day.
+Tracking: Full tracking provided
+We ship Monday through Saturday Japan time - yes, we ship on Saturdays too!
+On Sundays (Japan time), pickups are closed and shipping will be arranged the next day.
+Packing: Carefully packed with bubble wrap and rigid box
+
+COMBINED SHIPPING
+Buying more than one item? We are happy to combine shipping.
+As a guide, each additional item adds about US $15 to the shipping cost.
+Depending on the actual weight and size, it is often less - sometimes much less.
+Please message us BEFORE paying so we can calculate the exact combined rate and send you a revised invoice.
+If you have already paid, contact us and we will refund the difference.
+Please note: very large or heavy items may not be combinable.
+
+INTERNATIONAL BUYERS - PLEASE NOTE
+Import duties, taxes and charges are not included in the item price or shipping cost.
+These charges are the buyer's responsibility. Please check with your country's customs
+office to determine what these additional costs will be prior to buying.
+
+RETURN POLICY
+30-day returns accepted. Please contact us before opening a return request.
+
+Thank you for shopping with Hachi Shop! \u2605 Japan Quality \u2605`;
     desc = desc.replace(/\n{3,}/g, '\n\n');  // 未選択の行が空行として残らないように詰める
 
   } else if (g === 'ps3') {
@@ -3631,6 +3840,32 @@ Thank you for shopping with Hachi Shop! ★ Japan Vintage ★`;
       { k:'Compatible Product', v: 'Nintendo GameCube, Nintendo Wii' },
       { k:'Number of Items', v: qty },
       { k:'Includes Wireless Receiver', v: isWireless ? (wavebird.includes('NOT included') ? 'No' : 'Yes') : 'Not Applicable' },
+      { k:'Country/Region of Manufacture', v: 'Japan' },
+      { k:'Modified Item', v: 'No' },
+    ];
+  } else if (g === 'duel') {
+    const ctype = getVal('ctype'), color = getVal('color'), model = getVal('model');
+    const cards = getVal('cards'), batttype = getVal('batttype');
+    const isKonami = ctype.includes('Konami');
+    const isTakara = ctype.includes('Takara');
+    const series = ctype.includes('GX') ? 'Yu-Gi-Oh! GX'
+                 : ctype.includes('5Ds') ? "Yu-Gi-Oh! 5D's"
+                 : ctype.includes('ZEXAL') ? 'Yu-Gi-Oh! ZEXAL'
+                 : ctype.includes('ARC-V') ? 'Yu-Gi-Oh! ARC-V'
+                 : 'Yu-Gi-Oh! Duel Monsters';
+    specs = [
+      { k:'Brand', v: isKonami ? 'Konami' : (isTakara ? 'Takara' : 'Konami') },
+      { k:'Franchise', v: 'Yu-Gi-Oh!' },
+      { k:'TV Show', v: series },
+      { k:'Type', v: 'Duel Disk' },
+      { k:'Product Line', v: ctype.replace('Yu-Gi-Oh! ', '').replace(/\s*\([^)]*\)/, '').trim() },
+      { k:'Model', v: model || 'N/A' },
+      { k:'Color', v: color || 'N/A' },
+      { k:'Material', v: 'Plastic' },
+      { k:'Power Source', v: batttype ? 'Battery (' + batttype + ', not included)' : 'Battery (not included)' },
+      { k:'Features', v: 'Sound, Light-Up' },
+      { k:'Includes Cards', v: cards.includes('No cards') ? 'No' : 'Yes' },
+      { k:'Language', v: 'Japanese' },
       { k:'Country/Region of Manufacture', v: 'Japan' },
       { k:'Modified Item', v: 'No' },
     ];
